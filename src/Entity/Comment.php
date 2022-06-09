@@ -47,12 +47,12 @@ class Comment
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $photoFilename;
-
+/*
     public function __construct()
     {
         $this->comments = new ArrayCollection();
     }
-
+*/
     public function getId(): ?int
     {
         return $this->id;

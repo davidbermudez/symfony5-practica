@@ -112,4 +112,9 @@ class Conference
         return $this;
     }
 
+    public function __toString()
+    {
+        return $this->city.'::'.$this->year;
+    }
+
 }
