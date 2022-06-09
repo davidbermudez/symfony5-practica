@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Conference;
+use App\Repository\ConferenceRepository;
+use App\Repository\CommentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,11 +14,13 @@ class ConferenceController extends AbstractController
     /**
      * @Route("/", name="homepage")
      */
-    public function index(): Response
+    public function index(ConferenceRepository $conferenceRepository): Response
     {
-        /*return $this->render('conference/index.html.twig', [
-            'controller_name' => 'ConferenceController',
-        ]);*/
+        return $this->render('conference/index.html.twig', [
+            'conferences' => $conferenceRepository->findAll(),
+        ]);
+        /*
+        // MAINTENANCE
         return new Response(<<<EOF
 <html>
         <body>
@@ -24,5 +29,18 @@ class ConferenceController extends AbstractController
 </html>
 EOF
         );
+        */
+    }
+
+
+    /**
+     * @Route("/conference/{id}", name="conference")
+     */
+    public function show(Conference $conference, CommentRepository $commentRepository): Response
+    {
+        return $this->render('conference/show.html.twig', [
+            'conference' => $conference,
+            'comments' => $commentRepository->findBy(['conference' => $conference], ['createdAt' => 'DESC']),
+        ]);
     }
 }

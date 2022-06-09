@@ -33,8 +33,7 @@ class CommentCrudController extends AbstractCrudController
             yield DateTimeField::new('createdAt', 'Creado')
                 ->setFormat('dd/MM/y HH:mm:ss')
                 ->setSortable(true)
-                ->setFormTypeOption('disabled', 'disabled');
-        
+                ->setFormTypeOption('disabled', 'disabled');        
             if (Crud::PAGE_INDEX === $pageName) {
                 yield ImageField::new('photoFilename')->setBasePath('images/uploads/')->setLabel('Photo');                
             } elseif (Crud::PAGE_EDIT === $pageName) {
