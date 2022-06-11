@@ -54,6 +54,16 @@ class Comment
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $photoFilename;
+
+    /**
+     * @ORM\Column(type="string", length=25, options={"default": "submitted"})
+     */
+    private $state = 'submitted';
+
+    public function __toString()
+    {
+        return $this->author;
+    }
 /*
     public function __construct()
     {
@@ -137,9 +147,16 @@ class Comment
 
         return $this;
     }
-    
-    public function __toString()
+
+    public function getState(): ?string
     {
-        return $this->author;
+        return $this->state;
+    }
+
+    public function setState(string $state): self
+    {
+        $this->state = $state;
+
+        return $this;
     }
 }

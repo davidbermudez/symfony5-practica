@@ -30,6 +30,7 @@ class CommentCrudController extends AbstractCrudController
             yield TextField::new('author', 'Autor');
             yield TextEditorField::new('text', 'Comentario');
             yield EmailField::new('email', 'Email');
+            yield TextField::new('state', 'Estado');
             yield DateTimeField::new('createdAt', 'Creado')
                 ->setFormat('dd/MM/y HH:mm:ss')
                 ->setSortable(true)
