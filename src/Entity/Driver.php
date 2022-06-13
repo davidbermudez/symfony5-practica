@@ -100,7 +100,8 @@ class Driver implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return $this->password;
+        $passw = $this->password;                
+        return $passw;
     }
 
     public function setPassword(string $password): self

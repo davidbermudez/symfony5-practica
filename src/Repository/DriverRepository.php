@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
@@ -26,6 +27,14 @@ class DriverRepository extends ServiceEntityRepository implements PasswordUpgrad
 
     public function add(Driver $entity, bool $flush = false): void
     {
+        $usuario = $this->getUser();
+        dump($usuario);
+        $entity->setRoles(['ROLES_USER']);
+        $entity->setGrupo($usuario->getgrupo());
+        $password = md5(now());
+        $entity->setPassword($password);
+
+        
         $this->getEntityManager()->persist($entity);
 
         if ($flush) {

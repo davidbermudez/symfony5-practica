@@ -44,7 +44,8 @@ class DashboardController extends AbstractDashboardController
         $user = $this->getUser()->getId();
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::section('Users', 'fa fa-user');
-        yield MenuItem::linkToCrud('Grupo', 'fas fa-list', Grupo::class);
+        yield MenuItem::linkToCrud('Grupo', 'fas fa-list', Grupo::class)
+            ->setController(GrupoFiltradoCrudController::class);
         yield MenuItem::linkToCrud('Usuarios', 'fas fa-users', Driver::class);            
     }
 
