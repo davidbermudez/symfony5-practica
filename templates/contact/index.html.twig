@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ContactController!{% endblock %}
+
+{% block body %}
+<div class="container px-4">
+    <div class="row gx-5">
+        <h1 class="h3 mb-3 font-weight-normal">Contacta</h1>
+        {{ form_start(our_form) }}
+        <div class="mb-3">
+            {{ form_row(our_form.fullName, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(our_form.email, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(our_form.message, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary mb-3" type="submit">
+                    Enviar
+            </button>
+        </div>            
+        {{ form_end(our_form) }}
+    </section>
+{% endblock %}

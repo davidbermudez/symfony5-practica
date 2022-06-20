@@ -30,7 +30,7 @@ class ConferenceController extends AbstractController
         $this->bus = $bus;
     }
     /**
-     * @Route("/", name="homepage")
+     * @Route("/old", name="homepage_old")
      */
     public function index(ConferenceRepository $conferenceRepository): Response
     {
