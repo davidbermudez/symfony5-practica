@@ -12,8 +12,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+
 class DriverFiltradoCrudController extends DriverCrudController
 {
+    
+
     public function configureCrud(Crud $crud): Crud
     {
         return parent::configureCrud($crud)
@@ -34,6 +44,18 @@ class DriverFiltradoCrudController extends DriverCrudController
             ->setParameter('grupo', $usuario->getGrupo());
         return $result;
     }
+
+    public function configureFields(string $pageName): iterable
+    {        
+        return [
+            //IdField::new('id'),
+            EmailField::new('email'),
+            HiddenField::new('password'),
+            AssociationField::new('grupo')->setFormTypeOption('disabled','disabled'),
+            //TextEditorField::new('description'),
+        ];
+    }
+   
 /*
     public function configureActions(Actions $actions): Actions
     {

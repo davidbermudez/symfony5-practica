@@ -40,6 +40,11 @@ class Grupo
         $this->driver = new ArrayCollection();
     }
 
+    public function __toString()
+    {        
+        return $this->caption;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
