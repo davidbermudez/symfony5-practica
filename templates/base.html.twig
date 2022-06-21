@@ -23,7 +23,7 @@
         <div id="main-wrapper">            
             <div class="content-wrapper">                
                 <!-- nav -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <nav class="navbar navbar-expand-lg navbar-light bg-success bg-gradient">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="{{ path('homepage') }}">
                             <img src="/images/compartecoche.png" width="75" alt="">
@@ -37,17 +37,17 @@
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('homepage') }}">Inicio</a>
+                                    <a class="nav-link text-warning" href="{{ path('homepage') }}">Inicio</a>
                                 </li>
                                 <li class="nav-item">
                                 {% if app.user %}
-                                    <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+                                    <a class="nav-link text-warning" href="{{ path('app_logout') }}">Logout</a>
                                 {% else %}
-                                    <a class="nav-link" href="{{ path('app_login') }}">Login</a>
+                                    <a class="nav-link text-warning" href="{{ path('app_login') }}">Login</a>
                                 {% endif %}
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('app_contact') }}">Contacto</a>
+                                    <a class="nav-link text-warning" href="{{ path('app_contact') }}">Contacto</a>
                                 </li>                                                                            
                             </ul>                                
                         </div>
@@ -78,70 +78,13 @@
                 </section>
                 <!-- .team -->
 
-                <footer class="footer">
-
-                    <!-- Footer Widget Section -->
-                    <div class="footer-widget-section">
-                        <div class="container text-center">
-                            <div class="row">
-                                <div class="col-sm-4 footer-block">
-                                    <div class="footer-widget widget_text">
-                                        <div class="footer-logo">
-                                            <a href="#"><img src="/img/logo.png" alt=""></a>
-                                        </div>
-                                        <p>Continually matrix cross functional opportunities whereas ethical information. Compellingly streamline enabled human capital before resource-leveling internal or "organic".</p>
-
-                                    </div>
-                                </div><!-- /.col-sm-4 -->
-
-                                <div class="col-sm-4 footer-block">
-                                    <div class="footer-widget widget_text">
-                                        <h3>We work for your profit</h3>
-                                        <p>Distinctively expedite viral materials rather than out-of-the-box solutions. Credibly empower revolutionary ROI rather than unique products. Collaboratively maximize principle-centered ideas before highly efficient data. Phosfluorescently.</p>
-                                    </div>
-                                </div><!-- /.col-sm-4 -->
-
-                                <div class="col-sm-4 footer-block last">
-                                    <div class="footer-widget widget_text">
-                                        <h3>Contact Us Today</h3>
-                                        <address>
-                                            Call Us 666 777 888 OR 111 222 333<br>
-                                            Send an Email on <a href="mailto:#">contact@domain.com</a><br>
-                                            Visit Us 123 Fake Street- Blla 12358<br>
-                                            Fake Kingdom<br>
-                                        </address>
-
-                                        <ul class="list-inline social-links">
-                                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- /.col-sm-4 -->
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.Footer Widget Section -->
+                <footer class="footer bg-success bg-gradient p-2 text-white" style="--bs-bg-opacity: .5;">
 
                     <div class="copyright-section">
                         <div class="container clearfix">
-                                <span class="copytext">Copyright &copy; 2016 | <a href="https://uicookies.com/downloads/x-corporation-free-bootstrap-html-template/">X-Corporation</a> Designed And Developed By: <strong style="color: #31aae2;">uiCookies.com</strong></span>
-
-                            <ul class="list-inline pull-right">
-                                <li class="active"><a href="#">Home</a></li>
-                                {% if app.user %}
-                                    <li><a href="{{ path('app_logout') }}">Logout</a></li>
-                                {% else %}
-                                    <li><a href="{{ path('app_login') }}">Login</a></li>                                            
-                                {% endif %}                                    
-                                <li><a href="#">Services</a></li>
-                                <li><a href="#">Portfolio</a></li>
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">Contact</a></li>
-                            </ul>
+                            <span class="copytext">
+                                Copyright &copy; 2022 | Designed And Developed By: <strong style="color: #fd7e14;">@DavidBermudezTW</strong>
+                            </span>                            
                         
                         </div>
                         <!-- .container -->

@@ -19,16 +19,7 @@
                         <div class="col">Column</div>
                         <div class="col">Column</div>
                     </div>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                        {% for trayecto in trayectos %}
-                            {{ trayecto.date|format_datetime('short', 'none', locale='fr') }}
-                        {% endfor %}
-                        </div>
                     </div>
-                </div>
             {% endif %}
         </div>
     </section>
