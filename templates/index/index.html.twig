@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}ComparteCoche{% endblock %}
+{% block stylesheets %}
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Icons -->
+    <link href="/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+{% endblock %}
 
 {% block body %}
     <section class="container px-4 mt-5 mb-5">    
@@ -23,9 +29,56 @@
                 <div class="container">
                     <div class="row">
                         <div class="col">
-                        {% for trayecto in trayectos %}
-                            {{ trayecto.date|format_datetime('short', 'none', locale='fr') }}
-                        {% endfor %}
+                            <div>Existen {{ trayectos|length }} trayectos</div>
+                            {% for trayecto in trayectos %}
+                                <div class="row row-cols-auto">
+                                    <div class="col">
+                                        {{ trayecto.date | format_datetime('short', 'none', locale='fr') }}
+                                    </div>
+                                    <div class="col">
+                                        {{ trayecto.timeAt | format_time(pattern='HH:mm') }}
+                                    </div>
+                                    <div class="col">
+                                        {{ trayecto.timeTo | format_time(pattern='HH:mm') }}
+                                    </div>
+                                    <div class="col">                                        
+                                        {% if trayecto.passenger == false %}
+                                            <i class="fa fa-automobile text-primary"></i>
+                                        {% else %}
+                                            <i class="fa fa-user text-success"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <nav aria-label="...">
+                              <ul class="pagination">
+                                    <!-- Previous -->
+                                    {% if previous >= 0 %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ path('homepage', { offset:previous }) }}">Previous</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link">Previous</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if (trayectos|length)/10 > 2 %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ path('homepage', { offset:next }) }}">{{ (next/10) }}</a>
+                                        </li>
+                                    {% endif %}
+                                    <!-- Next -->
+                                    {% if next < trayectos|length %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ path('homepage', { offset: next}) }}">Next</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link">Next</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>

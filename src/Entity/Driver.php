@@ -41,6 +41,11 @@ class Driver implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $grupo;
 
+     /**
+     * @ORM\OneToMany(targetEntity=Trayecto::class, mappedBy="driver", orphanRemoval=true)
+     */
+    private $trayectos;
+
     public function getId(): ?int
     {
         return $this->id;

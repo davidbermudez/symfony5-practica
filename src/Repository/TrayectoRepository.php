@@ -6,6 +6,9 @@ use App\Entity\Trayecto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+use App\Entity\Driver;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 /**
  * @extends ServiceEntityRepository<Trayecto>
  *
@@ -16,6 +19,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TrayectoRepository extends ServiceEntityRepository
 {
+    public const PAGINATOR_PER_PAGE = 10;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Trayecto::class);
@@ -37,6 +42,19 @@ class TrayectoRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getTrayectoPaginator(Driver $driver, int $offset):Paginator
+    {
+        $query = $this->createQueryBuilder('t')
+            ->andWhere('t.driver = :driver')
+            ->setParameter('driver', $driver)
+            ->orderBy('t.date', 'DESC')
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery()
+        ;
+        return new Paginator($query);
     }
 
 //    /**

@@ -11,13 +11,8 @@
                 <div class="container">
                     <div class="row">
                         <div class="col">
-                            <button type="button" class="btn btn-outline-primary btn-ln" onclick="location.href='{{ path('app_newTime') }}'">
-                                Nuevo Horario
-                            </button>
+                        {{ form(trayecto_form) }}
                         </div>
-                        <div class="col">Column</div>
-                        <div class="col">Column</div>
-                        <div class="col">Column</div>
                     </div>
                     </div>
             {% endif %}

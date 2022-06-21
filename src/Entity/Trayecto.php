@@ -33,8 +33,8 @@ class Trayecto
     private $time_to;
 
     /**
-     * @ORM\OneToOne(targetEntity=Driver::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Driver::class, inversedBy="trayectos")
+     * @ORM\JoinColumn(nullable=false)     
      */
     private $driver;
 
