@@ -14,6 +14,7 @@
             {% if app.user %}
                 {{ app.user.userIdentifier }}
                 {{ grupo }}
+
                 <div class="container">
                     <div class="row">
                         <div class="col">
@@ -26,9 +27,10 @@
                         <div class="col">Column</div>
                     </div>
                 </div>
+
                 <div class="container">
                     <div class="row">
-                        <div class="col">
+                        <div class="col-2">
                             <div>Existen {{ trayectos|length }} trayectos</div>
                             <table class="table table-success table-striped">
                                 <thead>
@@ -52,7 +54,9 @@
                                                 {{ trayecto.timeTo | format_time(pattern='HH:mm') }}
                                             </td>
                                             <td>
-                                                {% if trayecto.passenger == false %}
+                                                {% if trayecto.passenger == null %}
+                                                    <i class="fa fa-question text-danger"></i>
+                                                {% elseif trayecto.passenger == false %}
                                                     <i class="fa fa-automobile text-primary"></i>
                                                 {% else %}
                                                     <i class="fa fa-user text-success"></i>
@@ -91,6 +95,8 @@
                                     {% endif %}
                                 </ul>
                             </nav>
+                        </div>
+                        <div class="col-2">
                         </div>
                     </div>
                 </div>

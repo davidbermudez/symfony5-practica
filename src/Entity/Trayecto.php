@@ -101,10 +101,12 @@ class Trayecto
         return $this->passenger;
     }
 
-    public function setPassenger(bool $passenger): self
+    public function setPassenger(?bool $passenger): self
     {
         $this->passenger = $passenger;
 
         return $this;
     }
+
+
 }

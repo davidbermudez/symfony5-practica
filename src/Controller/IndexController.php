@@ -39,6 +39,10 @@ class IndexController extends AbstractController
         if ($user == null){
             return $this->redirectToRoute('app_login');
         } else {
+            // ADMIN to /admin            
+            if ($this->isGranted('ROLE_ADMIN')) {
+                return $this->redirectToRoute('admin');
+            }
             $grupo = $user->getGrupo();
             $trayecto = [];
             $trayecto = $trayectoRepository->findBy(['driver' => $user]);
@@ -79,14 +83,14 @@ class IndexController extends AbstractController
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 /* ******************************************  */
-                // verificar que no exista un trayecto igual
+                // verificar que no exista un trayecto igual ya guardado por este usuario
                 //dump($form);                
                 $fecha = $form['date_trayecto']->getData();
                 $time_at = $form['time_at']->getData();
                 $time_to = $form['time_to']->getData();
-                dump($fecha);
-                dump($time_at);
-                dump($time_to);
+                //dump($fecha);
+                //dump($time_at);
+                //dump($time_to);
                 $verificando_trayecto = [];
                 $verificando_trayecto = $trayectoRepository->findBy([
                     'driver' => $user,
@@ -100,16 +104,32 @@ class IndexController extends AbstractController
                     //
                     $this->addFlash(
                         'danger',
-                        'Ya existe un trayecto guardado para este horario'
+                        'ERROR: Ya has grabado un trayecto guardado para este horario'
                     );
                 } else {
-                
+                    // Grabamos un nuevo trayecto
                     $trayecto->setDriver($user);
-                    $trayecto->setPassenger(true);
+                    $trayecto->setPassenger(null);
 
                     $this->entityManager->persist($trayecto);
                     $this->entityManager->flush();
 
+                    // verificamos si ya hay grabado un trayecto igual (por otro usuario)
+                    $verificando_trayecto = new Trayecto();
+                    $verificando_trayecto = $trayectoRepository->findOneBySomeField([
+                        'driver' => $user,
+                        'date_trayecto' => $form['date_trayecto']->getData(),
+                        'time_at' =>  $form['time_at']->getData()->format('H:i:s'),
+                        'time_to' => $form['time_to']->getData()->format('H:i:s'),
+                    ]);
+                    dump($verificando_trayecto);
+                    if($verificando_trayecto->getId() != null){
+                        //
+                        $this->addFlash(
+                            'success',
+                            'ATENCIÓN: ¡Ya existe un trayecto guardado para este horario!'
+                        );
+                    }
                     // Regresamos a homepage
                     $offset = max(0, $request->query->getInt('offset', 0));
                     $paginator = $trayectoRepository->getTrayectoPaginator($user, $offset);

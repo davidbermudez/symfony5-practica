@@ -6,8 +6,7 @@
 <section class="container px-4 mt-5 mb-5">
     <div class="row gx-5">
         <h1 class="h3 mb-3 font-weight-normal">Iniciar sesión</h1>
-        <form method="post">
-            
+        <form method="post">            
             <div class="mb-3">
                 {% if error %}
                     <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -17,13 +16,10 @@
                     <div class="mb-3">
                         Ya estás logeado como {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">¿Cerrar Sesión?</a>
                     </div>
-                {% endif %}
-
-                
+                {% endif %}                
                 <label for="inputUsername" class="form-label">Email</label>
                 <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
             </div>
-
             <div class="mb-3">
                 <label for="inputPassword">Password</label>
                 <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>

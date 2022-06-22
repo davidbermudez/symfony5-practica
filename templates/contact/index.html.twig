@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ContactController!{% endblock %}
+{% block title %}Contacta{% endblock %}
 
 {% block body %}
-<div class="container px-4">
+<section class="container px-4 mt-5 mb-5">
     <div class="row gx-5">
         <h1 class="h3 mb-3 font-weight-normal">Contacta</h1>
         {{ form_start(our_form) }}
@@ -22,5 +22,6 @@
             </button>
         </div>            
         {{ form_end(our_form) }}
-    </section>
+    </div>
+</section>
 {% endblock %}

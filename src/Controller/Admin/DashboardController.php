@@ -27,7 +27,7 @@ class DashboardController extends AbstractDashboardController
     {
         //return parent::index();
         $routeBuilder = $this->get(AdminUrlGenerator::class);        
-        return $this->redirect($routeBuilder->setController(DriverCrudController::class)->generateUrl());
+        return $this->redirect($routeBuilder->setController(DriverFiltradoCrudController::class)->generateUrl());
     }
 
     public function configureDashboard(): Dashboard
@@ -46,7 +46,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Users', 'fa fa-user');
         yield MenuItem::linkToCrud('Grupo', 'fas fa-list', Grupo::class)
             ->setController(GrupoFiltradoCrudController::class);
-        yield MenuItem::linkToCrud('Usuarios', 'fas fa-users', Driver::class);            
+        yield MenuItem::linkToCrud('Usuarios', 'fas fa-users', Driver::class)
+            ->setController(DriverFiltradoCrudController::class);
     }
 
     
