@@ -56,7 +56,18 @@
                     <!-- . container-fluid -->
                 </nav>
                 <!-- .nav -->
-                
+                <!-- message_flash -->
+                {% for label, messages in app.flashes %}
+                    <div class="container-fluid">
+                        {% for message in messages %}
+                            <div class="alert alert-{{label}} alert-dismissible fade show mt-2 mb-2" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>        
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <!-- .message_flash -->
                 {% block body %}{% endblock %}
                 <!--
                 <div id="x-corp-carousel" class="carousel slide hero-slide hidden-xs" data-ride="carousel">

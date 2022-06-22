@@ -49,7 +49,7 @@ class TrayectoRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('t')
             ->andWhere('t.driver = :driver')
             ->setParameter('driver', $driver)
-            ->orderBy('t.date', 'DESC')
+            ->orderBy('t.date_trayecto', 'DESC')
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
             ->setFirstResult($offset)
             ->getQuery()

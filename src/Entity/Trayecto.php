@@ -20,7 +20,7 @@ class Trayecto
     /**
      * @ORM\Column(type="date")
      */
-    private $date;
+    private $date_trayecto;
 
     /**
      * @ORM\Column(type="time")
@@ -48,14 +48,14 @@ class Trayecto
         return $this->id;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDateTrayecto(): ?\DateTimeInterface
     {
-        return $this->date;
+        return $this->date_trayecto;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDateTrayecto(\DateTimeInterface $date_trayecto): self
     {
-        $this->date = $date;
+        $this->date_trayecto = $date_trayecto;
 
         return $this;
     }
