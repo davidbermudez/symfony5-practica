@@ -75,12 +75,12 @@ class TrayectoRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-     /**
-     * @return Trayecto[] Returns an array of Trayecto objects
-     */
-    public function findOneBySomeField($value): ?Trayecto
+    /**
+    * @return Trayecto[] Returns an array of Trayecto objects
+    */
+    public function findTrayecto($value): ?Trayecto
     {
-        
+        /*
         $val0 = $value['driver']->getId();
         dump($value['date_trayecto']);
         $val1 = $value['date_trayecto']->format('Y-m-d');
@@ -98,23 +98,26 @@ class TrayectoRepository extends ServiceEntityRepository
         $st = $con->query($personal_query);
         $rs = $st->fetchAll();
         */
+        /*
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
         //$query = "[colocas aqui tu query]";
         $consulta = $conn->prepare($personal_query);
         $consulta->execute(); 
         $queryResults = $consulta->fetchAll();
-        /*
-        $query = $this->QueryBuilder('t')
-            ->select('t.id', 't.driver_id', 't.date_trayecto', 't.time_at', 't.time_to', 't.passenger')
-            //->select('t')
+        */
+        
+        $queryBuilder = $this->createQueryBuilder('t');
+        $queryBuilder
+            //->select('t.id', 't.driver_id', 't.date_trayecto', 't.time_at', 't.time_to', 't.passenger')
+            ->select('t.*')
             ->from('trayecto', 't')
-            ->innerJoin('driver', 'd', 't.driver_id = d.id')
-            ->where('t.driver != :val0 AND t.date_trayecto = :val1 AND t.time_at = :val2 AND t.time_to = :val3 AND d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.if = :val0)')
-            //->andWhere('t.date_trayecto = :val1')
-            //->andWhere('t.time_at = :val2')
-            //->andWhere('t.time_to = :val3')
-            //->andWhere('d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.if = :val0)')
+            ->innerJoin('t', 'driver', 'd', 't.driver_id = d.id')
+            ->where('t.driver != :val0') // AND t.date_trayecto = :val1 AND t.time_at = :val2 AND t.time_to = :val3 AND d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.id = :val0)')
+            ->andWhere('t.date_trayecto = :val1')
+            ->andWhere('t.time_at = :val2')
+            ->andWhere('t.time_to = :val3')
+            ->andWhere('d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.if = :val0)')
             ->setParameters([
                 'val0' => $value['driver'],
                 'val1' => $value['date_trayecto'],
@@ -124,7 +127,7 @@ class TrayectoRepository extends ServiceEntityRepository
             ->getQuery()
             //->getResult()
         ;
-        dump($query->getSQL());
+        dump($queryBuilder->getDQL());
         /*
         $query = $this->getEntityManager()
             ->createQuery("SELECT * FROM trayecto t INNER JOIN driver d ON t.driver_id = d.id 
@@ -142,7 +145,7 @@ class TrayectoRepository extends ServiceEntityRepository
                 'val3' => $value['time_to'],
             ]);
             */
-        return $queryResults;
-        //return new Traslado($query);
+        //return $queryResults;
+        return new Trayecto($queryBuilder);
     }
 }
