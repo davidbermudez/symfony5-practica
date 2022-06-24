@@ -56,6 +56,11 @@ class IndexController extends AbstractController
                 'trayectos' => $paginator,
                 'previous' => $offset - TrayectoRepository::PAGINATOR_PER_PAGE,
                 'next' => min(count($paginator), $offset + TrayectoRepository::PAGINATOR_PER_PAGE),
+                'disponibles' => $trayectoRepository->findAvailables([
+                    'driver' => $user,
+                    'date_trayecto' => date('Y-m-d'),                            
+                    'grupo' => $grupo,
+                ])
             ]);
         }
     }
@@ -116,14 +121,15 @@ class IndexController extends AbstractController
                     $this->entityManager->flush();
 
                     // verificamos si ya hay grabado un trayecto igual (por otro usuario)
-                    $buscando_iguales = [];//new Trayecto();
-                    $buscando_iguales = $this->buscaTrayectos([
+                    $buscando_iguales = []; //new Trayecto();
+                    $buscando_iguales = $trayectoRepository->findTrayectos2([
                         //'driver' => $user->getId(),
                         'driver' => $user,
                         //'date_trayecto' => $form['date_trayecto']->getData()->format('Y-m-d'),
-                        'date_trayecto' => $form['date_trayecto']->getData(),
-                        'time_at' =>  $form['time_at']->getData()->format('H:i:s'),
+                        'date_trayecto' => $fecha,
+                        'time_at' => $form['time_at']->getData()->format('H:i:s'),
                         'time_to' => $form['time_to']->getData()->format('H:i:s'),
+                        'grupo' => $grupo,
                     ]);
                     dump($buscando_iguales);
                     if($buscando_iguales){
@@ -141,6 +147,11 @@ class IndexController extends AbstractController
                         'trayectos' => $paginator,
                         'previous' => $offset - TrayectoRepository::PAGINATOR_PER_PAGE,
                         'next' => min(count($paginator), $offset + TrayectoRepository::PAGINATOR_PER_PAGE),
+                        'disponibles' => $trayectoRepository->findAvailables([
+                            'driver' => $user,
+                            'date_trayecto' => date('Y-m-d'),                            
+                            'grupo' => $grupo,
+                        ])
                     ]);
                 }
             }
@@ -153,17 +164,20 @@ class IndexController extends AbstractController
 
     public function buscaTrayectos($value): array
     {
-        $rsm = new ResultSetMapping();
-        $sql = "SELECT t.* FROM trayecto t INNER JOIN driver d ON t.driver_id = d.id WHERE t.driver_id != :val0 AND t.date_trayecto = :val1 AND t.time_at = :val2 AND t.time_to = :val3 AND d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.id = :val0)";
-        $sql = "SELECT t.* FROM trayecto t WHERE 1";
-        $query = $this->entityManager->createNativeQuery($sql, $rsm);
+        $em = $doctrine->getManager();
+        //$rsm = new ResultSetMapping();
+        //$sql = "SELECT t.* FROM trayecto t INNER JOIN driver d ON t.driver_id = d.id WHERE t.driver_id != :val0 AND t.date_trayecto = :val1 AND t.time_at = :val2 AND t.time_to = :val3 AND d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.id = :val0)";
+        $sql = "SELECT t.* FROM App:Product t WHERE 1";
+        //$query = $this->entityManager->createNativeQuery($sql, $rsm);
+        $query = $em->createQuery($sql);
         //$query->setParameters([
             //'val0' => $value['driver'],
             //'val1' => $value['date_trayecto'],
             //'val2' => $value['time_at'],
             //'val3' => $value['time_to'],
         //]);
-
+        //$query->execute();
+        //dump($query->getResult());
         $trayectos = $query->getResult();
         dump($query);
         dump($trayectos);

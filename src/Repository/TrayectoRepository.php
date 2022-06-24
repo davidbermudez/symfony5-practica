@@ -6,6 +6,8 @@ use App\Entity\Trayecto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\DBAL\Result;
 use Doctrine\DBAL\DriverManager;
 use App\Entity\Driver;
@@ -78,74 +80,63 @@ class TrayectoRepository extends ServiceEntityRepository
     /**
     * @return Trayecto[] Returns an array of Trayecto objects
     */
-    public function findTrayecto($value): ?Trayecto
+    public function findTrayectos2($value): array
     {
-        /*
-        $val0 = $value['driver']->getId();
-        dump($value['date_trayecto']);
-        $val1 = $value['date_trayecto']->format('Y-m-d');
-        $val2 = $value['time_at'];//->format('H:i');
-        $val3 = $value['time_to'];//->format('H:i');
-        $personal_query = "SELECT * FROM trayecto t INNER JOIN driver d ON t.driver_id = d.id 
-        WHERE 
-            t.driver_id <> $val0 AND 
-            t.date_trayecto = '$val1' AND
-            t.time_at = '$val2' AND
-            t.time_to = '$val3' AND
-            d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.id = $val0);";
-        /*
-        $conn = DriverManager::getConnection($params, $config);
-        $st = $con->query($personal_query);
-        $rs = $st->fetchAll();
-        */
-        /*
-        $em = $this->getEntityManager();
-        $conn = $em->getConnection();
-        //$query = "[colocas aqui tu query]";
-        $consulta = $conn->prepare($personal_query);
-        $consulta->execute(); 
-        $queryResults = $consulta->fetchAll();
-        */
-        
-        $queryBuilder = $this->createQueryBuilder('t');
-        $queryBuilder
-            //->select('t.id', 't.driver_id', 't.date_trayecto', 't.time_at', 't.time_to', 't.passenger')
-            ->select('t.*')
-            ->from('trayecto', 't')
-            ->innerJoin('t', 'driver', 'd', 't.driver_id = d.id')
-            ->where('t.driver != :val0') // AND t.date_trayecto = :val1 AND t.time_at = :val2 AND t.time_to = :val3 AND d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.id = :val0)')
-            ->andWhere('t.date_trayecto = :val1')
-            ->andWhere('t.time_at = :val2')
-            ->andWhere('t.time_to = :val3')
-            ->andWhere('d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.if = :val0)')
+        // Return: Trayecto(s) same date_trayecto, same time_at, same time_to, same grupo, distinct driver
+        $em = $this->createQueryBuilder('t')
+            ->select('t')
+            ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
+            ->where('t.driver != :val0')
+            ->andwhere('t.date_trayecto = :val1')
+            ->andwhere('t.time_at = :val2')
+            ->andwhere('t.time_to = :val3')
+            ->andwhere('d.grupo = :val4')
             ->setParameters([
                 'val0' => $value['driver'],
                 'val1' => $value['date_trayecto'],
                 'val2' => $value['time_at'],
                 'val3' => $value['time_to'],
-            ])
-            ->getQuery()
-            //->getResult()
-        ;
-        dump($queryBuilder->getDQL());
-        /*
-        $query = $this->getEntityManager()
-            ->createQuery("SELECT * FROM trayecto t INNER JOIN driver d ON t.driver_id = d.id 
-            WHERE 
-                t.driver_id <> :val0 AND 
-                t.date_trayecto = :val1 AND
-                t.time_at = :val2 AND
-                t.time_to = :val3 AND
-                d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.id = :val0);
-            ")
-            ->setParameters([
-                'val0' => $value['driver'],
-                'val1' => $value['date_trayecto'],
-                'val2' => $value['time_at'],
-                'val3' => $value['time_to'],
+                'val4' => $value['grupo'],
             ]);
-            */
-        //return $queryResults;
-        return new Trayecto($queryBuilder);
+        //$gem = $em->getEntityManager();
+        //dump($gem);
+        //$dql = $em->getDql();
+        //dump($dql);
+        //$q = $em->getQuery();
+        //dump($q);
+        $query = $em->getQuery()->getArrayResult();
+        return $query;
+    }
+
+    /**
+    * @return Trayecto[] Returns an array of Trayecto objects
+    */
+    public function findAvailables($value): array
+    {
+        // Return: Trayecto(s) and email driver for date_trayecto >= now, same grupo, distinct driver
+        $em = $this->createQueryBuilder('t')
+            ->select('t', 'd.email')
+            ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
+            ->where('t.driver != :val0')
+            ->andwhere('t.date_trayecto >= :val1')            
+            ->andwhere('d.grupo = :val2')
+            ->setParameters([
+                'val0' => $value['driver'],
+                'val1' => $value['date_trayecto'],                
+                'val2' => $value['grupo'],
+            ]);
+        $query = $em->getQuery()->getArrayResult();
+        dump($query);
+        $return = [];
+        $i = 0;
+        foreach($query as $track){
+            $return[$i]["date_trayecto"] = $track[0]["date_trayecto"];
+            $return[$i]["time_at"] = $track[0]["time_at"];
+            $return[$i]["time_to"] = $track[0]["time_to"];
+            $return[$i]["email"] = $track["email"];
+            $i++;
+        }
+        dump($return);
+        return $query;
     }
 }

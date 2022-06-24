@@ -28,78 +28,98 @@
                     </div>
                 </div>
 
-                <div class="container">
-                    <div class="row">
-                        <div class="col-2">
-                            <div>Existen {{ trayectos|length }} trayectos</div>
-                            <table class="table table-success table-striped">
-                                <thead>
+                <div class="container-lg">                    
+                    <div class="container-sm">
+                        <h3>Tus trayectos</h3>
+                        <div>Existen {{ trayectos|length }} trayectos</div>
+                        <table class="table table-success table-striped">
+                            <thead>
+                                <tr>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Inicio</th>
+                                <th scope="col">Fin</th>
+                                <th scope="col">F</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for trayecto in trayectos %}
                                     <tr>
-                                    <th scope="col">Fecha</th>
-                                    <th scope="col">Inicio</th>
-                                    <th scope="col">Fin</th>
-                                    <th scope="col">F</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for trayecto in trayectos %}
-                                        <tr>
-                                            <th scope="row">
-                                                {{ trayecto.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
-                                            </th>
-                                            <td>
-                                                {{ trayecto.timeAt | format_time(pattern='HH:mm') }}
-                                            </td>
-                                            <td>
-                                                {{ trayecto.timeTo | format_time(pattern='HH:mm') }}
-                                            </td>
-                                            <td>
-                                                {% if trayecto.passenger == null %}
-                                                    <i class="fa fa-question text-danger"></i>
-                                                {% elseif trayecto.passenger == false %}
-                                                    <i class="fa fa-automobile text-primary"></i>
-                                                {% else %}
-                                                    <i class="fa fa-user text-success"></i>
-                                                {% endif %}
-                                            </td>
-                                        </tr>                                        
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                            <nav aria-label="...">
-                              <ul class="pagination">
-                                    <!-- Previous -->
-                                    {% if previous >= 0 %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ path('homepage', { offset:previous }) }}">Previous</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item disabled">
-                                            <a class="page-link">Previous</a>
-                                        </li>
-                                    {% endif %}
-                                    {% if (trayectos|length)/10 > 2 %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ path('homepage', { offset:next }) }}">{{ (next/10) }}</a>
-                                        </li>
-                                    {% endif %}
-                                    <!-- Next -->
-                                    {% if next < trayectos|length %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ path('homepage', { offset: next}) }}">Next</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item disabled">
-                                            <a class="page-link">Next</a>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                        </div>
-                        <div class="col-2">
-                        </div>
+                                        <th scope="row">
+                                            {{ trayecto.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
+                                        </th>
+                                        <td>
+                                            {{ trayecto.timeAt | format_time(pattern='HH:mm') }}
+                                        </td>
+                                        <td>
+                                            {{ trayecto.timeTo | format_time(pattern='HH:mm') }}
+                                        </td>
+                                        <td>
+                                            {% if trayecto.passenger == null %}
+                                                <i class="fa fa-question text-danger"></i>
+                                            {% elseif trayecto.passenger == false %}
+                                                <i class="fa fa-automobile text-primary"></i>
+                                            {% else %}
+                                                <i class="fa fa-user text-success"></i>
+                                            {% endif %}
+                                        </td>
+                                    </tr>                                        
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <nav aria-label="...">
+                            <ul class="pagination">
+                                <!-- Previous -->
+                                {% if previous >= 0 %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ path('homepage', { offset:previous }) }}">Previous</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <a class="page-link">Previous</a>
+                                    </li>
+                                {% endif %}
+                                {% if (trayectos|length)/10 > 2 %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ path('homepage', { offset:next }) }}">{{ (next/10) }}</a>
+                                    </li>
+                                {% endif %}
+                                <!-- Next -->
+                                {% if next < trayectos|length %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ path('homepage', { offset: next}) }}">Next</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <a class="page-link">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
                     </div>
-                </div>
+                    <div class="container-sm">
+                        <h3>Trayectos Disponibles</h3>
+                        <div class="container px-4">
+                            <div class="row gx-5">
+                                {% for key, value in disponibles %}                        
+                                <div class="col">
+                                    <div class="p-3 border bg-light">
+                                        <button type="button" class="btn btn-primary position-relative">
+                                            {{ value[0].date_trayecto | format_datetime('short', 'none', locale='fr') }}
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                {{ value[0].time_at | format_time(pattern='HH:mm') }}
+                                            </span>
+                                            <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                                                {{ value[0].time_to | format_time(pattern='HH:mm') }}
+                                            </span>
+                                        </button>                                
+                                        <i class="fa fa-user text-success ms-5"></i> <span class="badge bg-success">{{ value["email"] }}</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>                    
+                </div><!-- container -->
             {% endif %}
         </div>
     </section>
