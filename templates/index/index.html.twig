@@ -11,10 +11,17 @@
 {% block body %}
     <section class="container px-4 mt-5 mb-5">
         <div class="row gx-5">
-            {% if app.user %}
-                {{ app.user.userIdentifier }}
-                {{ grupo }}
-
+            {% if app.user %}            
+                <div class="container overflow-hidden">
+                    <div class="row gx-5">
+                        <div class="col mb-1">
+                            <div class="p-3 border bg-warning bg-gradient">{{ app.user.userIdentifier }}</div>
+                        </div>
+                        <div class="col mb-1">
+                            <div class="p-3 border text-white bg-secondary bg-gradient">{{ grupo }}</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="container">
                     <div class="row">
                         <div class="col">
@@ -103,7 +110,7 @@
                                 {% for key, value in disponibles %}                        
                                 <div class="col">
                                     <div class="p-3 border bg-light">
-                                        <button type="button" class="btn btn-primary position-relative">
+                                        <button type="button" class="btn btn-primary position-relative" onclick="location.href='{{ path("app_trayecto", {id: value[0].id}) }}'">
                                             {{ value[0].date_trayecto | format_datetime('short', 'none', locale='fr') }}
                                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                                 {{ value[0].time_at | format_time(pattern='HH:mm') }}

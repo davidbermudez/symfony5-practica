@@ -18,7 +18,7 @@ class TrayectoFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $fecha_actual = date("d-m-Y");
-        $builder
+        $builder            
             ->add('date_trayecto', null, [
                 'label' => 'Fecha',
                 'data' => new \DateTime(),

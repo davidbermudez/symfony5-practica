@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Date;
@@ -162,25 +164,31 @@ class IndexController extends AbstractController
         }
     }
 
-    public function buscaTrayectos($value): array
-    {
-        $em = $doctrine->getManager();
-        //$rsm = new ResultSetMapping();
-        //$sql = "SELECT t.* FROM trayecto t INNER JOIN driver d ON t.driver_id = d.id WHERE t.driver_id != :val0 AND t.date_trayecto = :val1 AND t.time_at = :val2 AND t.time_to = :val3 AND d.grupo_id = (SELECT e.grupo_id FROM driver e WHERE e.id = :val0)";
-        $sql = "SELECT t.* FROM App:Product t WHERE 1";
-        //$query = $this->entityManager->createNativeQuery($sql, $rsm);
-        $query = $em->createQuery($sql);
-        //$query->setParameters([
-            //'val0' => $value['driver'],
-            //'val1' => $value['date_trayecto'],
-            //'val2' => $value['time_at'],
-            //'val3' => $value['time_to'],
-        //]);
-        //$query->execute();
-        //dump($query->getResult());
-        $trayectos = $query->getResult();
-        dump($query);
-        dump($trayectos);
-        return $trayectos;
+    /**
+     * @Route("/trayecto/{id}", name="app_trayecto")
+     */
+    public function trayecto(
+        Request $request,
+        GrupoRepository $grupoRepository,        
+        Trayecto $trayecto
+    ){
+        $user = $this->getUser();
+        if ($user == null){
+            return $this->redirectToRoute('app_login');
+        } else {
+            $grupo = $user->getGrupo();
+            //
+            // verify before //
+            // - Driver in grupo
+            // - Trayecto date_trayecto >= now
+            dump($trayecto->getDriver()->getGrupo());
+            if($trayecto->getDriver()->getGrupo() != $grupo){
+                throw new Exception('No existe el trayecto indicado en su grupo');
+            }
+            return $this->render('index/trayecto.html.twig', [
+                'grupo' => $grupoRepository->find($grupo),
+                'trayecto' => $trayecto,
+            ]);
+        }
     }
 }

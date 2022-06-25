@@ -6,15 +6,44 @@
     <section class="container px-4 mt-5 mb-5">    
         <div class="row gx-5">
             {% if app.user %}
-                {{ app.user.userIdentifier }}
-                {{ grupo }}
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                        {{ form(trayecto_form) }}
+                <div class="container overflow-hidden">
+                    <div class="row gx-5">
+                        <div class="col mb-1">
+                            <div class="p-3 border bg-warning bg-gradient">{{ app.user.userIdentifier }}</div>
+                        </div>
+                        <div class="col mb-1">
+                            <div class="p-3 border text-white bg-secondary bg-gradient">{{ grupo }}</div>
                         </div>
                     </div>
+                </div>
+                <div class="container-lg">
+                    <div class="container-sm">
+                        <h3>Nuevo Trayecto</h3>
+                        <div class="row">
+                            <form>
+                            {{ form_start(trayecto_form) }}
+                                <div class="mb-3">
+                                    <label for="date_trayecto" class="form-label">Fecha</label><br/>
+                                    {{ form_widget(trayecto_form.date_trayecto, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <label for="time_at" class="form-label">Inicio</label><br/>
+                                        {{ form_widget(trayecto_form.time_at, {'attr': {'class': 'form-control'}}) }}
+                                    </div>
+                                    <div class="col">
+                                        <label for="time_to" class="form-label">Fin</label><br/>
+                                        {{ form_widget(trayecto_form.time_to, {'attr': {'class': 'form-control'}}) }}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_widget(trayecto_form.submit, {'attr': {'class': 'btn btn-primary'}}) }}                                    
+                                </div>
+                            {{ form_end(trayecto_form) }}
+                            </div>
+                        </div>
                     </div>
+                </div>
             {% endif %}
         </div>
     </section>
