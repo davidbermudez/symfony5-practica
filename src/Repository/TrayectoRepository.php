@@ -108,6 +108,7 @@ class TrayectoRepository extends ServiceEntityRepository
         return $query;
     }
 
+
     /**
     * @return Trayecto[] Returns an array of Trayecto objects
     */
@@ -119,24 +120,54 @@ class TrayectoRepository extends ServiceEntityRepository
             ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
             ->where('t.driver != :val0')
             ->andwhere('t.date_trayecto >= :val1')            
-            ->andwhere('d.grupo = :val2')
+            ->andwhere('d.grupo = :val2')            
             ->setParameters([
                 'val0' => $value['driver'],
                 'val1' => $value['date_trayecto'],                
                 'val2' => $value['grupo'],
             ]);
         $query = $em->getQuery()->getArrayResult();
-        dump($query);
+        //$query = $em->getQuery()->getResult();
+        //$query = $em->getQuery();
+        dump($em->getQuery()->getSQL());
         $return = [];
-        $i = 0;
-        foreach($query as $track){
-            $return[$i]["date_trayecto"] = $track[0]["date_trayecto"];
-            $return[$i]["time_at"] = $track[0]["time_at"];
-            $return[$i]["time_to"] = $track[0]["time_to"];
-            $return[$i]["email"] = $track["email"];
-            $i++;
+        $i = 0;        
+        foreach($query as $element){
+            $localizado = false;
+            foreach($element as $key){                
+                if(gettype($key)=="array"){
+                    // es un trayecto
+                    // Comprobar si ya está
+                    $date_trayecto = $key["date_trayecto"];
+                    $r = 0;
+                    foreach($return as $bucle){
+                        if($date_trayecto==$bucle["date_trayecto"]){
+                            if($key["time_at"]==$return[$r]["time_at"] &&
+                            $key["time_to"]==$return[$r]["time_to"]){
+                                $localizado = true;
+                                dump("SI");
+                            }
+                        }
+                        $r++;
+                    }
+                    if(!$localizado){
+                        $return[$i]["date_trayecto"] = $key["date_trayecto"];
+                        $return[$i]["time_at"] = $key["time_at"];
+                        $return[$i]["time_to"] = $key["time_to"];
+                        $return[$i]["emails"] = [];
+                        $j = $i;                        
+                    }
+                } else {
+                    dump($key);
+                    array_push($return[$j]["emails"], $key);
+                }
+                $i++;
+            }
         }
+
         dump($return);
-        return $query;
+        //return $query;
+        return $return;
     }
+
 }

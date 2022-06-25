@@ -22,25 +22,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                            <button type="button" class="btn btn-outline-primary btn-ln" onclick="location.href='{{ path('app_newTime') }}'">
-                                Nuevo Horario
-                            </button>
-                        </div>
-                        <div class="col">Column</div>
-                        <div class="col">Column</div>
-                        <div class="col">Column</div>
-                    </div>
-                </div>
-
                 <div class="container-lg">                    
                     <div class="container-sm">
-                        <h3>Trayectos Disponibles</h3>
+                        <h3>Trayecto Disponible</h3>
                         <div class="container px-4">
                             <div class="row gx-5">
-                                
+                                {% if datos_trayecto %}
+                                    {#{ dump(datos_trayecto) }#}
+                                    <div class="col">
+                                        <div class="p-3 border bg-light">                                            
+                                            <div class="h-100 badge position-relative ">
+                                                {{ datos_trayecto.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    {{ datos_trayecto.timeAt | format_time(pattern='HH:mm') }}
+                                                </span>
+                                                <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    {{ datos_trayecto.timeTo | format_time(pattern='HH:mm') }}
+                                                </span>
+                                            </div>    
+                                            <i class="fa fa-user text-success ms-5"></i> <span class="badge bg-success">{{ datos_trayecto.driver.email }}</span>
+                                        </div>
+                                    </div>                                    
+                                {% endif %}
                             </div>
                         </div>
                     </div>                    

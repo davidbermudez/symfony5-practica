@@ -73,7 +73,7 @@ class IndexController extends AbstractController
     public function newtime(
         Request $request, 
         GrupoRepository $grupoRepository,
-        TrayectoRepository $trayectoRepository)
+        TrayectoRepository $trayectoRepository): Response
     {
         $user = $this->getUser();
         if ($user == null){
@@ -89,6 +89,7 @@ class IndexController extends AbstractController
 
             // manejamos las respuestas del formulario
             $form->handleRequest($request);
+            dump($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 /* ******************************************  */
                 // verificar que no exista un trayecto igual ya guardado por este usuario
@@ -156,10 +157,16 @@ class IndexController extends AbstractController
                         ])
                     ]);
                 }
+            } else {
+                $this->addFlash(
+                    'danger',
+                    'Formulario no valido'
+                );
             }
+            dump($form);
             return $this->render('index/newtime.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
-                'trayecto_form' => $form->createView(),
+                'form' => $form->createView(),                
             ]);
         }
     }
@@ -180,6 +187,7 @@ class IndexController extends AbstractController
         if ($trayecto == null){
             throw new Exception('001: No existe el trayecto indicado en su grupo');
         }
+        // Verificamos el user
         $user = $this->getUser();
         if ($user == null){
             return $this->redirectToRoute('app_login');
@@ -190,12 +198,13 @@ class IndexController extends AbstractController
             // - Driver in grupo
             // - Trayecto date_trayecto >= now
             dump($trayecto->getDriver()->getGrupo());
+            dump($trayecto);
             if($trayecto->getDriver()->getGrupo() != $grupo){
                 throw new Exception('002: No existe el trayecto indicado en su grupo');
             }
             return $this->render('index/trayecto.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
-                'trayecto' => $trayecto,
+                'datos_trayecto' => $trayecto,
             ]);
         }
     }

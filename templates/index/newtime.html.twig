@@ -20,28 +20,27 @@
                     <div class="container-sm">
                         <h3>Nuevo Trayecto</h3>
                         <div class="row">
-                            <form>
-                            {{ form_start(trayecto_form) }}
+                            {{ form_errors(form)}}                            
+                            {{ form_start(form) }}
                                 <div class="mb-3">
                                     <label for="date_trayecto" class="form-label">Fecha</label><br/>
-                                    {{ form_widget(trayecto_form.date_trayecto, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_widget(form.date_trayecto, {'attr': {'class': 'form-control'}}) }}
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col">
                                         <label for="time_at" class="form-label">Inicio</label><br/>
-                                        {{ form_widget(trayecto_form.time_at, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_widget(form.time_at, {'attr': {'class': 'form-control'}}) }}
                                     </div>
                                     <div class="col">
                                         <label for="time_to" class="form-label">Fin</label><br/>
-                                        {{ form_widget(trayecto_form.time_to, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_widget(form.time_to, {'attr': {'class': 'form-control'}}) }}
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    {{ form_widget(trayecto_form.submit, {'attr': {'class': 'btn btn-primary'}}) }}                                    
+                                    {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary'}}) }}                                    
                                 </div>
-                            {{ form_end(trayecto_form) }}
-                            </div>
-                        </div>
+                            {{ form_end(form) }}
+                        </div>                        
                     </div>
                 </div>
             {% endif %}
