@@ -163,15 +163,23 @@ class IndexController extends AbstractController
             ]);
         }
     }
-
+    
     /**
      * @Route("/trayecto/{id}", name="app_trayecto")
      */
     public function trayecto(
         Request $request,
-        GrupoRepository $grupoRepository,        
-        Trayecto $trayecto
+        GrupoRepository $grupoRepository,
+        TrayectoRepository $trayectoRepository
     ){
+        // Verificamos que la id existe
+        $array = (array) $request->attributes;        
+        $id=$array["\x00*\x00parameters"]["id"];        
+        $trayecto = new Trayecto;
+        $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
+        if ($trayecto == null){
+            throw new Exception('001: No existe el trayecto indicado en su grupo');
+        }
         $user = $this->getUser();
         if ($user == null){
             return $this->redirectToRoute('app_login');
@@ -183,7 +191,7 @@ class IndexController extends AbstractController
             // - Trayecto date_trayecto >= now
             dump($trayecto->getDriver()->getGrupo());
             if($trayecto->getDriver()->getGrupo() != $grupo){
-                throw new Exception('No existe el trayecto indicado en su grupo');
+                throw new Exception('002: No existe el trayecto indicado en su grupo');
             }
             return $this->render('index/trayecto.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
