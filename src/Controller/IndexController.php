@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\GrupoRepository;
 use App\Repository\TrayectoRepository;
+use App\Repository\DriverRepository;
 use App\Entity\Driver;
 use App\Entity\Trayecto;
 use App\Form\TrayectoFormType;
@@ -190,7 +191,7 @@ class IndexController extends AbstractController
             return $this->redirectToRoute('app_login');
         } else {
             // Enviamos el trayecto de la id y además el resto de trayectos que coincidan en fecha, hora y grupo
-            $grupo = $user->getGrupo();            
+            $grupo = $user->getGrupo();
             //dump($trayecto->getDriver()->getGrupo());
             //dump($trayecto);
             if($trayecto->getDriver()->getGrupo() != $grupo){
@@ -212,5 +213,76 @@ class IndexController extends AbstractController
                 'otros' => $otros,
             ]);
         }
+    }
+
+    /**
+     * @Route("/passenger_accept/{id}/{driver}", name="app_passenger_accept")
+     */
+    public function passenger_accept(
+        Request $request,
+        GrupoRepository $grupoRepository,
+        TrayectoRepository $trayectoRepository,
+        DriverRepository $driverRepository
+    ): Response
+    {        
+        $array = (array) $request->attributes;
+        // Verificamos que la id existe
+        $id = $array["\x00*\x00parameters"]["id"];        
+        $trayecto = new Trayecto;
+        $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
+        if ($trayecto == null){
+            throw new Exception('001: No existe el trayecto indicado en su grupo');
+        }
+        // Verificamos que el pasajero existe
+        $driver = $array["\x00*\x00parameters"]["driver"];
+        dump($driver);
+        $pasajero = new Driver;
+        $pasajero = $driverRepository->findOneBy(['id' => $driver]);
+        if ($pasajero == null){
+            throw new Exception('001: No existe el pasajero indicado en su grupo');
+        }
+        // Verificamos el user
+        $user = $this->getUser();
+        if ($user == null){
+            return $this->redirectToRoute('app_login');
+        } else {
+            $grupo = $user->getGrupo();            
+            if($trayecto->getDriver()->getGrupo() != $grupo){
+                throw new Exception('002: No existe el trayecto indicado en su grupo');
+            }
+            // Modificamos base de datos            
+            // Buscamos un trayecto guardado por este usuario con lo mismos datos de fecha y horas
+            // Si existe, marcamos el campo passenger como false
+            // Si no existe, lo creamos y marcamos el campo passenger como false
+            $myTrayecto = new Trayecto();
+            $myTrayecto = $trayectoRepository->findOneBy([
+                'driver' => $user,
+                'date_trayecto' => $trayecto->getDateTrayecto(),
+                'time_at' => $trayecto->getTimeAt(),
+                'time_to' => $trayecto->getTimeTo(),
+            ]);
+            if ($myTrayecto == null){
+                // Crearlo
+                $myTrayecto = new Trayecto();
+                $myTrayecto->setDriver($user);
+                $myTrayecto->setDateTrayecto($trayecto->getDateTrayecto());
+                $myTrayecto->setTimeAt($trayecto->getTimeAt());
+                $myTrayecto->setTimeTo($trayecto->getTimeTo());
+                $myTrayecto->setPassenger(false);
+            } else {
+                $myTrayecto->setPassenger(false);
+            }
+            $this->entityManager->persist($myTrayecto);
+            $this->entityManager->flush();
+            // Y cambiar el trayecto actual para que el usuario driver passenger sea true
+            $trayecto->setPassenger(true);
+            $this->entityManager->persist($trayecto);
+            $this->entityManager->flush();
+            // Notificar al usuario driver TO-DO
+        }
+        return $this->render('index/passenger_accept.html.twig', [
+            'grupo' => $grupoRepository->find($grupo),
+            'trayecto' => $trayectoRepository->find($id),
+        ]);
     }
 }

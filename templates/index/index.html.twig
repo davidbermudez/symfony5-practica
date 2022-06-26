@@ -48,28 +48,28 @@
                                 <th scope="col">F</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            {% for trayecto in trayectos %}
-                                    <tr>
-                                        <th scope="row">
-                                            {{ trayecto.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
-                                        </th>
-                                        <td>
-                                            {{ trayecto.timeAt | format_time(pattern='HH:mm') }}
-                                        </td>
-                                        <td>
-                                            {{ trayecto.timeTo | format_time(pattern='HH:mm') }}
-                                        </td>
-                                        <td>
-                                            {% if trayecto.passenger == null %}
-                                                <i class="fa fa-question text-danger"></i>
-                                            {% elseif trayecto.passenger == false %}
-                                                <i class="fa fa-automobile text-primary"></i>
-                                            {% else %}
-                                                <i class="fa fa-user text-success"></i>
-                                            {% endif %}
-                                        </td>
-                                    </tr>                                        
+                            <tbody>                            
+                            {% for trayecto in trayectos %}                            
+                                <tr>
+                                    <th scope="row">                                        
+                                        {{ trayecto.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
+                                    </th>
+                                    <td>
+                                        {{ trayecto.timeAt | format_time(pattern='HH:mm') }}
+                                    </td>
+                                    <td>
+                                        {{ trayecto.timeTo | format_time(pattern='HH:mm') }}
+                                    </td>
+                                    <td>                                        
+                                        {% if trayecto.passenger is null %}
+                                            <i class="fa fa-question text-danger"></i>
+                                        {% elseif trayecto.passenger == false %}
+                                            <i class="fa fa-automobile text-primary"></i>
+                                        {% else %}
+                                            <i class="fa fa-user text-success"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>                                        
                             {% endfor %}
                             </tbody>
                         </table>
@@ -104,12 +104,12 @@
                         </nav>
                     </div>
                     <div class="container-sm">
-                        <h3>Trayectos Disponibles</h3>
+                        <h3>Próximos Trayectos</h3>
                         <div class="container px-4">
-                            <div class="row gx-5">
+                            <div class="d-flex flex-column mb-3">
                                 {% for trayectos in disponibles %}
-                                    <div class="col">
-                                        <div class="p-3 border bg-light">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="d-flex justify-content-evenly container-sm p-3 border bg-light">
                                             <button type="button" class="btn btn-primary position-relative" onclick='location.href = "{{ path('app_trayecto', {id: trayectos.id}) }}"'>
                                                 {{ trayectos.date_trayecto | format_datetime('short', 'none', locale='fr') }}
                                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -119,9 +119,11 @@
                                                     {{ trayectos.time_to | format_time(pattern='HH:mm') }}
                                                 </span>
                                             </button>
-                                            {% for email in trayectos.emails %}
-                                                <i class="fa fa-user text-success ms-5"></i> <span class="badge bg-success">{{ email }}</span>
-                                            {% endfor %}
+                                            <div class="col">
+                                                {% for email in trayectos.emails %}
+                                                    <i class="fa fa-user text-success ms-5"></i> <span class="badge bg-success">{{ email }}</span>
+                                                {% endfor %}
+                                            </div>
                                         </div>
                                     </div>                                    
                                 {% endfor %}

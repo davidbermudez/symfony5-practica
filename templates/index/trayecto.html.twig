@@ -31,7 +31,7 @@
                                     {#{ dump(datos_trayecto) }#}
                                     <div class="col">
                                         <div class="p-3 border bg-light">                                            
-                                            <div class="h-100 badge position-relative ">
+                                            <div class="h-100 badge bg-secondary position-relative ">
                                                 {{ datos_trayecto.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
                                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                                     {{ datos_trayecto.timeAt | format_time(pattern='HH:mm') }}
@@ -41,6 +41,12 @@
                                                 </span>
                                             </div>    
                                             <i class="fa fa-user text-success ms-5"></i> <span class="badge bg-success">{{ datos_trayecto.driver.email }}</span>
+                                            <button type="button" class="btn btn-primary position-relative" onclick='location.href = "{{ path('app_passenger_accept', {id: datos_trayecto.id, driver: datos_trayecto.driver.id }) }}"'>
+                                                Aceptar Pasajero
+                                            </button>
+                                            <button type="button" class="btn btn-danger position-relative" onclick='location.href = "{{ path('app_trayecto', {id: datos_trayecto.id}) }}"'>
+                                                Solicitar Plaza
+                                            </button>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -49,7 +55,7 @@
                                 {% for track in otros %}                                    
                                     <div class="col">
                                         <div class="p-3 border bg-light">
-                                            <div class="h-100 badge position-relative ">
+                                            <div class="h-100 badge bg-secondary position-relative ">
                                                 {{ track.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
                                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                                     {{ track.timeAt | format_time(pattern='HH:mm') }}
