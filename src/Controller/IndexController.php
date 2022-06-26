@@ -84,12 +84,9 @@ class IndexController extends AbstractController
             // creamos formulario y se lo pasamos a la plantilla
             $trayecto = new Trayecto();
             $form = $this->createForm(TrayectoFormType::class, $trayecto);
-            // intento de enviar valores por defecto TO-DO
-            // $form->setData('hola');
-
             // manejamos las respuestas del formulario
             $form->handleRequest($request);
-            dump($request);
+            //dump($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 /* ******************************************  */
                 // verificar que no exista un trayecto igual ya guardado por este usuario
@@ -152,18 +149,18 @@ class IndexController extends AbstractController
                         'next' => min(count($paginator), $offset + TrayectoRepository::PAGINATOR_PER_PAGE),
                         'disponibles' => $trayectoRepository->findAvailables([
                             'driver' => $user,
-                            'date_trayecto' => date('Y-m-d'),                            
+                            'date_trayecto' => date('Y-m-d'),
                             'grupo' => $grupo,
                         ])
                     ]);
                 }
-            } else {
+            } elseif ($form->isSubmitted() && !$form->isValid()) {
                 $this->addFlash(
                     'danger',
-                    'Formulario no valido'
+                    'Los datos introducidos no son válidos'
                 );
             }
-            dump($form);
+            //dump($form);
             return $this->render('index/newtime.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
                 'form' => $form->createView(),                
@@ -192,19 +189,27 @@ class IndexController extends AbstractController
         if ($user == null){
             return $this->redirectToRoute('app_login');
         } else {
-            $grupo = $user->getGrupo();
-            //
-            // verify before //
-            // - Driver in grupo
-            // - Trayecto date_trayecto >= now
-            dump($trayecto->getDriver()->getGrupo());
-            dump($trayecto);
+            // Enviamos el trayecto de la id y además el resto de trayectos que coincidan en fecha, hora y grupo
+            $grupo = $user->getGrupo();            
+            //dump($trayecto->getDriver()->getGrupo());
+            //dump($trayecto);
             if($trayecto->getDriver()->getGrupo() != $grupo){
                 throw new Exception('002: No existe el trayecto indicado en su grupo');
             }
+            $otros = new Trayecto();
+            $otros = $trayectoRepository->findTrayectos3([
+                'driver' => $user,
+                'date_trayecto' => $trayecto->getDateTrayecto()->format('Y-m-d'),
+                'time_at' => $trayecto->getTimeAt()->format('H:i:s'),
+                'time_to' => $trayecto->getTimeTo()->format('H:i:s'),
+                'grupo' => $grupo,
+                'exclude' => $id
+            ]);
+            dump($otros);
             return $this->render('index/trayecto.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
                 'datos_trayecto' => $trayecto,
+                'otros' => $otros,
             ]);
         }
     }

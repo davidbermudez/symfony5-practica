@@ -83,6 +83,8 @@ class TrayectoRepository extends ServiceEntityRepository
     public function findTrayectos2($value): array
     {
         // Return: Trayecto(s) same date_trayecto, same time_at, same time_to, same grupo, distinct driver
+        dump($value);
+        dump($value['driver']);
         $em = $this->createQueryBuilder('t')
             ->select('t')
             ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
@@ -102,16 +104,53 @@ class TrayectoRepository extends ServiceEntityRepository
         //dump($gem);
         //$dql = $em->getDql();
         //dump($dql);
-        //$q = $em->getQuery();
-        //dump($q);
+        $q = $em->getQuery()->getSQL();
+        dump($q);
         $query = $em->getQuery()->getArrayResult();
+        dump($query);
         return $query;
     }
 
-
-    /**
+/**
     * @return Trayecto[] Returns an array of Trayecto objects
     */
+    public function findTrayectos3($value): array
+    {
+        // Return: Trayecto(s) same date_trayecto, same time_at, same time_to, same grupo, distinct driver, and distinct id trayecto        
+        $em = $this->createQueryBuilder('t')
+            ->select('t')
+            ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
+            ->where('t.driver != :val0')
+            ->andwhere('t.date_trayecto = :val1')
+            ->andwhere('t.time_at = :val2')
+            ->andwhere('t.time_to = :val3')
+            ->andwhere('d.grupo = :val4')
+            ->andwhere('t.id != :val5')
+            ->setParameters([
+                'val0' => $value['driver'],
+                'val1' => $value['date_trayecto'],
+                'val2' => $value['time_at'],
+                'val3' => $value['time_to'],
+                'val4' => $value['grupo'],
+                'val5' => $value['exclude'],
+            ]);
+        //$gem = $em->getEntityManager();
+        //dump($gem);
+        //$dql = $em->getDql();
+        //dump($dql);
+        //$q = $em->getQuery()->getSQL();
+        //dump($q);
+        //$query = $em->getQuery()->getArrayResult();
+        $query = new Trayecto;
+        $query = $em->getQuery()->getResult();
+
+        dump($query);
+        //$query2 = $em->getQuery()->getArrayResult();
+        //dump($query2);
+
+        return $query;
+    }
+    
     public function findAvailables($value): array
     {
         // Return: Trayecto(s) and email driver for date_trayecto >= now, same grupo, distinct driver
@@ -141,9 +180,9 @@ class TrayectoRepository extends ServiceEntityRepository
                     $date_trayecto = $key["date_trayecto"];
                     $r = 0;
                     foreach($return as $bucle){
-                        if($date_trayecto==$bucle["date_trayecto"]){
-                            if($key["time_at"]==$return[$r]["time_at"] &&
-                            $key["time_to"]==$return[$r]["time_to"]){
+                        if($date_trayecto == $bucle["date_trayecto"]){
+                            if($key["time_at"] == $return[$r]["time_at"] &&
+                            $key["time_to"] == $return[$r]["time_to"]){
                                 $localizado = true;
                                 dump("SI");
                             }
@@ -151,17 +190,22 @@ class TrayectoRepository extends ServiceEntityRepository
                         $r++;
                     }
                     if(!$localizado){
+                        $return[$i]["id"] = $key["id"];
                         $return[$i]["date_trayecto"] = $key["date_trayecto"];
                         $return[$i]["time_at"] = $key["time_at"];
                         $return[$i]["time_to"] = $key["time_to"];
                         $return[$i]["emails"] = [];
-                        $j = $i;                        
+                        $j = $i;
+                    } else {
+                        $j = 0;
                     }
-                } else {
-                    dump($key);
+                    // solo sumamos cuando procesamos el array
+                    $i++;
+                } else {                    
                     array_push($return[$j]["emails"], $key);
+                    dump($j, $key);
                 }
-                $i++;
+                
             }
         }
 

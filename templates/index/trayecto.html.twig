@@ -42,10 +42,28 @@
                                             </div>    
                                             <i class="fa fa-user text-success ms-5"></i> <span class="badge bg-success">{{ datos_trayecto.driver.email }}</span>
                                         </div>
-                                    </div>                                    
+                                    </div>
                                 {% endif %}
                             </div>
-                        </div>
+                            <div class="row gx-5">
+                                {% for track in otros %}                                    
+                                    <div class="col">
+                                        <div class="p-3 border bg-light">
+                                            <div class="h-100 badge position-relative ">
+                                                {{ track.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    {{ track.timeAt | format_time(pattern='HH:mm') }}
+                                                </span>
+                                                <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    {{ track.timeTo | format_time(pattern='HH:mm') }}
+                                                </span>
+                                            </div>                                            
+                                            <i class="fa fa-user text-success ms-5"></i> <span class="badge bg-success">{{ track.driver.email }}</span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>                        
                     </div>                    
                 </div><!-- container -->
             {% endif %}

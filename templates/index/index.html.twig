@@ -110,7 +110,7 @@
                                 {% for trayectos in disponibles %}
                                     <div class="col">
                                         <div class="p-3 border bg-light">
-                                            <button type="button" class="btn btn-primary position-relative" onclick="">
+                                            <button type="button" class="btn btn-primary position-relative" onclick='location.href = "{{ path('app_trayecto', {id: trayectos.id}) }}"'>
                                                 {{ trayectos.date_trayecto | format_datetime('short', 'none', locale='fr') }}
                                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                                     {{ trayectos.time_at | format_time(pattern='HH:mm') }}
