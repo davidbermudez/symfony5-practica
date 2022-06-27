@@ -37,7 +37,8 @@ class IndexController extends AbstractController
     public function index(
         Request $request,
         GrupoRepository $grupoRepository, 
-        TrayectoRepository $trayectoRepository): Response
+        TrayectoRepository $trayectoRepository,
+        DriverRepository $driverRepository): Response
     {        
         $user = $this->getUser();
         if ($user == null){
@@ -53,17 +54,26 @@ class IndexController extends AbstractController
 
             $offset = max(0, $request->query->getInt('offset', 0));
             $paginator = $trayectoRepository->getTrayectoPaginator($user, $offset);
-            
+            $disponibles = $trayectoRepository->findAvailables([
+                'driver' => $user,
+                'date_trayecto' => date('Y-m-d'),                            
+                'grupo' => $grupo,
+            ]);
+            foreach($disponibles as $key => $value){
+                foreach($value as $kkey => $vvalue)                    
+                    if($kkey == "drivers"){
+                        foreach($vvalue as $kkkey => $vvvalue){
+                            $disponibles[$key][$kkey][$kkkey] = $driverRepository->findOneBy(["id" => $vvvalue]);
+                        }
+                    }
+            }
+            dump($disponibles);
             return $this->render('index/index.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
                 'trayectos' => $paginator,
                 'previous' => $offset - TrayectoRepository::PAGINATOR_PER_PAGE,
                 'next' => min(count($paginator), $offset + TrayectoRepository::PAGINATOR_PER_PAGE),
-                'disponibles' => $trayectoRepository->findAvailables([
-                    'driver' => $user,
-                    'date_trayecto' => date('Y-m-d'),                            
-                    'grupo' => $grupo,
-                ])
+                'disponibles' => $disponibles,
             ]);
         }
     }
@@ -143,16 +153,17 @@ class IndexController extends AbstractController
                     // Regresamos a homepage
                     $offset = max(0, $request->query->getInt('offset', 0));
                     $paginator = $trayectoRepository->getTrayectoPaginator($user, $offset);
+                    $disponibles = $trayectoRepository->findAvailables([
+                        'driver' => $user,
+                        'date_trayecto' => date('Y-m-d'),
+                        'grupo' => $grupo,
+                    ]);
                     return $this->render('index/index.html.twig', [
                         'grupo' => $grupoRepository->find($grupo),
                         'trayectos' => $paginator,
                         'previous' => $offset - TrayectoRepository::PAGINATOR_PER_PAGE,
                         'next' => min(count($paginator), $offset + TrayectoRepository::PAGINATOR_PER_PAGE),
-                        'disponibles' => $trayectoRepository->findAvailables([
-                            'driver' => $user,
-                            'date_trayecto' => date('Y-m-d'),
-                            'grupo' => $grupo,
-                        ])
+                        'disponibles' => $disponibles,
                     ]);
                 }
             } elseif ($form->isSubmitted() && !$form->isValid()) {

@@ -155,7 +155,7 @@ class TrayectoRepository extends ServiceEntityRepository
     {
         // Return: Trayecto(s) and email driver for date_trayecto >= now, same grupo, distinct driver
         $em = $this->createQueryBuilder('t')
-            ->select('t', 'd.email')
+            ->select('t', 'd.id')
             ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
             ->where('t.driver != :val0')
             ->andwhere('t.date_trayecto >= :val1')            
@@ -183,8 +183,7 @@ class TrayectoRepository extends ServiceEntityRepository
                         if($date_trayecto == $bucle["date_trayecto"]){
                             if($key["time_at"] == $return[$r]["time_at"] &&
                             $key["time_to"] == $return[$r]["time_to"]){
-                                $localizado = true;
-                                dump("SI");
+                                $localizado = true;                                
                             }
                         }
                         $r++;
@@ -194,18 +193,17 @@ class TrayectoRepository extends ServiceEntityRepository
                         $return[$i]["date_trayecto"] = $key["date_trayecto"];
                         $return[$i]["time_at"] = $key["time_at"];
                         $return[$i]["time_to"] = $key["time_to"];
-                        $return[$i]["emails"] = [];
+                        $return[$i]["drivers"] = [];                        
                         $j = $i;
                     } else {
                         $j = 0;
                     }
                     // solo sumamos cuando procesamos el array
                     $i++;
-                } else {                    
-                    array_push($return[$j]["emails"], $key);
-                    dump($j, $key);
+                } elseif (gettype($key)=="integer") {                    
+                    array_push($return[$j]["drivers"], $key);
                 }
-                
+                dump($j, $key);                
             }
         }
 

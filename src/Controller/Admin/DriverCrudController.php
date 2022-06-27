@@ -43,10 +43,16 @@ class DriverCrudController extends AbstractCrudController
         $driver = new Driver();        
         // mismo grupo que admin
         $driver->setGrupo($usuario->getGrupo());
+        // valores por defecto
+        $roles = array("ROLES_USER", "ROLES_DRIVER");
+        $driver->setRoles($roles);
+        $driver->setAvatar('default.png');
         // contraseña hasheada
         $passPlain = date('Ymdgis');
         //$driver->setPassword($this->hashPassDriver($driver, $encoder));
         $driver->setPassword($this->encoder->encodePassword($driver, $passPlain));
+        
+
         return $driver;
     }
 
