@@ -125,7 +125,10 @@
                                             <div class="col">                                            
                                                 <section class="avatars">
                                                 {% for users in trayectos["drivers"] %}
-                                                    <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.email }}">
+                                                    {% if users.avatar %}
+                                                        <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.email }}">
+                                                    {% else %}
+                                                        <img src="/images/avatars/default.png" alt="{{ users.email }}">
                                                 {% endfor %}
                                                 </section>
                                             </div>
