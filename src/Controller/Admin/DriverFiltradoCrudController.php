@@ -37,7 +37,7 @@ class DriverFiltradoCrudController extends DriverCrudController
         FilterCollection $filters): QueryBuilder
     {        
         $usuario = $this->getUser();
-        dump($usuario);
+        //dump($usuario);
         $result = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $result            
             ->andWhere('entity.grupo = :grupo')

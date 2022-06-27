@@ -67,7 +67,7 @@ class IndexController extends AbstractController
                         }
                     }
             }
-            dump($disponibles);
+            //dump($disponibles);
             return $this->render('index/index.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
                 'trayectos' => $paginator,
@@ -115,7 +115,7 @@ class IndexController extends AbstractController
                     'time_at' => $time_at,
                     'time_to' => $time_to,
                 ]);
-                dump($verificando_trayecto);
+                //dump($verificando_trayecto);
                 /* ******************************************  */
                 if($verificando_trayecto){
                     //
@@ -142,7 +142,7 @@ class IndexController extends AbstractController
                         'time_to' => $form['time_to']->getData()->format('H:i:s'),
                         'grupo' => $grupo,
                     ]);
-                    dump($buscando_iguales);
+                    //dump($buscando_iguales);
                     if($buscando_iguales){
                         //
                         $this->addFlash(
@@ -217,7 +217,7 @@ class IndexController extends AbstractController
                 'grupo' => $grupo,
                 'exclude' => $id
             ]);
-            dump($otros);
+            //dump($otros);
             return $this->render('index/trayecto.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
                 'datos_trayecto' => $trayecto,
@@ -246,7 +246,7 @@ class IndexController extends AbstractController
         }
         // Verificamos que el pasajero existe
         $driver = $array["\x00*\x00parameters"]["driver"];
-        dump($driver);
+        //dump($driver);
         $pasajero = new Driver;
         $pasajero = $driverRepository->findOneBy(['id' => $driver]);
         if ($pasajero == null){

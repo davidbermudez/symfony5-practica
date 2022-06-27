@@ -74,7 +74,7 @@ EOF
                     $photo->move($photoDir, $filename);
                 } catch (FileException $e) {
                     // unable to upload the photo, give up
-                    dump($e);
+                    //dump($e);
                 }
                 $comment->setPhotoFilename($filename);
             }

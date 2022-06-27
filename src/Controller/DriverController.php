@@ -36,7 +36,7 @@ class DriverController extends AbstractController
             $grupo = $user->getGrupo();
             $form = $this->createForm(DriverFormType::class, $user);
             // manejamos las respuestas del formulario
-            dump($request);
+            //dump($request);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 if($avatar = $form['avatar']->getData()){
@@ -44,10 +44,10 @@ class DriverController extends AbstractController
                     $filename = bin2hex(random_bytes(6)).'.'.$avatar->guessExtension();
                     try {
                         $avatar->move($photoDir, $filename);
-                        dump($photoDir);
+                        //dump($photoDir);
                     } catch (FileException $e) {
                         // unable to upload the photo, give up
-                        dump($e);
+                        //dump($e);
                     }
                     $user->setAvatar($filename);
                 }

@@ -83,8 +83,8 @@ class TrayectoRepository extends ServiceEntityRepository
     public function findTrayectos2($value): array
     {
         // Return: Trayecto(s) same date_trayecto, same time_at, same time_to, same grupo, distinct driver
-        dump($value);
-        dump($value['driver']);
+        //dump($value);
+        //dump($value['driver']);
         $em = $this->createQueryBuilder('t')
             ->select('t')
             ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
@@ -105,9 +105,9 @@ class TrayectoRepository extends ServiceEntityRepository
         //$dql = $em->getDql();
         //dump($dql);
         $q = $em->getQuery()->getSQL();
-        dump($q);
+        //dump($q);
         $query = $em->getQuery()->getArrayResult();
-        dump($query);
+        //dump($query);
         return $query;
     }
 
@@ -144,7 +144,7 @@ class TrayectoRepository extends ServiceEntityRepository
         $query = new Trayecto;
         $query = $em->getQuery()->getResult();
 
-        dump($query);
+        //dump($query);
         //$query2 = $em->getQuery()->getArrayResult();
         //dump($query2);
 
@@ -168,7 +168,7 @@ class TrayectoRepository extends ServiceEntityRepository
         $query = $em->getQuery()->getArrayResult();
         //$query = $em->getQuery()->getResult();
         //$query = $em->getQuery();
-        dump($em->getQuery()->getSQL());
+        //dump($em->getQuery()->getSQL());
         $return = [];
         $i = 0;        
         foreach($query as $element){
@@ -203,11 +203,11 @@ class TrayectoRepository extends ServiceEntityRepository
                 } elseif (gettype($key)=="integer") {                    
                     array_push($return[$j]["drivers"], $key);
                 }
-                dump($j, $key);                
+                //dump($j, $key);                
             }
         }
 
-        dump($return);
+        //dump($return);
         //return $query;
         return $return;
     }
