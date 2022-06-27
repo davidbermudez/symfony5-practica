@@ -8,6 +8,7 @@
 /public/images/uploads/
 /var/
 /vendor/
+/migrations/
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
