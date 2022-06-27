@@ -1,17 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js" lang="en">
     <head>
-        <meta charset="UTF-8">
+        <meta charset="utf-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+        <!-- <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">-->
+        <!-- mobile specific metas
+        ================================================== -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- CSS
+        ================================================== -->
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href="/css/vendor.css">
+        <link rel="stylesheet" href="/css/main.css">
+
+        <!-- script
+        ================================================== -->
+        <script src="/js/modernizr.js"></script>
+        <script src="/js/pace.min.js"></script>
+
         {% block stylesheets %}
             <!-- Bootstrap -->
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
         {% endblock %}
-        <!-- web-fonts -->
+        <!-- web-fonts 
         <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,500' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>        
+        <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> -->
         
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -19,99 +32,165 @@
         <![endif]-->
 
     </head>
-    <body>
-        <div id="main-wrapper">            
-            <div class="content-wrapper">                
-                <!-- nav -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-success bg-gradient">
-                    <div class="container-fluid">
-                        <a class="navbar-brand" href="{{ path('homepage') }}">
-                            <img src="/images/compartecoche.png" width="75" alt="">                            
-                        </a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                                <li class="nav-item">
-                                    <a class="nav-link text-warning" href="{{ path('homepage') }}">Inicio</a>
-                                </li>
-                                <li class="nav-item">
-                                {% if app.user %}
-                                    <a class="nav-link text-warning" href="{{ path('app_logout') }}">Logout</a>
-                                {% else %}
-                                    <a class="nav-link text-warning" href="{{ path('app_login') }}">Login</a>
-                                {% endif %}
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-warning" href="{{ path('app_contact') }}">Contacto</a>
-                                </li>                                                                            
-                            </ul>                                
-                        </div>
-                        <!-- .navbar-collapse -->
-                    </div>
-                    <!-- . container-fluid -->
-                </nav>
-                <!-- .nav -->
-                <!-- message_flash -->
-                {% for label, messages in app.flashes %}
-                    <div class="container-fluid">
-                        {% for message in messages %}
-                            <div class="alert alert-{{label}} alert-dismissible fade show mt-2 mb-2" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>        
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-                <!-- .message_flash -->
-                {% block body %}{% endblock %}
-                <!--
-                <div id="x-corp-carousel" class="carousel slide hero-slide hidden-xs" data-ride="carousel">
-                </div>
-                <!-- #x-corp-carousel-->
 
-                <!--
-                <section class="x-services ptb-100 gray-bg">
-                </section>
-                <!-- .x-services -->
-                
-                <!--
-                <section class="x-features">
-                </section>
-                <!-- .x-features -->
-
-                <!--
-                <section class="team ptb-100">
-                </section>
-                <!-- .team -->
-
-                <footer class="footer bg-success bg-gradient p-2 text-white fixed-bottom" style="--bs-bg-opacity: .5;">
-
-                    <div class="copyright-section">
-                        <div class="container clearfix">
-                            <span class="copytext">
-                                Copyright &copy; 2022 | Designed And Developed By: <strong style="color: #fd7e14;">@DavidBermudezTW</strong>
-                            </span>                            
-                        
-                        </div>
-                        <!-- .container -->
-                    
-                    </div>
-                    <!-- .copyright-section -->
-                
-                </footer>
-                <!-- .footer -->
-            
+    <body id="top">
+        <!-- preloader
+        ================================================== -->
+        <div id="preloader">
+            <div id="loader" class="dots-jump">
+                <div></div>
+                <div></div>
+                <div></div>
             </div>
-            <!-- .content-wrapper -->            
-                
         </div>
-        <!-- #main-wrapper -->
+
+        <!-- header 
+        ================================================== -->
+        <header class="s-header">
+
+            <div class="row">
+                <div class="header-logo">
+                    <a class="site-logo" href="{{ path('homepage') }}">
+                        <img src="/images/compartecoche.png" alt="Homepage">
+                    </a>
+                </div>
         
+                <nav class="header-nav-wrap">
+                    <ul class="header-main-nav">
+                        <li class="current"><a class="smoothscroll" href="{{ path('homepage') }}" title="Inicio">Inicio</a></li>
+                        {% if app.user %}
+                            <li><a class="smoothscroll" href="{{ path('app_logout') }}" title="Logout">Logout</a></li>
+                        {% else %}
+                            <li><a class="smoothscroll" href="{{ path('app_login') }}" title="Login">Login</a></li>
+                        {% endif %}
+                        <li><a class="smoothscroll" href="{{ path('app_contact') }}" title="Contact">Contacto</a></li>
+                    </ul>
+        
+                    <div class="header-cta">
+                        <a href="{{ path('app_contact') }}" class="btn btn--primary header-cta__btn smoothscroll">Contacto</a>
+                    </div>
+                </nav> <!-- end header-nav-wrap -->
+        
+                <a class="header-menu-toggle" href="#"><span>Menu</span></a>
+            </div>
+
+        </header> <!-- end header -->
+
+        <!-- message_flash -->
+        {% for label, messages in app.flashes %}
+            <div class="container-fluid">
+                {% for message in messages %}
+                    <div class="alert alert-{{label}} alert-dismissible fade show mt-2 mb-2" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>        
+                {% endfor %}
+            </div>
+        {% endfor %} <!-- end message_flash -->
+
+        {% block body %}{% endblock %}
+        
+        <footer class="s-footer footer">
+            <div class="row section-header align-center">
+                <div class="col-full">
+                    <h1 class="display-1">
+                        Let's Stay In Touch.
+                    </h1>
+                    <p class="lead">
+                    Subscribe for updates, special offers, and other amazing stuff.
+                    </p>
+                </div>
+            </div> <!-- end section-header -->
+            <div class="row footer__top">
+
+                <div class="col-full footer__subscribe end">
+                    <div class="subscribe-form">
+                        <form id="mc-form" class="group" novalidate="true">
+
+                            <input type="email" value="" name="EMAIL" class="email" id="mc-email" placeholder="Email Address" required="">
+                
+                            <input type="submit" name="subscribe" value="Sign Up">
+                
+                            <label for="mc-email" class="subscribe-message"></label>
+                
+                        </form>
+                    </div>
+                </div>
+
+            </div> <!-- end footer__top -->
+
+            <div class="row footer__bottom">
+
+                <div class="footer__about col-five tab-full left">
+
+                    <h4>About Kairos.</h4>
+
+                    <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed 
+                    do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco 
+                    laboris nisi ut aliquip ex consectetur adipisicing elit do eiusmod tempor.
+                    </p>
+
+                    <ul class="footer__social">
+                        <li><a href="#0"><i class="fab fa-facebook-f" aria-hidden="true"></i></a></li>
+                        <li><a href="#0"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
+                        <li><a href="#0"><i class="fab fa-instagram" aria-hidden="true"></i></a></li>
+                    </ul>
+                </div>
+
+                <div class="col-five md-seven tab-full right end">
+                    <div class="row">
+
+                        <div class="footer__site-links col-five mob-full">
+                            <h4>Site links.</h4>
+
+                            <ul class="footer__site-links">
+                                <li><a href="#home" class="smoothscroll">Intro</a></li>
+                                <li><a href="#about" class="smoothscroll">About</a></li>
+                                <li><a href="#features" class="smoothscroll">Features</a></li>
+                                <li><a href="#pricing" class="smoothscroll">Pricing</a></li>
+                                <li><a href="#download" class="smoothscroll">Download</a></li>
+                                <li><a href="#0">Privacy Policy</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="footer__contact col-seven mob-full">
+                            <h4>Contact Us.</h4>
+
+                            <p>
+                            Phone: (+63) 555 1212 <br>
+                            Fax: (+63) 555 0100
+                            </p>
+                            <p>
+                            Need help or have a question? Contact us at: <br>
+                            <a href="mailto:#0" class="footer__mail-link">support@kairos.com</a>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-full ss-copyright">
+                    <span>&copy; Copyright &copy; 2022</span> 
+                    <span>Designed And Developed By: <a href="https://twitter.com/DavidBermudeTW/">@DavidBermudezTW</a></span>
+                </div>
+
+            </div> <!-- end footer__bottom -->
+            <div class="go-top">
+                <a class="smoothscroll" title="Back to Top" href="#top"></a>
+            </div>
+
+        </footer> <!-- end s-footer -->
+
         {% block javascripts %}
-            <!-- Script -->
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+            <!-- script
+            ================================================== -->            
+            <script src="/js/jquery-3.2.1.min.js"></script>
+            <script src="/js/plugins.js"></script>
+            <script src="/js/main.js"></script>
+            <!-- Script 
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> -->
         {% endblock %}
         
         <a style="font-size:0; height:0; width:0; opacity:0; position:absolute" target="_blank" href="http://www.uicookies.com">HTML Templates by uiCookies</a>	                
