@@ -3,47 +3,82 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-<section class="container px-4 mt-5 mb-5">
-    <div class="row gx-5">
-        <h1 class="h3 mb-3 font-weight-normal">Iniciar sesión</h1>
-        <form method="post">            
-            <div class="mb-3">
-                {% if error %}
-                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                {% endif %}
 
-                {% if app.user %}
-                    <div class="mb-3">
-                        Ya estás logeado como {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">¿Cerrar Sesión?</a>
-                    </div>
-                {% endif %}                
-                <label for="inputUsername" class="form-label">Email</label>
-                <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
-            </div>
-            <div class="mb-3">
-                <label for="inputPassword">Password</label>
-                <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-            </div>
-            {#
-                Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-                See https://symfony.com/doc/current/security/remember_me.html
-            #}
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" name="_remember_me"> Recuérdame
-                </label>
-            </div>
-            <div class="mb-3">
-                <button class="btn btn-primary mb-3" type="submit">
-                    Enviar
-                </button>
-            </div>
-            <div class="mb-3">
-                ¿Olvidó su contraseña? <a href="{{ path('app_forgot_password_request') }}">Haga click aquí para restaurarla</a>
-            </div>
-        </form>
+<section class="section">
+    <div class="container">
+        <h1 class="title">
+            Iniciar Sesión
+        </h1>
+        <p class="subtitle">
+            Introduzca sus datos de acceso
+        </p>
     </div>
 </section>
+{% if app.user %}
+    <div class="mb-3">
+        Ya estás logeado como {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">¿Cerrar Sesión?</a>
+    </div>
+{% endif %}
+<div class="container is-fluid">
+
+<form method="post">
+    {% if error %}
+        <div class="notification is-danger">
+          <button class="delete"></button>
+          {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>        
+    {% endif %}
+    
+    <div class="field">
+        <label class="label">Email</label>
+        <div class="control has-icons-left has-icons-right">
+            <input class="input needs-validation inputUsername is-danger" type="email"  name="username" id="inputUsername" placeholder="Email input" value="">
+            <span class="icon is-small is-left">
+                <i id="emailCheckIconLeft" class="fas fa-envelope"></i>
+            </span>
+            <span id="emailCheckIconRight" class="icon is-small is-right">
+                <i class="fas fa-exclamation-triangle"></i>
+            </span>
+        </div>
+        <p class="help is-danger" id="emailActionHint">This email is invalid</p>
+    </div>
+
+    <div class="field">
+        <label class="label">Password</label>
+        <div class="control has-icons-left has-icons-right">
+            <input class="input is-success" type="password" name="password" id="inputPassword" autocomplete="current-password" required>
+            <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+            </span>
+        </div>        
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+    </div>
+    {#
+        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+        See https://symfony.com/doc/current/security/remember_me.html
+    #}
+    <div class="checkbox mb-3">
+        <label>
+            <input type="checkbox" name="_remember_me"> Recuérdame
+        </label>
+    </div>
+    <!--Submit button-->
+    <div class="field is-grouped">
+        <div class="control">
+            <button id="submitButton" class="button is-link">Enviar</button>
+        </div>
+    </div>
+    <!--
+    <div class="mb-3">
+        <button class="btn btn-primary mb-3" type="submit">
+            Enviar
+        </button>
+    </div>
+    -->
+    <div class="mb-3">
+        ¿Olvidó su contraseña? <a href="{{ path('app_forgot_password_request') }}">Haga click aquí para restaurarla</a>
+    </div>
+</form>
+
+</div>
 {% endblock %}
