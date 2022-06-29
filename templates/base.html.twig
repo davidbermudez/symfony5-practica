@@ -67,11 +67,11 @@
                     <div class="navbar-item">
                         <div class="buttons">
                         {% if app.user %}
-                            <a class="button is-warning">
+                            <a class="button is-warning" href="{{ path('app_logout') }}">
                                 Log out
                             </a>
                         {% else %}
-                            <a class="button is-primary">
+                            <a class="button is-primary" href="{{ path('app_login') }}">
                                 Log in
                             </a>
                         {% endif %}    
