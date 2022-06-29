@@ -3,10 +3,17 @@
     padding-left: 2rem;
 }
 
-.avatars img {
-    width: 64px;    
-    height: 64px;
+.avatars .avatar {
+    width: 64px !important;
+    height: 64px !important;
     border-radius: 100%;
     border: 2px solid #444;
     margin: 0 0 0 -1rem;
+}
+
+.hero-avatar{
+    position: absolute;
+    top: 15px;
+    right: 0;    
+    margin: 50px;
 }

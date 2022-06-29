@@ -6,6 +6,8 @@ const inputEmail = document.getElementById('inputUsername')
 const iconEmailRight = document.getElementById('emailCheckIconRight')
 // form reset-password
 const reset_password_request_form_email = document.getElementById('reset_password_request_form_email')
+// form contact
+const contact_form_email = document.getElementById('contact_form_email')
 const MAXCHARNAMEFIELD = 20
 const MINCHARNAMEFIELD = 3
 
@@ -16,17 +18,16 @@ document.addEventListener('change', event => {
         validateEmail(event.target.value, 'inputEmail')
     } else if (event.target.matches('.reset_password_request_form_email')) {
         validateEmail(event.target.value, 'reset_password_request_form_email')
+    } else if (event.target.matches('.contact_form_email')) {
+        validateEmail(event.target.value, 'contact_form_email')
     }
   }, false)
 
 
 function validateEmail(value, item) {
     const iconEmailRight = document.getElementById('emailCheckIconRight')
-    const emailParagraph = document.getElementById('emailActionHint')    
-    console.log(value);
-    console.log(item);
-    input = document.getElementById(item)
-    console.log(input);
+    const emailParagraph = document.getElementById('emailActionHint')
+    input = document.getElementById(item)    
     if (validateRegexString(value)) {
         // input box color
         input.classList.remove('is-danger')
@@ -48,14 +49,12 @@ function validateEmail(value, item) {
         emailParagraph.style = 'display:block'
 
         emailValidated = false
-    }
-    console.log(emailValidated);
+    }    
 }
 
 function submitCheck() {
-    const emailParagraph = document.getElementById('emailActionHint')
-    console.log(nameValidated, emailValidated)
-    if (nameValidated && emailValidated) {
+    const emailParagraph = document.getElementById('emailActionHint')    
+   if (emailValidated) {
 
         submit.disabled = false;              //button is no longer no-clickable
         submit.removeAttribute("disabled");   //detto

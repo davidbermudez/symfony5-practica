@@ -7,32 +7,31 @@
 {% endblock %}
 
 {% block body %}
-
-    <!-- features
-    ================================================== -->    
-    <section id="about" class="s-about target-section">
-        <div class="shadow-overlay"></div>
-        <div class="row section-header has-bottom-sep" data-aos="fade-up">
-            <div class="col-full">
-                <h1 class="display-1">
-                    Gestiona tus viajes
-                </h1>
-                <p class="lead">
-                    
-                </p>
-            </div>
-        </div> <!-- end section-header -->
-
-        <div class="row wide about-desc" data-aos="fade-up">
-
-            <div class="row home">
-
-                <div class="col-full slick-slider testimonials__slider">
-
-                    <div class="testimonials__slide">
-                        <h3>Tus trayectos</h3>                        
-                        <div>Existen {{ trayectos|length }} trayectos</div>
-                        <table class="table table-success table-striped">
+<section class="hero is-link">
+    <div class="hero-body">
+        <p class="title">
+            {{ grupo }}
+        </p>
+        <p class="subtitle">
+            {{ grupo.description }}
+        </p>
+        <div class="hero-avatar">
+            <section class="avatars">
+                <img class="avatar" src="/images/avatars/{{ app.user.avatar }}" alt="{{ app.user.userIdentifier }}">
+            </section>
+        </div>
+    </div>
+</section>
+<div class="container is-fluid mt-4">
+    <div class="tile is-ancestor">
+        <div class="tile">
+        <div class="tile is-8 is-vertical">
+            <div class="tile is-parent is-vertical">
+                <article class="tile is-child notification is-danger">
+                    <p class="title">Tus Viajes</p>
+                    <p class="subtitle">Existen {{ trayectos|length }} trayectos</p>
+                    <div class="content">
+                        <table class="table is-success is-striped">
                             <thead>
                                 <tr>
                                 <th scope="col">Fecha</th>
@@ -55,153 +54,87 @@
                                     </td>
                                     <td>                                        
                                         {% if trayecto.passenger is null %}
-                                            <i class="fa fa-question text-danger"></i>
+                                            <i class="fa fa-question is-danger"></i>
                                         {% elseif trayecto.passenger == false %}
-                                            <i class="fa fa-automobile text-primary"></i>
+                                            <i class="fa fa-automobile is-primary"></i>
                                         {% else %}
-                                            <i class="fa fa-user text-success"></i>
+                                            <i class="fa fa-user is-success"></i>
                                         {% endif %}
                                     </td>
-                                </tr>                                        
+                                </tr>
                             {% endfor %}
                             </tbody>
                         </table>
-                        <nav aria-label="...">
-                            <ul class="pagination">
-                                <!-- Previous -->
-                                {% if previous >= 0 %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ path('homepage', { offset:previous }) }}">Previous</a>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item disabled">
-                                        <a class="page-link">Previous</a>
-                                    </li>
-                                {% endif %}
-                                {% if (trayectos|length)/10 > 2 %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ path('homepage', { offset:next }) }}">{{ (next/10) }}</a>
-                                    </li>
-                                {% endif %}
-                                <!-- Next -->
-                                {% if next < trayectos|length %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ path('homepage', { offset: next}) }}">Next</a>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item disabled">
-                                        <a class="page-link">Next</a>
-                                    </li>
-                                {% endif %}
-                            </ul>
+                        <nav class="pagination" role="navigation" aria-label="pagination">
+                            {% if previous >= 0 %}
+                                <a class="pagination-previous" href="{{ path('homepage', { offset:previous }) }}">Previous</a>
+                            {% else %}
+                                <a class="pagination-previous" disabled href="#">Previous</a>
+                            {% endif %}
+                            {% if next < trayectos|length %}
+                                <a class="pagination-next" href="{{ path('homepage', { offset: next}) }}">Next page</a>
+                            {% else %}
+                                <a class="pagination-next" href="#" disabled>Next page</a>
+                            {% endif %}
                         </nav>
-
-                        <div class="testimonials__author">
-                            <span class="testimonials__name">Naruto Uzumaki</span>
-                            <a href="#0" class="testimonials__link">@narutouzumaki</a>
-                        </div>
-                    </div> <!-- end testimonials__slide -->
-
-                    <div class="testimonials__slide">
-                        <h3>Trayectos Próximos</h3>
-                        <div>
-                            {% for trayectos in disponibles %}
-                                <div class="d-flex justify-content-center">
-                                    <div class="d-flex justify-content-evenly container-sm p-3 border bg-light">
-                                        <button type="button" class="btn btn-primary position-relative" onclick='location.href = "{{ path('app_trayecto', {id: trayectos.id}) }}"'>
-                                            {{ trayectos.date_trayecto | format_datetime('short', 'none', locale='fr') }}
-                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                                {{ trayectos.time_at | format_time(pattern='HH:mm') }}
-                                            </span>
-                                            <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
-                                                {{ trayectos.time_to | format_time(pattern='HH:mm') }}
-                                            </span>
-                                        </button>
-                                        <div class="col">
-                                            <section class="avatars">
+                    </div>
+                </article>
+            </div>
+            <div class="tile is-parent is-vertical">
+                <article class="tile is-child notification is-primary">
+                    <p class="title">Trayectos Próximos</p>
+                    <p class="subtitle">Existen {{ disponibles|length }} trayectos</p>
+                    <div class="container">
+                        {% for trayectos in disponibles %}                            
+                                <nav class="level has-background-warning px-3 py-2">
+                                    <div class="level-left">
+                                        <div class="level-item">
+                                            <div class="control">
+                                                <button id="submitButton" onclick='location.href = "{{ path('app_trayecto', {id: trayectos.id}) }}"' class="button is-link">
+                                                    {{ trayectos.date_trayecto | format_datetime('short', 'none', locale='fr') }}
+                                                </button>
+                                                <span class="tag is-danger">
+                                                    {{ trayectos.time_at | format_time(pattern='HH:mm') }}
+                                                </span>
+                                                <span class="tag is-danger">
+                                                    {{ trayectos.time_to | format_time(pattern='HH:mm') }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="level-item">
+                                            <span class="avatars">
                                             {% for users in trayectos["drivers"] %}
                                                 {% if users.avatar %}
-                                                    <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.email }}">
+                                                    <img class="avatar" src="/images/avatars/{{ users.avatar }}" alt="{{ users.email }}">
                                                 {% else %}
-                                                    <img src="/images/avatars/default.png" alt="{{ users.email }}">
+                                                    <img class="avatar" src="/images/avatars/default.png" alt="{{ users.email }}">
                                                 {% endif %}
                                             {% endfor %}
-                                            </section>
+                                            </span>
                                         </div>
                                     </div>
-                                </div>                                    
-                            {% endfor %}
-                        </div>           
-                                                
-                        <div class="testimonials__author">
-                            <span class="testimonials__name">Sasuke Uchiha</span>
-                            <a href="#0" class="testimonials__link">@sasukeuchiha</a>
-                        </div>
-                    </div> <!-- end testimonials__slide -->
-
-                    <div class="testimonials__slide">
-                        <img src="images/avatars/user-01.jpg" alt="Author image" class="testimonials__avatar">
-                        
-                        <p>Repellat dignissimos libero. Qui sed at corrupti expedita voluptas odit. Nihil ea quia nesciunt. Ducimus aut sed ipsam.  
-                        Autem eaque officia cum exercitationem sunt voluptatum accusamus. Quasi voluptas eius distinctio.</p>
-
-                        <div class="testimonials__author">
-                            <span class="testimonials__name">Shikamaru Nara</span>
-                            <a href="#0" class="testimonials__link">@shikamarunara</a>
-                        </div>
-                    </div> <!-- end testimonials__slide -->
-                    
-                </div> <!-- end testimonials__slider -->
-
-            </div> <!-- end testimonials -->
-
-        </div> <!-- end testimonials-wrap -->
-
-    </section> <!-- end s-features -->
-
-    <section class="container px-4 mt-5 mb-5 col-xs-12">
-        <div class="row gx-5">
-            {% if app.user %}            
-                <div class="container overflow-hidden">
-                    <div class="row gx-5">
-                        <div class="col mb-1">
-                            <div class="p-3 border bg-warning bg-gradient">{{ app.user.userIdentifier }}</div>
-                        </div>
-                        <div class="col mb-1">
-                            <div class="p-3 border text-white bg-secondary bg-gradient">{{ grupo }}</div>
-                        </div>
+                                    <div class="level-right">
+                                        <!-- -->
+                                    </div>
+                                </nav>                            
+                        {% endfor %}
                     </div>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                            <button type="button" class="btn btn-outline-primary btn-ln" onclick="location.href='{{ path('app_newTime') }}'">
-                                Nuevo Horario
-                            </button>
-                        </div>
-                        <div class="col">Column</div>
-                        <div class="col">Column</div>
-                        <div class="col">Column</div>
-                    </div>
-                </div>
-
-                <div class="container-lg">                    
-                    <div class="container-sm">
-                        <h3>Tus trayectos</h3>
-                        
-                        
-                    </div>
-                    <div class="container-sm">
-                        <h3>Próximos Trayectos</h3>
-                        <div class="container px-4">
-                            <div class="d-flex flex-column mb-3">
-                                {#{ dump(disponibles) }#}
-                                
-                            </div>
-                        </div>
-                    </div>                    
-                </div><!-- container -->
-            {% endif %}
+                </article>
+            </div>
         </div>
-    </section>
+        <div class="tile">
+            <div class="tile is-parent">
+                <article class="tile is-child notification is-warning">
+                    <p class="title">Acciones</p>
+                    <p class="subtitle">Seleccione alguna opción</p>
+                    <div class="content">
+                        <div class="buttons">
+                            <button class="button is-link" onclick="location.href='{{ path('app_newTime') }}'">Nuevo Horario</button>
+                        </div>                        
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

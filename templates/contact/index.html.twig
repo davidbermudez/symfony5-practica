@@ -3,25 +3,53 @@
 {% block title %}Contacta{% endblock %}
 
 {% block body %}
-<section class="container px-4 mt-5 mb-5">
-    <div class="row gx-5">
-        <h1 class="h3 mb-3 font-weight-normal">Contacta</h1>
-        {{ form_start(our_form) }}
-        <div class="mb-3">
-            {{ form_row(our_form.fullName, {'attr': {'class': 'form-control'}}) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(our_form.email, {'attr': {'class': 'form-control'}}) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(our_form.message, {'attr': {'class': 'form-control'}}) }}
-        </div>
-        <div class="mb-3">
-            <button class="btn btn-primary mb-3" type="submit">
-                    Enviar
-            </button>
-        </div>            
-        {{ form_end(our_form) }}
+
+<section class="section">
+    <div class="container">
+        <h1 class="title">
+            Contacta con compartecoche
+        </h1>
+        <p class="subtitle">
+            Envíanos tus comentarios o sugerencias. No olvides añadir una dirección de correo válida para que podamos responderte
+        </p>
     </div>
 </section>
+<div class="container is-fluid">
+    {{ form_start(our_form) }}
+        <div class="field">
+            <label class="label">Tu nombre</label>
+            <div class="control has-icons-left">
+            {{ form_widget(our_form.fullName, {'attr': {'class': 'input is-success'} }) }}
+            <span class="icon is-small is-left">
+                <i id="emailCheckIconLeft" class="fas fa-user"></i>
+            </span>
+        </div>
+        <div class="field">
+            <label class="label">Email</label>
+            <div class="control has-icons-left has-icons-right">
+                {{ form_widget(our_form.email, {'attr': {'class': 'input needs-validation contact_form_email is-danger'} }) }}
+                <span class="icon is-small is-left">
+                    <i id="emailCheckIconLeft" class="fas fa-envelope"></i>
+                </span>
+                <span id="emailCheckIconRight" class="icon is-small is-right">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </span>
+            </div>
+            <p class="help is-danger" id="emailActionHint">This email is invalid</p>
+        </div>
+        
+        <div class="field">
+            <label class="label">Mensaje</label>
+            <div class="control has-icons-left has-icons-right">
+                {{ form_widget(our_form.message, {'attr': {'class': 'input needs-validation contact_form_message is-success'} }) }}
+            </div>
+        </div>
+        <!--Submit button-->
+        <div class="field is-grouped">
+            <div class="control">
+                <button id="submitButton" class="button is-link">Enviar</button>
+            </div>
+        </div>            
+    {{ form_end(our_form) }}
+</div>
 {% endblock %}

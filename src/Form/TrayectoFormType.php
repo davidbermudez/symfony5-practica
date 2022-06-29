@@ -35,7 +35,9 @@ class TrayectoFormType extends AbstractType
             ])
             //->add('passenger')
             //->add('driver')
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, [
+                'label' => 'Enviar',
+            ])
         ;
     }
 

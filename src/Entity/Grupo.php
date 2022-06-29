@@ -34,6 +34,11 @@ class Grupo
      */
     private $driver;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $description;
+
     public function __construct()
     {
         $this->admin = new ArrayCollection();
@@ -118,6 +123,18 @@ class Grupo
                 $driver->setGrupo(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
