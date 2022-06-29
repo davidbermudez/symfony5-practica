@@ -134,20 +134,7 @@ class TrayectoRepository extends ServiceEntityRepository
                 'val4' => $value['grupo'],
                 'val5' => $value['exclude'],
             ]);
-        //$gem = $em->getEntityManager();
-        //dump($gem);
-        //$dql = $em->getDql();
-        //dump($dql);
-        //$q = $em->getQuery()->getSQL();
-        //dump($q);
-        //$query = $em->getQuery()->getArrayResult();
-        $query = new Trayecto;
         $query = $em->getQuery()->getResult();
-
-        //dump($query);
-        //$query2 = $em->getQuery()->getArrayResult();
-        //dump($query2);
-
         return $query;
     }
     

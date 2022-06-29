@@ -149,22 +149,10 @@ class IndexController extends AbstractController
                             'success',
                             'ATENCIÓN: ¡Ya existe un trayecto guardado para este horario!'
                         );
+                    } else {
+                        // Regresamos a homepage
+                        return $this->redirectToRoute('homepage');
                     }
-                    // Regresamos a homepage
-                    $offset = max(0, $request->query->getInt('offset', 0));
-                    $paginator = $trayectoRepository->getTrayectoPaginator($user, $offset);
-                    $disponibles = $trayectoRepository->findAvailables([
-                        'driver' => $user,
-                        'date_trayecto' => date('Y-m-d'),
-                        'grupo' => $grupo,
-                    ]);
-                    return $this->render('index/index.html.twig', [
-                        'grupo' => $grupoRepository->find($grupo),
-                        'trayectos' => $paginator,
-                        'previous' => $offset - TrayectoRepository::PAGINATOR_PER_PAGE,
-                        'next' => min(count($paginator), $offset + TrayectoRepository::PAGINATOR_PER_PAGE),
-                        'disponibles' => $disponibles,
-                    ]);
                 }
             } elseif ($form->isSubmitted() && !$form->isValid()) {
                 $this->addFlash(
@@ -217,7 +205,7 @@ class IndexController extends AbstractController
                 'grupo' => $grupo,
                 'exclude' => $id
             ]);
-            //dump($otros);
+            dump($otros);
             return $this->render('index/trayecto.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
                 'datos_trayecto' => $trayecto,

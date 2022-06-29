@@ -39,12 +39,11 @@
                     {% else %}
                         <a class="navbar-item" href="{{ path('app_login') }}" title="Login">Login</a></li>
                     {% endif %}
-
+<!--
                     <div class="navbar-item has-dropdown is-hoverable">
                         <a class="navbar-link">
                         More
                         </a>
-
                         <div class="navbar-dropdown">
                             <a class="navbar-item">
                                 About
@@ -61,6 +60,7 @@
                             </a>
                         </div>
                     </div>
+-->
                 </div>
 
                 <div class="navbar-end">
@@ -81,12 +81,9 @@
             </div>
         </nav>
         </header>
-        <!-- end Bulma-nav -->
+        <!-- end Bulma-nav -->                
 
-        
-                
-
-        <!-- message_flash -->
+        <!-- message_flash -->        
         {% for label, messages in app.flashes %}
             <div class="container-fluid">
             {% for message in messages %}
