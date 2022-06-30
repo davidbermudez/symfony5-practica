@@ -35,6 +35,11 @@ class Grupo
     private $driver;
 
     /**
+     * @ORM\OneToMany(targetEntity=Fecha::class, mappedBy="grupo", orphanRemoval=true)
+     */
+    private $fecha;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $description;

@@ -3,12 +3,17 @@
     padding-left: 2rem;
 }
 
-.avatars .avatar {
-    width: 64px !important;
+.avatars .avatar {    
+    position: relative;
+    margin: 0 0 0 -1rem;
+}
+
+.avatars .avatar img {
+    /*width: 64px !important;*/
     height: 64px !important;
     border-radius: 100%;
     border: 2px solid #444;
-    margin: 0 0 0 -1rem;
+    
 }
 
 .hero-avatar{
@@ -17,3 +22,38 @@
     right: 0;    
     margin: 50px;
 }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  }
+  
+  /* Tooltip text */
+  .avatars .avatar .tooltiptext {
+    visibility: hidden;
+    width: 150px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    font-size: 0.6em;
+   
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .avatars .avatar:hover .tooltiptext {
+    visibility: visible;    
+  }
+
+  .avatars .avatar:hover {
+    height: 64px !important;
+    border-radius: 100%;
+    border: 2px solid yellow;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  }
+  

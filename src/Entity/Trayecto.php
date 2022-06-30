@@ -18,21 +18,6 @@ class Trayecto
     private $id;
 
     /**
-     * @ORM\Column(type="date")
-     */
-    private $date_trayecto;
-
-    /**
-     * @ORM\Column(type="time")
-     */
-    private $time_at;
-
-    /**
-     * @ORM\Column(type="time")
-     */
-    private $time_to;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Driver::class, inversedBy="trayectos")
      * @ORM\JoinColumn(nullable=false)     
      */
@@ -43,46 +28,16 @@ class Trayecto
      */
     private $passenger;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Fecha::class, inversedBy="trayectos", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $fecha;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getDateTrayecto(): ?\DateTimeInterface
-    {
-        return $this->date_trayecto;
-    }
-
-    public function setDateTrayecto(\DateTimeInterface $date_trayecto): self
-    {
-        $this->date_trayecto = $date_trayecto;
-
-        return $this;
-    }
-
-    public function getTimeAt(): ?\DateTimeInterface
-    {
-        return $this->time_at;
-    }
-
-    public function setTimeAt(\DateTimeInterface $time_at): self
-    {
-        $this->time_at = $time_at;
-
-        return $this;
-    }
-
-    public function getTimeTo(): ?\DateTimeInterface
-    {
-        return $this->time_to;
-    }
-
-    public function setTimeTo(\DateTimeInterface $time_to): self
-    {
-        $this->time_to = $time_to;
-
-        return $this;
-    }
+    }    
 
     public function getDriver(): ?Driver
     {
@@ -104,6 +59,18 @@ class Trayecto
     public function setPassenger(?bool $passenger): self
     {
         $this->passenger = $passenger;
+
+        return $this;
+    }
+
+    public function getFecha(): ?Fecha
+    {
+        return $this->fecha;
+    }
+
+    public function setFecha(?Fecha $fecha): self
+    {
+        $this->fecha = $fecha;
 
         return $this;
     }

@@ -20,6 +20,8 @@ document.addEventListener('change', event => {
         validateEmail(event.target.value, 'reset_password_request_form_email')
     } else if (event.target.matches('.contact_form_email')) {
         validateEmail(event.target.value, 'contact_form_email')
+    } else if (event.target.matches('.driver_form_email')){
+        validateEmail(event.target.value, 'driver_form_email')
     }
   }, false)
 
@@ -55,7 +57,6 @@ function validateEmail(value, item) {
 function submitCheck() {
     const emailParagraph = document.getElementById('emailActionHint')    
    if (emailValidated) {
-
         submit.disabled = false;              //button is no longer no-clickable
         submit.removeAttribute("disabled");   //detto
     } else {

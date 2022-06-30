@@ -1,10 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}ComparteCoche{% endblock %}
-{% block stylesheets %}    
-    <!-- avatars -->
-    <link href="/css/avatars.css" rel="stylesheet">
-{% endblock %}
 
 {% block body %}
 <section class="hero is-link">
@@ -17,7 +13,10 @@
         </p>
         <div class="hero-avatar">
             <section class="avatars">
-                <img class="avatar" src="/images/avatars/{{ app.user.avatar }}" alt="{{ app.user.userIdentifier }}">
+                <div class="avatar">
+                    <img src="/images/avatars/{{ app.user.avatar }}" alt="{{ app.user.userIdentifier }}">
+                    <span class="tooltiptext">{{ app.user.userIdentifier }}</span>
+                </div>
             </section>
         </div>
     </div>
@@ -40,17 +39,18 @@
                                 <th scope="col">F</th>
                                 </tr>
                             </thead>
-                            <tbody>                            
-                            {% for trayecto in trayectos %}                            
+                            <tbody>
+                            {#{ dump(trayectos) }#}
+                            {% for trayecto in trayectos %}
                                 <tr>
                                     <th scope="row">                                        
-                                        {{ trayecto.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
+                                        {{ trayecto.fecha.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
                                     </th>
                                     <td>
-                                        {{ trayecto.timeAt | format_time(pattern='HH:mm') }}
+                                        {{ trayecto.fecha.timeAt | format_time(pattern='HH:mm') }}
                                     </td>
                                     <td>
-                                        {{ trayecto.timeTo | format_time(pattern='HH:mm') }}
+                                        {{ trayecto.fecha.timeTo | format_time(pattern='HH:mm') }}
                                     </td>
                                     <td>                                        
                                         {% if trayecto.passenger is null %}
@@ -85,33 +85,41 @@
                     <p class="title">Trayectos Próximos</p>
                     <p class="subtitle">Existen {{ disponibles|length }} trayectos</p>
                     <div class="container">
-                        {% for trayectos in disponibles %}                            
+                        {#{ dump(disponibles) }#}
+                        {% for trayectos in disponibles %}
+                            {#{ dump(trayectos) }#}
                                 <nav class="level has-background-warning px-3 py-2">
                                     <div class="level-left">
+
                                         <div class="level-item">
                                             <div class="control">
-                                                <button id="submitButton" onclick='location.href = "{{ path('app_trayecto', {id: trayectos.id}) }}"' class="button is-link">
-                                                    {{ trayectos.date_trayecto | format_datetime('short', 'none', locale='fr') }}
+                                                <button id="submitButton" onclick='location.href = "{{ path('app_trayecto', {id: trayectos["trayecto_id"]}) }}"' class="button is-link">
+                                                    {{ trayectos.fecha.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
                                                 </button>
                                                 <span class="tag is-danger">
-                                                    {{ trayectos.time_at | format_time(pattern='HH:mm') }}
+                                                    {{ trayectos.fecha.timeAt | format_time(pattern='HH:mm') }}
                                                 </span>
                                                 <span class="tag is-danger">
-                                                    {{ trayectos.time_to | format_time(pattern='HH:mm') }}
+                                                    {{ trayectos.fecha.timeTo | format_time(pattern='HH:mm') }}
                                                 </span>
                                             </div>
                                         </div>
+
                                         <div class="level-item">
-                                            <span class="avatars">
-                                            {% for users in trayectos["drivers"] %}
-                                                {% if users.avatar %}
-                                                    <img class="avatar" src="/images/avatars/{{ users.avatar }}" alt="{{ users.email }}">
+                                            <span class="avatars">                                            
+                                            {% for users in trayectos.driver %}                                            
+                                                <div class="avatar">
+                                                {% if users.avatar %}                                                
+                                                    <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.email }}">
+                                                    <span class="tooltiptext">{{ users.email }}</span>                                                
                                                 {% else %}
                                                     <img class="avatar" src="/images/avatars/default.png" alt="{{ users.email }}">
                                                 {% endif %}
+                                                </div>
                                             {% endfor %}
                                             </span>
                                         </div>
+
                                     </div>
                                     <div class="level-right">
                                         <!-- -->

@@ -16,9 +16,12 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\GrupoRepository;
 use App\Repository\TrayectoRepository;
 use App\Repository\DriverRepository;
+use App\Repository\FechaRepository;
 use App\Entity\Driver;
 use App\Entity\Trayecto;
+use App\Entity\Fecha;
 use App\Form\TrayectoFormType;
+use App\Form\FechaFormType;
 
 class IndexController extends AbstractController
 {
@@ -38,7 +41,8 @@ class IndexController extends AbstractController
         Request $request,
         GrupoRepository $grupoRepository, 
         TrayectoRepository $trayectoRepository,
-        DriverRepository $driverRepository): Response
+        DriverRepository $driverRepository,
+        FechaRepository $fechaRepository): Response
     {        
         $user = $this->getUser();
         if ($user == null){
@@ -54,11 +58,14 @@ class IndexController extends AbstractController
 
             $offset = max(0, $request->query->getInt('offset', 0));
             $paginator = $trayectoRepository->getTrayectoPaginator($user, $offset);
+            //dump($paginator);
             $disponibles = $trayectoRepository->findAvailables([
                 'driver' => $user,
                 'date_trayecto' => date('Y-m-d'),                            
                 'grupo' => $grupo,
             ]);
+            dump($disponibles);
+            /*
             foreach($disponibles as $key => $value){
                 foreach($value as $kkey => $vvalue)                    
                     if($kkey == "drivers"){
@@ -67,12 +74,13 @@ class IndexController extends AbstractController
                         }
                     }
             }
-            //dump($disponibles);
+            dump($disponibles);
+            */
             return $this->render('index/index.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
                 'trayectos' => $paginator,
-                'previous' => $offset - TrayectoRepository::PAGINATOR_PER_PAGE,
-                'next' => min(count($paginator), $offset + TrayectoRepository::PAGINATOR_PER_PAGE),
+                'previous' => $offset - FechaRepository::PAGINATOR_PER_PAGE,
+                'next' => min(count($paginator), $offset + FechaRepository::PAGINATOR_PER_PAGE),
                 'disponibles' => $disponibles,
             ]);
         }
@@ -84,6 +92,7 @@ class IndexController extends AbstractController
     public function newtime(
         Request $request, 
         GrupoRepository $grupoRepository,
+        FechaRepository $fechaRepository,
         TrayectoRepository $trayectoRepository): Response
     {
         $user = $this->getUser();
@@ -91,34 +100,42 @@ class IndexController extends AbstractController
             return $this->redirectToRoute('app_login');
         } else {
             $grupo = $user->getGrupo();
-
-            // creamos formulario y se lo pasamos a la plantilla
-            $trayecto = new Trayecto();
-            $form = $this->createForm(TrayectoFormType::class, $trayecto);
+            // creamos formulario Fechas y se lo pasamos a la plantilla
+            $fecha = new Fecha();
+            $form = $this->createForm(FechaFormType::class, $fecha);
             // manejamos las respuestas del formulario
             $form->handleRequest($request);
             //dump($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                /* ******************************************  */
-                // verificar que no exista un trayecto igual ya guardado por este usuario
-                //dump($form);                
-                $fecha = $form['date_trayecto']->getData();
+                $date_trayecto = $form['date_trayecto'];
+                $time_at = $form['time_at'];
+                $time_to = $form['time_to'];
+                $date_trayecto = $form['date_trayecto']->getData();
                 $time_at = $form['time_at']->getData();
                 $time_to = $form['time_to']->getData();
-                //dump($fecha);
-                //dump($time_at);
-                //dump($time_to);
-                $verificando_trayecto = [];
-                $verificando_trayecto = $trayectoRepository->findBy([
-                    'driver' => $user,
-                    'date_trayecto' => $fecha,
+                // Verificar si ya existe un registro "Fecha" para este Horario
+                $existe = $fechaRepository->findBy([
+                    'date_trayecto' => $date_trayecto,
                     'time_at' => $time_at,
                     'time_to' => $time_to,
+                ]);                
+                if($existe){                    
+                    $id_fecha = $existe[0]->getId();
+                } else {
+                    // Creamos un nuevo registro Fecha
+                    $fecha->setGrupo($grupo);
+                    $this->entityManager->persist($fecha);
+                    $this->entityManager->flush();
+                    $id_fecha = $fecha->getId();
+                    $existe = [$fecha];
+                }
+                // Verificar si ya existe un registro trayecto para este id de Fecha y Usuario
+                $trayecto = new Trayecto();
+                $existe2 = $trayectoRepository->findBy([
+                    'fecha' => $fecha,
+                    'driver' => $user,
                 ]);
-                //dump($verificando_trayecto);
-                /* ******************************************  */
-                if($verificando_trayecto){
-                    //
+                if($existe2){
                     $this->addFlash(
                         'danger',
                         'ERROR: Ya has grabado un trayecto guardado para este horario'
@@ -126,33 +143,12 @@ class IndexController extends AbstractController
                 } else {
                     // Grabamos un nuevo trayecto
                     $trayecto->setDriver($user);
+                    $trayecto->setFecha($existe[0]);
                     $trayecto->setPassenger(null);
-
                     $this->entityManager->persist($trayecto);
                     $this->entityManager->flush();
-
-                    // verificamos si ya hay grabado un trayecto igual (por otro usuario)
-                    $buscando_iguales = []; //new Trayecto();
-                    $buscando_iguales = $trayectoRepository->findTrayectos2([
-                        //'driver' => $user->getId(),
-                        'driver' => $user,
-                        //'date_trayecto' => $form['date_trayecto']->getData()->format('Y-m-d'),
-                        'date_trayecto' => $fecha,
-                        'time_at' => $form['time_at']->getData()->format('H:i:s'),
-                        'time_to' => $form['time_to']->getData()->format('H:i:s'),
-                        'grupo' => $grupo,
-                    ]);
-                    //dump($buscando_iguales);
-                    if($buscando_iguales){
-                        //
-                        $this->addFlash(
-                            'success',
-                            'ATENCIÓN: ¡Ya existe un trayecto guardado para este horario!'
-                        );
-                    } else {
-                        // Regresamos a homepage
-                        return $this->redirectToRoute('homepage');
-                    }
+                    // regresar homepage
+                    return $this->redirectToRoute('homepage');
                 }
             } elseif ($form->isSubmitted() && !$form->isValid()) {
                 $this->addFlash(
@@ -160,7 +156,6 @@ class IndexController extends AbstractController
                     'Los datos introducidos no son válidos'
                 );
             }
-            //dump($form);
             return $this->render('index/newtime.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
                 'form' => $form->createView(),                
@@ -168,19 +163,21 @@ class IndexController extends AbstractController
         }
     }
     
+
     /**
      * @Route("/trayecto/{id}", name="app_trayecto")
      */
     public function trayecto(
         Request $request,
         GrupoRepository $grupoRepository,
-        TrayectoRepository $trayectoRepository
+        TrayectoRepository $trayectoRepository,
+        FechaRepository $fechaRepository
     ){
         // Verificamos que la id existe
         $array = (array) $request->attributes;        
-        $id=$array["\x00*\x00parameters"]["id"];        
+        $id=$array["\x00*\x00parameters"]["id"];
         $trayecto = new Trayecto;
-        $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
+        $trayecto = $trayectoRepository->findOneBy(['id' => $id]);
         if ($trayecto == null){
             throw new Exception('001: No existe el trayecto indicado en su grupo');
         }
@@ -189,27 +186,28 @@ class IndexController extends AbstractController
         if ($user == null){
             return $this->redirectToRoute('app_login');
         } else {
-            // Enviamos el trayecto de la id y además el resto de trayectos que coincidan en fecha, hora y grupo
-            $grupo = $user->getGrupo();
-            //dump($trayecto->getDriver()->getGrupo());
+            // Enviamos el trayecto de la id y además todos aquellos con la misma fecha (Fecha, quiere decir fecha, hora inicial y fin y grupo).
+            $grupo = $user->getGrupo();            
             //dump($trayecto);
             if($trayecto->getDriver()->getGrupo() != $grupo){
                 throw new Exception('002: No existe el trayecto indicado en su grupo');
             }
-            $otros = new Trayecto();
-            $otros = $trayectoRepository->findTrayectos3([
-                'driver' => $user,
-                'date_trayecto' => $trayecto->getDateTrayecto()->format('Y-m-d'),
-                'time_at' => $trayecto->getTimeAt()->format('H:i:s'),
-                'time_to' => $trayecto->getTimeTo()->format('H:i:s'),
-                'grupo' => $grupo,
-                'exclude' => $id
+            $otros = $trayectoRepository->findBy([
+                'fecha' => $trayecto->getFecha(),
             ]);
             dump($otros);
+            $estoy = false;
+            $incluido_este_user = $trayectoRepository->findBy([
+                'fecha' => $trayecto->getFecha(),
+                'driver' => $user,
+            ]);
+            if($incluido_este_user){
+                $estoy = true;
+            }
             return $this->render('index/trayecto.html.twig', [
-                'grupo' => $grupoRepository->find($grupo),
-                'datos_trayecto' => $trayecto,
+                'grupo' => $grupo,
                 'otros' => $otros,
+                'estoy' => $estoy,
             ]);
         }
     }
@@ -284,4 +282,185 @@ class IndexController extends AbstractController
             'trayecto' => $trayectoRepository->find($id),
         ]);
     }
+
+
+    /**
+     * @Route("/addTrayecto/{id}", name="app_addTrayecto")
+     */
+    public function add_trayecto(
+        Request $request,
+        GrupoRepository $grupoRepository,
+        TrayectoRepository $trayectoRepository,
+        DriverRepository $driverRepository
+    ): Response
+    {        
+        $array = (array) $request->attributes;
+        // Verificamos que la id existe
+        $id = $array["\x00*\x00parameters"]["id"];
+        $trayecto = new Trayecto;
+        $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
+        if ($trayecto == null){
+            throw new Exception('001: No existe el trayecto indicado en su grupo');
+        }
+        // Verificamos el user
+        $user = $this->getUser();
+        if ($user == null){
+            return $this->redirectToRoute('app_login');
+        } else {
+            $grupo = $user->getGrupo();
+            // Verificamos que el usuario no tiene grabado un trayecto en la misma Fecha que $id        
+            $pasajero = $trayectoRepository->findBy([
+                'driver' => $user,
+                'fecha' => $trayecto->getFecha(),
+            ]);
+            if ($pasajero == null){
+                // Correcto
+                // Grabamos un nuevo trayecto para este usuario
+                $myTrayecto = new Trayecto();
+                $myTrayecto->setDriver($user);
+                $myTrayecto->setFecha($trayecto->getFecha());
+                $this->entityManager->persist($myTrayecto);
+                $this->entityManager->flush();
+                $this->addFlash(
+                    'success',
+                    'Se te ha añadido al trayecto con éxito'
+                );
+            } else {
+                $this->addFlash(
+                    'danger',
+                    'ERROR: Ya has grabado un trayecto para este mismo horario'
+                );
+            }
+            $otros = $trayectoRepository->findBy([
+                'fecha' => $trayecto->getFecha(),
+            ]);            
+            $estoy = false;
+            $incluido_este_user = $trayectoRepository->findBy([
+                'fecha' => $trayecto->getFecha(),
+                'driver' => $user,
+            ]);
+            if($incluido_este_user){
+                $estoy = true;
+            }
+            return $this->render('index/trayecto.html.twig', [
+                'grupo' => $grupo,
+                'otros' => $otros,
+                'estoy' => $estoy,
+            ]);
+        }        
+    }
+
+
+    /**
+     * @Route("/delTrayecto/{id}", name="app_delTrayecto")
+     */
+    public function del_trayecto(
+        Request $request,
+        GrupoRepository $grupoRepository,
+        TrayectoRepository $trayectoRepository,
+        DriverRepository $driverRepository
+    ): Response
+    {        
+        $array = (array) $request->attributes;
+        // Verificamos que la id existe
+        $id = $array["\x00*\x00parameters"]["id"];
+        $trayecto = new Trayecto;
+        $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
+        if ($trayecto == null){
+            throw new Exception('001: No existe el trayecto indicado en su grupo');
+        }
+        // Verificamos el user
+        $user = $this->getUser();
+        if ($user == null){
+            return $this->redirectToRoute('app_login');
+        } else {
+            $grupo = $user->getGrupo();
+            // Verificamos que el usuario tiene grabado un trayecto en la misma Fecha que $id
+            $pasajero = $trayectoRepository->findOneBy([
+                'driver' => $user,
+                'fecha' => $trayecto->getFecha(),
+            ]);
+            if ($pasajero){
+                // Correcto
+                // Eliminamos este trayecto al usuario
+                $this->entityManager->remove($pasajero);                
+                $this->entityManager->flush();
+                $this->addFlash(
+                    'success',
+                    'Se te ha eliminado de este trayecto'
+                );
+            } else {
+                $this->addFlash(
+                    'danger',
+                    'ERROR: No te hemos encontrado en este trayecto'
+                );
+            }
+            $otros = $trayectoRepository->findBy([
+                'fecha' => $trayecto->getFecha(),
+            ]);            
+            $estoy = false;
+            $incluido_este_user = $trayectoRepository->findBy([
+                'fecha' => $trayecto->getFecha(),
+                'driver' => $user,
+            ]);
+            if($incluido_este_user){
+                $estoy = true;
+            }
+            return $this->render('index/trayecto.html.twig', [
+                'grupo' => $grupo,
+                'otros' => $otros,
+                'estoy' => $estoy,
+            ]);
+        }        
+    }
+
+
+    /**
+     * @Route("/comparativa/{id}", name="comparativa")
+     */
+    public function comparativa(
+        Request $request,
+        GrupoRepository $grupoRepository,
+        TrayectoRepository $trayectoRepository,
+        DriverRepository $driverRepository
+    ): Response
+    {
+        $array = (array) $request->attributes;
+        // Verificamos que la id existe
+        $id = $array["\x00*\x00parameters"]["id"];
+        $trayecto = new Trayecto;
+        $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
+        if ($trayecto == null){
+            return $this->render('index/comparativa_null.html.twig', []);
+        }
+        // Cargamos todos los trayectos con la misma fecha y grupo
+        $trayectos = $trayectoRepository->findBy([
+            'fecha' => $trayecto->getFecha(),
+        ]);
+        $drivers = [];
+        $i = 0;
+        foreach($trayectos as $clave){
+            array_push($drivers, $clave->getDriver());
+            $i++;
+        }
+        $res=[];
+        foreach($drivers as $usuario1){            
+            foreach($drivers as $usuario2){
+                if($usuario1 != $usuario2){
+                    // realizamos comparativa entre dos usuarios
+                    $resultado1 = $trayectoRepository->compara($usuario1, $usuario2);
+                    $resultado2 = $trayectoRepository->compara($usuario2, $usuario1);
+                    if($resultado1 > $resultado2){
+                        $res[$usuario1]++;
+                    } elseif($resultado1 < $resultado2){
+                        $res[$usuario2]++;
+                    }
+                }
+            }
+        }
+        dump($res);
+        $return = '';
+        return new Response($valor);
+    }
+
 }

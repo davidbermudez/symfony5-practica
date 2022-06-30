@@ -10,7 +10,11 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\DBAL\Result;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Statement;
+use Doctrine\DBAL\Driver\ResultStatement;
 use App\Entity\Driver;
+use App\Entity\Fecha;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
@@ -50,10 +54,11 @@ class TrayectoRepository extends ServiceEntityRepository
 
     public function getTrayectoPaginator(Driver $driver, int $offset):Paginator
     {
-        $query = $this->createQueryBuilder('t')
+        $query = $this->createQueryBuilder('t')            
+            ->join(Fecha::class, 'f', Join::WITH, 't.fecha = f.id')
             ->andWhere('t.driver = :driver')
             ->setParameter('driver', $driver)
-            ->orderBy('t.date_trayecto', 'DESC')
+            ->orderBy('f.date_trayecto', 'DESC')
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
             ->setFirstResult($offset)
             ->getQuery()
@@ -111,7 +116,7 @@ class TrayectoRepository extends ServiceEntityRepository
         return $query;
     }
 
-/**
+    /**
     * @return Trayecto[] Returns an array of Trayecto objects
     */
     public function findTrayectos3($value): array
@@ -142,61 +147,94 @@ class TrayectoRepository extends ServiceEntityRepository
     {
         // Return: Trayecto(s) and email driver for date_trayecto >= now, same grupo, distinct driver
         $em = $this->createQueryBuilder('t')
-            ->select('t', 'd.id')
+            //->select('t', 'd.id')
+            ->join(Fecha::class, 'f', Join::WITH, 't.fecha = f.id')
             ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
             ->where('t.driver != :val0')
-            ->andwhere('t.date_trayecto >= :val1')            
-            ->andwhere('d.grupo = :val2')            
+            ->andwhere('f.date_trayecto >= :val1')
+            ->andwhere('d.grupo = :val2')
+            //->groupBy('t.fecha')
             ->setParameters([
                 'val0' => $value['driver'],
                 'val1' => $value['date_trayecto'],                
                 'val2' => $value['grupo'],
             ]);
-        $query = $em->getQuery()->getArrayResult();
+        //$query = $em->getQuery()->getArrayResult();
         //$query = $em->getQuery()->getResult();
         //$query = $em->getQuery();
         //dump($em->getQuery()->getSQL());
+        $query = $em->getQuery()->getResult();
+        dump($query);
+        //return $query;
+        
+        //return new Trayecto($query->getQuery());
         $return = [];
         $i = 0;        
         foreach($query as $element){
             $localizado = false;
-            foreach($element as $key){                
-                if(gettype($key)=="array"){
-                    // es un trayecto
-                    // Comprobar si ya está
-                    $date_trayecto = $key["date_trayecto"];
-                    $r = 0;
-                    foreach($return as $bucle){
-                        if($date_trayecto == $bucle["date_trayecto"]){
-                            if($key["time_at"] == $return[$r]["time_at"] &&
-                            $key["time_to"] == $return[$r]["time_to"]){
-                                $localizado = true;                                
-                            }
-                        }
-                        $r++;
-                    }
-                    if(!$localizado){
-                        $return[$i]["id"] = $key["id"];
-                        $return[$i]["date_trayecto"] = $key["date_trayecto"];
-                        $return[$i]["time_at"] = $key["time_at"];
-                        $return[$i]["time_to"] = $key["time_to"];
-                        $return[$i]["drivers"] = [];                        
-                        $j = $i;
-                    } else {
-                        $j = 0;
-                    }
-                    // solo sumamos cuando procesamos el array
-                    $i++;
-                } elseif (gettype($key)=="integer") {                    
-                    array_push($return[$j]["drivers"], $key);
+            $fecha = $element->getFecha();                
+            
+            $r = 0;
+            foreach($return as $bucle){
+                if($bucle["fecha"] == $fecha){
+                    dump("Repetido");
+                    $localizado = true;                        
                 }
-                //dump($j, $key);                
+                $r++;
             }
+            
+            if(!$localizado){
+                $return[$i]["trayecto_id"] = $element->getId();
+                $return[$i]["fecha"] = $element->getFecha();
+                $return[$i]["driver"] = [];//$element->getDriver();                
+                array_push($return[$i]["driver"], $element->getDriver());
+                $j = $i;
+                $i++;
+            } else {                
+                array_push($return[$j]["driver"], $element->getDriver());                
+            }
+            
         }
 
-        //dump($return);
+        dump($return);
         //return $query;
         return $return;
+        
+    }
+
+
+
+    public function compara(Driver $driver1, Driver $driver2): int
+    {
+        // Return: Count Trayectos driver1 i driver an Driver2 as passanger
+        //$personal_query = "SELECT Count(t.id) as Total FROM trayecto t WHERE t.driver_id = :driver1 AND t.passenger = TRUE AND t.fecha_id IN "
+        //"(SELECT k.fecha_id FROM trayecto k INNER JOIN driver d ON k.driver_id = d.id INNER JOIN fecha f ON k.fecha_id = f.id WHERE k.driver_id = :driver2 AND k.passenger = FALSE )";        
+        $em2 = $this->createQueryBuilder('t')
+            ->select('t')
+            ->where('t.driver = :val1')
+            ->andwhere('t.passenger = false')
+            ->setparameters([
+                'val1' => $driver2,
+            ]);
+        $query2 = $em2->getQuery()->getResult();
+        dump($query2);
+
+        $em = $this->createQueryBuilder('t')
+            ->select('COUNT(t.id) as Total')
+            ->where('t.driver = :val0')
+            ->andwhere('t.passenger = true')
+            ->andwhere('t.fecha IN (:val1)')
+            //->groupBy('t.fecha')
+            ->setParameters([
+                'val0' => $driver1,
+                'val1' => $em2->getQuery()->getResult(),
+            ]);
+        
+        $query = $em->getQuery()->getResult();
+        dump($query);
+        
+        return $query[0]["Total"];
+        
     }
 
 }

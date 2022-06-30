@@ -16,32 +16,64 @@
 </section>
 
 <div class="container is-fluid">
-    <article class="tile is-child notification is-warning">
-        <span class="tag is-large is-link">
-            {{ datos_trayecto.dateTrayecto | format_datetime('short', 'none', locale='fr') }}                
-        </span>
-        <span class="tag is-danger">
-            {{ datos_trayecto.timeAt | format_time(pattern='HH:mm') }}
-        </span>
-        <span class="tag is-danger">
-            {{ datos_trayecto.timeTo | format_time(pattern='HH:mm') }}
-        </span>
+    <article class="tile is-child notification is-success">
+        <p class="title">Opciones</p>
+        <p class="subtitle">Elija alguna de las opciones disponibles</p>
+        <div class="content">
+            {% if estoy %}
+                <div class="buttons">
+                    <button class="button is-info" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Salir de este Trayecto</button>                
+                    <button class="button is-link" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Asumir Trayecto</button>
+                </div>
+            {% else %}
+                <div class="buttons">
+                    <button class="button is-link" onclick="location.href='{{ path('app_addTrayecto', {id: otros[0].id}) }}'">Añadirte al Trayecto</button>
+                </div>
+            {% endif %}
+        </div>
     </article>
 </div>
 
 <div class="container is-fluid mt-2">
     <article class="tile is-child notification is-warning">
-        <span class="avatars">
-            <img class="avatar" src="/images/avatars/{{ datos_trayecto.driver.avatar }}" alt="{{ datos_trayecto.driver.email }}">                    
-            {% for track in otros %}
-                {% if track.driver.avatar %}
-                    <img class="avatar" src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
-                {% else %}
-                    <img class="avatar" src="/images/avatars/default.png" alt="{{ track.driver.email }}">
-                {% endif %}
-            {% endfor %}
-        </span>
+        <nav class="level has-background-warning px-3 py-2">
+            <div class="level-left">
+                <div class="level-item">
+                    <div class="control">
+                    <span class="tag is-large is-link">
+                        {{ otros[0].fecha.dateTrayecto | format_datetime('short', 'none', locale='fr') }}                
+                    </span>
+                    <span class="tag is-danger">
+                        {{ otros[0].fecha.timeAt | format_time(pattern='HH:mm') }}
+                    </span>
+                    <span class="tag is-danger">
+                        {{ otros[0].fecha.timeTo | format_time(pattern='HH:mm') }}
+                    </span>
+                    </div>
+                </div>
+                <div class="level-item">
+                    <span class="avatars">                        
+                        {% for track in otros %}
+                            <div class="avatar">
+                            {% if track.driver.avatar %}                            
+                                <img class="avatar" src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
+                                <span class="tooltiptext">{{ track.driver.email }}</span>
+                            {% else %}
+                                <img class="avatar" src="/images/avatars/default.png" alt="{{ track.driver.email }}">
+                            {% endif %}
+                            </div>
+                        {% endfor %}
+                    </span>
+                </div>
+            </div>
+            <div class="level-left">
+                <iframe src="{{ path('comparativa', {id: otros[0].id}) }}"></iframe>
+            </div>
+            
+        </nav>
     </article>
 </div>
+
+
                             
 {% endblock %}

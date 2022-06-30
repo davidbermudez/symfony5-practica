@@ -1,55 +1,85 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}ComparteCoche::Perfil{% endblock %}
-{% block stylesheets %}
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <!-- Icons -->
-    <link href="/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
-    <!-- avatars -->
-    <link href="/css/avatars.css" rel="stylesheet">
-{% endblock %}
 
 {% block body %}
-    <section class="container px-4 mt-5 mb-5">
-        <div class="row gx-5">
-            {% if app.user %}            
-                <div class="container overflow-hidden">
-                    <div class="row gx-5">
-                        <div class="col mb-1">
-                            <div class="p-3 border bg-warning bg-gradient">{{ app.user.userIdentifier }}</div>
-                        </div>
-                        <div class="col mb-1">
-                            <div class="p-3 border text-white bg-secondary bg-gradient">{{ grupo }}</div>
-                        </div>
-                    </div>
+
+<section class="hero">
+    <div class="hero-body">
+        <h1 class="title">
+            Página de Perfil
+        </h1>
+        <p class="subtitle">
+            Actualiza tus datos 
+        </p>
+        <div class="hero-avatar">
+            <section class="avatars">
+                <div class="avatar">
+                    <img  src="/images/avatars/{{ driver.avatar }}" alt="{{ driver.email }}">
                 </div>
-            {% endif %}
+            </section>
         </div>
+    </div>
+</section>
+
+<div class="container is-fluid">
+    {{ form_start(form) }}
+    <div class="field">
+        <label class="label">Email</label>
+        <div class="control has-icons-left has-icons-right">
+            {{ form_widget(form.email, {'attr': {'class': 'input needs-validation driver_form_email is-danger'} }) }}
+            <span class="icon is-small is-left">
+                <i id="emailCheckIconLeft" class="fas fa-envelope"></i>
+            </span>
+            <span id="emailCheckIconRight" class="icon is-small is-right">
+                <i class="fas fa-exclamation-triangle"></i>
+            </span>
+        </div>
+        <p class="help is-danger" id="emailActionHint">This email is invalid</p>
+    </div>
+    <div class="field">
+        <label class="label">Cambiar imagen de Perfil(*)</label>
+        <div class="control has-icons-left">
+            {{ form_widget(form.avatar, {'attr': {'class': 'input needs-validation contact_form_email is-success'} }) }}
+            <span class="icon is-small is-left">
+                <i id="emailCheckIconLeft" class="fas fa-image"></i>
+            </span>            
+        </div>
+        <p class="help is-info" id="emailActionHint">* Max. 1024kb</p>
+    </div>
+    <!--Submit button-->
+    <div class="field is-grouped">
+        <div class="control">
+            {{ form_widget(form.submit, {'attr': {'class': 'button is-link'} }) }}
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+    <section class="container px-4 mt-5 mb-5">       
         <div class="row gx-5">
             <div class="container overflow-hidden">
                 <div class="card border-success mb-3" style="max-width: 100%;">
                     <div class="card-header bg-transparent border-success">
-                        <section class="avatars">
-                            <img class="avatar" src="/images/avatars/{{ driver.avatar }}" alt="{{ driver.email }}">
-                        </section>                        
+                                                
                     </div>
                     <div class="card-body text-success">
                         <h5 class="card-title">DATOS DEL USUARIO</h5>
                         <p class="card-text">
                             {#{ dump(form) }#}
-                            {{ form_start(form) }}
+                            {#{ form_start(form) }#}
                                 <div class="mb-3">
                                     <label for="driver_form_email" class="form-label">Email</label><br/>
-                                    {{ form_widget(form.email, {'attr': {'class': 'form-control'} }) }}
+                                    {#{ form_widget(form.email, {'attr': {'class': 'form-control'} }) }#}
                                 </div>                                
                                 <div class="mb-3">
                                     <label for="driver_form_avatar" class="form-label">Cambiar imagen de Perfil(*)</label><br/>
-                                    {{ form_widget(form.avatar, {'attr': {'class': 'form-control'}}) }}
+                                    {#{ form_widget(form.avatar, {'attr': {'class': 'form-control'}}) }#}
                                 </div> 
                                 <div class="mb-3">
-                                    {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary'} }) }}
+                                    {#{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary'} }) }#}
                                 </div>
-                            {{ form_end(form) }}
+                            {#{ form_end(form) }#}
                         </p>
                     </div>
                     <div class="card-footer bg-transparent border-success"></div>
