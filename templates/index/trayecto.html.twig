@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div class="level-item">
-                    <span class="avatars">                        
+                    <span class="avatars">
                         {% for track in otros %}
                             <div class="avatar">
                             {% if track.driver.avatar %}                            
@@ -67,11 +67,31 @@
                 </div>
             </div>
             <div class="level-left">
-                <iframe src="{{ path('comparativa', {id: otros[0].id}) }}"></iframe>
+            {% if estoy %}
+                <!--<iframe style="height:75px" src="{{ path('comparativa', {id: otros[0].id}) }}"></iframe>-->
+                <nav class="level p-1" style="border: 1px solid #191919;">
+                    <div class="level-left">
+                        {% for key, grupos in mayoria %}
+                        <span class="tag is-link">Con {{ key }} Puntos:</span>
+                        <div class="level-item">
+                            {% for usuario in grupos %}
+                            <div class="avatars">
+                                <div class="avatar">
+                                    <img class="avatar" src="/images/avatars/{{ usuario.avatar }}" alt="{{ usuario.email }}">
+                                    <span class="tooltiptext">{{ usuario.email }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </nav>
+            {% endif %}
             </div>
             
         </nav>
     </article>
+    
 </div>
 
 

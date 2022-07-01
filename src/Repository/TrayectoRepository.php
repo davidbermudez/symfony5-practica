@@ -153,6 +153,8 @@ class TrayectoRepository extends ServiceEntityRepository
             ->where('t.driver != :val0')
             ->andwhere('f.date_trayecto >= :val1')
             ->andwhere('d.grupo = :val2')
+            ->orderBy('f.date_trayecto', 'ASC')
+            ->orderBy('f.time_at', 'ASC')
             //->groupBy('t.fecha')
             ->setParameters([
                 'val0' => $value['driver'],
@@ -209,25 +211,26 @@ class TrayectoRepository extends ServiceEntityRepository
         // Return: Count Trayectos driver1 i driver an Driver2 as passanger
         //$personal_query = "SELECT Count(t.id) as Total FROM trayecto t WHERE t.driver_id = :driver1 AND t.passenger = TRUE AND t.fecha_id IN "
         //"(SELECT k.fecha_id FROM trayecto k INNER JOIN driver d ON k.driver_id = d.id INNER JOIN fecha f ON k.fecha_id = f.id WHERE k.driver_id = :driver2 AND k.passenger = FALSE )";        
+        $fields = array('t.fecha');
         $em2 = $this->createQueryBuilder('t')
-            ->select('t')
+            ->select('IDENTITY(t.fecha)')
             ->where('t.driver = :val1')
-            ->andwhere('t.passenger = false')
+            ->andwhere('t.passenger = true')
             ->setparameters([
                 'val1' => $driver2,
             ]);
         $query2 = $em2->getQuery()->getResult();
-        dump($query2);
+        //dump($query2);
 
         $em = $this->createQueryBuilder('t')
             ->select('COUNT(t.id) as Total')
             ->where('t.driver = :val0')
-            ->andwhere('t.passenger = true')
+            ->andwhere('t.passenger = false')
             ->andwhere('t.fecha IN (:val1)')
             //->groupBy('t.fecha')
             ->setParameters([
                 'val0' => $driver1,
-                'val1' => $em2->getQuery()->getResult(),
+                'val1' => $em2->getQuery()->getArrayResult(),
             ]);
         
         $query = $em->getQuery()->getResult();

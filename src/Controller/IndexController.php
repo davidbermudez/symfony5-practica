@@ -171,7 +171,8 @@ class IndexController extends AbstractController
         Request $request,
         GrupoRepository $grupoRepository,
         TrayectoRepository $trayectoRepository,
-        FechaRepository $fechaRepository
+        FechaRepository $fechaRepository,
+        DriverRepository $driverRepository
     ){
         // Verificamos que la id existe
         $array = (array) $request->attributes;        
@@ -204,10 +205,55 @@ class IndexController extends AbstractController
             if($incluido_este_user){
                 $estoy = true;
             }
+            // ******************* //
+            // ****Comparativa**** //            
+            $drivers = [];
+            $i = 0;
+            foreach($otros as $clave){
+                array_push($drivers, $driverRepository->find($clave->getDriver()));
+                $i++;
+            }
+            dump($drivers);
+            // init array
+            $res = [];
+            foreach($drivers as $usuario1){
+                $res[$usuario1->getId()] = 0;
+            }
+            foreach($drivers as $usuario1){            
+                foreach($drivers as $usuario2){
+                    if($usuario1 != $usuario2){
+                        // realizamos comparativa entre dos usuarios
+                        $texto1 = $usuario1->getId() ."->". $usuario2->getId();
+                        dump($texto1);
+                        $resultado1 = $trayectoRepository->compara($usuario1, $usuario2);
+                        $resultado2 = $trayectoRepository->compara($usuario2, $usuario1);
+                        //$texto1 = $resultado1 ." a ". $resultado2;
+                        //dump($texto1);
+                        if($resultado1 > $resultado2){
+                            $res[$usuario1->getId()]++;
+                        } elseif($resultado1 < $resultado2){
+                            $res[$usuario2->getId()]++;
+                        }
+                    }
+                }
+            }        
+            asort($res);
+            dump($res);
+            $array = [];
+            $i = 0;
+            foreach($res as $key => $value){
+                $pasajero = new Driver;
+                $pasajero = $driverRepository->findOneBy(['id' => $key]);
+                $array[$value][$i] = $pasajero;         
+                $i++;
+            } 
+            // ******************* //
+
             return $this->render('index/trayecto.html.twig', [
                 'grupo' => $grupo,
                 'otros' => $otros,
                 'estoy' => $estoy,
+                'mayoria' => $array,
             ]);
         }
     }
@@ -342,11 +388,14 @@ class IndexController extends AbstractController
             if($incluido_este_user){
                 $estoy = true;
             }
+            return $this->redirectToRoute('app_trayecto', array('id' => $id));
+            /*
             return $this->render('index/trayecto.html.twig', [
                 'grupo' => $grupo,
                 'otros' => $otros,
                 'estoy' => $estoy,
             ]);
+            */
         }        
     }
 
@@ -406,11 +455,12 @@ class IndexController extends AbstractController
             if($incluido_este_user){
                 $estoy = true;
             }
-            return $this->render('index/trayecto.html.twig', [
+            return $this->redirectToRoute('app_trayecto', array('id' => $id));
+            /*return $this->render('index/trayecto.html.twig', [
                 'grupo' => $grupo,
                 'otros' => $otros,
                 'estoy' => $estoy,
-            ]);
+            ]);*/
         }        
     }
 
@@ -443,24 +493,43 @@ class IndexController extends AbstractController
             array_push($drivers, $clave->getDriver());
             $i++;
         }
-        $res=[];
+        $res = [];
+        dump($drivers);
+        // init array
+        $res = [];
+        foreach($drivers as $usuario1){
+            $res[$usuario1->getId()] = 0;
+        }
         foreach($drivers as $usuario1){            
             foreach($drivers as $usuario2){
                 if($usuario1 != $usuario2){
                     // realizamos comparativa entre dos usuarios
+                    //$texto1 = $usuario1->getId() ."->". $usuario2->getId();
+                    //dump($texto1);
                     $resultado1 = $trayectoRepository->compara($usuario1, $usuario2);
                     $resultado2 = $trayectoRepository->compara($usuario2, $usuario1);
+                    //$texto1 = $resultado1 ." a ". $resultado2;
+                    //dump($texto1);
                     if($resultado1 > $resultado2){
-                        $res[$usuario1]++;
+                        $res[$usuario1->getId()]++;
                     } elseif($resultado1 < $resultado2){
-                        $res[$usuario2]++;
+                        $res[$usuario2->getId()]++;
                     }
                 }
             }
-        }
-        dump($res);
-        $return = '';
-        return new Response($valor);
+        }        
+        asort($res);
+        $array = [];
+        $i = 0;
+        foreach($res as $key => $value){
+            $pasajero = new Driver;
+            $pasajero = $driverRepository->findOneBy(['id' => $key]);
+            $array[$value][$i] = $pasajero;         
+            $i++;
+        }        
+        return $this->render('index/comparativa.html.twig', [
+            'mayoria' => $array,
+        ]);
     }
 
 }

@@ -35,7 +35,7 @@ class Fecha
     private $time_to;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Grupo::class, inversedBy="driver")
+     * @ORM\ManyToOne(targetEntity=Grupo::class, inversedBy="fecha")
      * @ORM\JoinColumn(nullable=false)
      */
     private $grupo;
