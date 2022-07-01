@@ -22,12 +22,12 @@
         <div class="content">
             {% if estoy %}
                 <div class="buttons">
-                    <button class="button is-info" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Salir de este Trayecto</button>                
-                    <button class="button is-link" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Asumir Trayecto</button>
+                    <button class="button is-danger" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Me borro!!</button>
+                    <button class="button is-link" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Yo conduzco</button>
                 </div>
             {% else %}
                 <div class="buttons">
-                    <button class="button is-link" onclick="location.href='{{ path('app_addTrayecto', {id: otros[0].id}) }}'">Añadirte al Trayecto</button>
+                    <button class="button is-link" onclick="location.href='{{ path('app_addTrayecto', {id: otros[0].id}) }}'">Me apunto!!</button>
                 </div>
             {% endif %}
         </div>

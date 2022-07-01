@@ -38,6 +38,15 @@
         <p class="help is-danger" id="emailActionHint">This email is invalid</p>
     </div>
     <div class="field">
+        <label class="label">Nombre de Usuario</label>
+        <div class="control has-icons-left">
+            {{ form_widget(form.username, {'attr': {'class': 'input is-success'} }) }}
+            <span class="icon is-small is-left">
+                <i id="usernameCheckIconLeft" class="fas fa-user"></i>
+            </span>            
+        </div>        
+    </div>
+    <div class="field">
         <label class="label">Cambiar imagen de Perfil(*)</label>
         <div class="control has-icons-left">
             {{ form_widget(form.avatar, {'attr': {'class': 'input needs-validation contact_form_email is-success'} }) }}
@@ -56,35 +65,5 @@
 
     {{ form_end(form) }}
 </div>
-    <section class="container px-4 mt-5 mb-5">       
-        <div class="row gx-5">
-            <div class="container overflow-hidden">
-                <div class="card border-success mb-3" style="max-width: 100%;">
-                    <div class="card-header bg-transparent border-success">
-                                                
-                    </div>
-                    <div class="card-body text-success">
-                        <h5 class="card-title">DATOS DEL USUARIO</h5>
-                        <p class="card-text">
-                            {#{ dump(form) }#}
-                            {#{ form_start(form) }#}
-                                <div class="mb-3">
-                                    <label for="driver_form_email" class="form-label">Email</label><br/>
-                                    {#{ form_widget(form.email, {'attr': {'class': 'form-control'} }) }#}
-                                </div>                                
-                                <div class="mb-3">
-                                    <label for="driver_form_avatar" class="form-label">Cambiar imagen de Perfil(*)</label><br/>
-                                    {#{ form_widget(form.avatar, {'attr': {'class': 'form-control'}}) }#}
-                                </div> 
-                                <div class="mb-3">
-                                    {#{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary'} }) }#}
-                                </div>
-                            {#{ form_end(form) }#}
-                        </p>
-                    </div>
-                    <div class="card-footer bg-transparent border-success"></div>
-                    </div>
-        </div>
-        </div>
-    </section>            
+              
 {% endblock %}

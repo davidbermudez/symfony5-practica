@@ -10,7 +10,7 @@
             Enviado Email 
         </h1>
         <p class="subtitle">
-            Si existe una cuenta que coincide con su correo electrónico, entonces procederá a enviar un correo electrónico que contiene un enlace que puede usar para restablecer su contraseña. 
+            Si existe una cuenta que coincide con su correo electrónico, entonces se procederá a enviar un correo electrónico que contiene un enlace que puede usar para restablecer su contraseña. 
             </br><span>Importante:</span> Este enlace caducará en {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}. Revise su bandeja de spam o Correo no Deseado
         </p>
         <p>Si en uno minutos no ha recibido un correo electrónico, verifique que la dirección de correo que nos ha indicado es correcta y en ese caso <a href="{{ path('app_forgot_password_request') }}">inténtelo nuevamente</a>.</p>

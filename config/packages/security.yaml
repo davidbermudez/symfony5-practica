@@ -9,7 +9,7 @@ security:
         app_user_admin:
             entity:
                 class: App\Entity\Admin
-                property: username
+                property: email
         app_user_driver:
             entity:            
                 class: App\Entity\Driver

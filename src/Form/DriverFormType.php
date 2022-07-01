@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class DriverFormType extends AbstractType
@@ -20,7 +21,7 @@ class DriverFormType extends AbstractType
             ->add('email', EmailType::class, [
                 'attr' => array('readonly' => true,),
             ])
-            //->add('roles')
+            ->add('username', TextType::class)
             //->add('password')
             ->add('avatar', FileType::class, [
                 'required' => false,
