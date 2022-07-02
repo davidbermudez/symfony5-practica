@@ -36,7 +36,7 @@
 
 <div class="container is-fluid mt-2">
     <article class="tile is-child notification is-warning">
-        <nav class="level has-background-warning px-3 py-2">
+        <nav class="level px-3 py-2">
             <div class="level-left">
                 <div class="level-item">
                     <div class="control">
@@ -51,47 +51,41 @@
                     </span>
                     </div>
                 </div>
-                <div class="level-item">
-                    <span class="avatars">
-                        {% for track in otros %}
-                            <div class="avatar">
-                            {% if track.driver.avatar %}                            
-                                <img class="avatar" src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
-                                <span class="tooltiptext">{{ track.driver.email }}</span>
-                            {% else %}
-                                <img class="avatar" src="/images/avatars/default.png" alt="{{ track.driver.email }}">
-                            {% endif %}
-                            </div>
-                        {% endfor %}
-                    </span>
-                </div>
-            </div>
-            <div class="level-left">
-            {% if estoy %}
-                <!--<iframe style="height:75px" src="{{ path('comparativa', {id: otros[0].id}) }}"></iframe>-->
-                <nav class="level p-1" style="border: 1px solid #191919;">
-                    <div class="level-left">
-                        {% for key, grupos in mayoria %}
-                        <span class="tag is-link">Con {{ key }} Puntos:</span>
+                {% if estoy %}                    
+                    {% for key, grupos in mayoria %}
+                        <div class="level-item" style="float:left">
+                            <span class="tag is-link">Con {{ key }} Puntos:</span>
+                        </div>
                         <div class="level-item">
-                            {% for usuario in grupos %}
                             <div class="avatars">
+                            {% for usuario in grupos %}                                
                                 <div class="avatar">
-                                    <img class="avatar" src="/images/avatars/{{ usuario.avatar }}" alt="{{ usuario.email }}">
+                                    <img src="/images/avatars/{{ usuario.avatar }}" alt="{{ usuario.email }}">
                                     <span class="tooltiptext">{{ usuario.email }}</span>
-                                </div>
-                            </div>
+                                </div>                                
                             {% endfor %}
                         </div>
-                        {% endfor %}
                     </div>
-                </nav>
+                    {% endfor %}                                 
+            {% else %}
+                <div class="level-item">                    
+                    <div class="avatars">
+                    {% for track in otros %}                            
+                        {% if track.driver.avatar %}
+                            <div class="avatar">
+                                <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
+                                <span class="tooltiptext">{{ track.driver.email }}</span>
+                            </div>
+                        {% else %}
+                            <img src="/images/avatars/default.png" alt="{{ track.driver.email }}">
+                        {% endif %}                        
+                    {% endfor %}
+                    </div>
+                </div>
             {% endif %}
-            </div>
             
         </nav>
     </article>
-    
 </div>
 
 

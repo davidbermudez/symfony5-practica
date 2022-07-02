@@ -20,13 +20,13 @@ class DriverController extends AbstractController
         $this->entityManager = $entityManager;        
     }
 
-
     /**
      * @Route("/driver", name="app_driver")
      */
     public function index(
         Request $request,
-        string $photoDir
+        string $photoDir,
+        string $photoTmp
     ): Response
     {
         $user = $this->getUser();
@@ -43,13 +43,14 @@ class DriverController extends AbstractController
                     //foto nueva
                     $filename = bin2hex(random_bytes(6)).'.'.$avatar->guessExtension();
                     try {
-                        $avatar->move($photoDir, $filename);                        
-                        dump($photoDir);
-                        dump($filename);
-                        $nuevaImagen = $this->redimensiona($photoDir.$filename);
-                        $user->setAvatar($filename);
-                        //dump($photoDir);
+                        $avatar->move($photoTmp, $filename);
+                        // redimensionar a un cuadrado centrado de 100 x 100 (valor configurable en variable $dim_square)
+                        $nuevaImagen = $this->redimensiona($photoTmp.$filename);
+                        // convertimos a png
+                        imagepng($nuevaImagen, $photoDir.$filename, 3);
+                                            
                         // Actualizar Datos
+                        $user->setAvatar($filename);
                         $this->entityManager->persist($user);
                         $this->entityManager->flush();
                         $this->addFlash(
@@ -78,12 +79,22 @@ class DriverController extends AbstractController
     }
 
     private function redimensiona($file){
-        $file = $this->createImageFromSource($file, $file);
-        $dump($file);
+        $image_in_memory = $this->createImageFromSource($file, $file);        
+        // buscar el valor mas pequeño alto o ancho        
+        $x = imagesx($image_in_memory);
+        $y = imagesy($image_in_memory);
+        //list($x, $y) = getimagesize($image_in_memory);
+        if($x > $y){
+            $maxsize = $y;
+        } else {
+            $maxsize = $x;
+        }
+        // transformamos la imagen a un cuadrado
+        return $this->resizeImage($image_in_memory, $x, $y, $maxsize, $maxsize);
     }
 
-    private function createImageFromSource($source, $type){
-        dump($source);
+    private function createImageFromSource($source, $type)
+    {
         // JPG 
         if (preg_match('/jpg|jpeg/', $type))  $data = imagecreatefromjpeg($source);
         // PNG
@@ -92,10 +103,45 @@ class DriverController extends AbstractController
         if (preg_match('/gif/', $type))  $data = imagecreatefromgif($source);
         return $data;
     }
-    private function resizeImage($original_image_data, $original_width, $original_height, $new_width, $new_height){
-        $dst_img = ImageCreateTrueColor($new_width, $new_height);
+
+    private function resizeImage($original_image_data, $original_width, $original_height, $new_width, $new_height)
+    {
+
+        $dim_square = 100; // <= no tiene en cuenta $new_width
+        $dst_img = ImageCreateTrueColor($dim_square, $dim_square);
         imagecolortransparent($dst_img, imagecolorallocate($dst_img, 0, 0, 0));
-        imagecopyresampled($dst_img, $original_image_data, 0, 0, 0, 0, $new_width, $new_height, $original_width, $original_height);
+
+        // horizontal rectangle
+        if ($original_width > $original_height) {
+            $square = $original_height;   // $square: square side length
+            $offsetX = ($original_width - $original_height) / 2;  // x offset based on the rectangle
+            $offsetY = 0;                 // y offset based on the rectangle
+        }
+        // vertical rectangle
+        elseif ($original_height > $original_width) {
+            $square = $original_width;
+            $offsetX = 0;
+            $offsetY = ($original_height - $original_width) / 2;
+        }
+        // it's already a square
+        else {
+            $square = $original_width;
+            $offsetX = $offsetY = 0;
+        }
+       
+        imagecopyresampled(
+            $dst_img,
+            $original_image_data, 
+            0,
+            0, 
+            $offsetX, 
+            $offsetY, 
+            $dim_square,
+            $dim_square, 
+            $square, 
+            $square
+        );
+
         return $dst_img;
     }
 }

@@ -1,26 +1,25 @@
+.hero-avatar{
+  position: absolute;
+  top: 15px;
+  right: 0;    
+  margin: 50px;
+}
+
 .avatars {
     display: flex;
     padding-left: 2rem;
 }
 
-.avatars .avatar {    
-    position: relative;
-    margin: 0 0 0 -1rem;
+.avatar {
+  position: relative;
+  margin: 0 0 0 -1rem;
 }
 
-.avatars .avatar img {
-    /*width: 64px !important;*/
+.avatars .avatar img {    
+    width: 64px !important;
     height: 64px !important;
     border-radius: 100%;
-    border: 2px solid #444;
-    
-}
-
-.hero-avatar{
-    position: absolute;
-    top: 15px;
-    right: 0;    
-    margin: 50px;
+    border: 2px solid #444;    
 }
 
 .tooltip {

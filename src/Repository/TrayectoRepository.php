@@ -234,7 +234,7 @@ class TrayectoRepository extends ServiceEntityRepository
             ]);
         
         $query = $em->getQuery()->getResult();
-        dump($query);
+        //dump($query);
         
         return $query[0]["Total"];
         

@@ -219,12 +219,14 @@ class IndexController extends AbstractController
             foreach($drivers as $usuario1){
                 $res[$usuario1->getId()] = 0;
             }
-            foreach($drivers as $usuario1){            
-                foreach($drivers as $usuario2){
+            $drivers2 = $drivers;
+            $i = 0;
+            foreach($drivers as $usuario1){                
+                foreach($drivers2 as $usuario2){
                     if($usuario1 != $usuario2){
-                        // realizamos comparativa entre dos usuarios
-                        $texto1 = $usuario1->getId() ."->". $usuario2->getId();
-                        dump($texto1);
+                        // realizamos comparativa de dos en dos usuarios
+                        //$texto1 = $usuario1->getId() ."->". $usuario2->getId();
+                        //dump($texto1);
                         $resultado1 = $trayectoRepository->compara($usuario1, $usuario2);
                         $resultado2 = $trayectoRepository->compara($usuario2, $usuario1);
                         //$texto1 = $resultado1 ." a ". $resultado2;
@@ -236,9 +238,12 @@ class IndexController extends AbstractController
                         }
                     }
                 }
+                // Sacamos de drivers2 al usuario que hemos tratado (con indice $i)
+                unset($drivers2[$i]);
+                $i++;
             }        
             asort($res);
-            dump($res);
+            //dump($res);
             $array = [];
             $i = 0;
             foreach($res as $key => $value){
