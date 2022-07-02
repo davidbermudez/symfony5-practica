@@ -28,7 +28,7 @@ class GrupoCrudController extends AbstractCrudController
         return [
             //IdField::new('id'),
             TextField::new('caption'),
-            //TextEditorField::new('description'),
+            TextField::new('description'),
         ];
     }
 

@@ -20,14 +20,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
-class DriverFiltradoCrudController extends DriverCrudController
+class DriverPlusCrudController extends DriverCrudController
 {
     
 
     public function configureCrud(Crud $crud): Crud
     {
         return parent::configureCrud($crud)
-            ->setPageTitle(Crud::PAGE_INDEX, $this->getUser()->getGrupo()->getCaption());
+            ->setPageTitle(Crud::PAGE_INDEX, 'Usuarios');
     }
 
     public function createIndexQueryBuilder(
@@ -39,9 +39,9 @@ class DriverFiltradoCrudController extends DriverCrudController
         $usuario = $this->getUser();
         //dump($usuario);
         $result = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        $result            
-            ->andWhere('entity.grupo = :grupo')
-            ->setParameter('grupo', $usuario->getGrupo());
+        //$result            
+            //->andWhere('entity.grupo = :grupo')
+            //->setParameter('grupo', $usuario->getGrupo());
         return $result;
     }
 
@@ -51,7 +51,7 @@ class DriverFiltradoCrudController extends DriverCrudController
             //IdField::new('id'),
             EmailField::new('email'),
             HiddenField::new('password'),
-            AssociationField::new('grupo')->setFormTypeOption('disabled','disabled'),
+            AssociationField::new('grupo'),//->setFormTypeOption('disabled','disabled'),
             //TextEditorField::new('description'),
         ];
     }

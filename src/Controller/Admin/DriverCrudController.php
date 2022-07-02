@@ -56,6 +56,4 @@ class DriverCrudController extends AbstractCrudController
         return $driver;
     }
 
-    
-    
 }

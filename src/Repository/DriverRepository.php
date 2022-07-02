@@ -34,7 +34,6 @@ class DriverRepository extends ServiceEntityRepository implements PasswordUpgrad
         $password = md5(now());
         $entity->setPassword($password);
         $entiry->setAvatar('default.png');
-
         
         $this->getEntityManager()->persist($entity);
 

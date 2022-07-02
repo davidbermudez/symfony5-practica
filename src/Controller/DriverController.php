@@ -43,21 +43,26 @@ class DriverController extends AbstractController
                     //foto nueva
                     $filename = bin2hex(random_bytes(6)).'.'.$avatar->guessExtension();
                     try {
-                        $avatar->move($photoDir, $filename);
+                        $avatar->move($photoDir, $filename);                        
+                        dump($photoDir);
+                        dump($filename);
+                        $nuevaImagen = $this->redimensiona($photoDir.$filename);
+                        $user->setAvatar($filename);
                         //dump($photoDir);
+                        // Actualizar Datos
+                        $this->entityManager->persist($user);
+                        $this->entityManager->flush();
+                        $this->addFlash(
+                            'success',
+                            'Datos actualizados'
+                        );
                     } catch (FileException $e) {
-                        // unable to upload the photo, give up
-                        //dump($e);
-                    }
-                    $user->setAvatar($filename);
-                }
-                // Actualizar Datos
-                $this->entityManager->persist($user);
-                $this->entityManager->flush();
-                $this->addFlash(
-                    'success',
-                    'Datos actualizados'
-                );
+                        $this->addFlash(
+                            'danger',
+                            'Error: '.$e
+                        );
+                    }                    
+                }                
             } elseif ($form->isSubmitted() && !$form->isValid()) {
                 $this->addFlash(
                     'danger',
@@ -70,5 +75,27 @@ class DriverController extends AbstractController
                 'form' => $form->createView(),
             ]);
         }
+    }
+
+    private function redimensiona($file){
+        $file = $this->createImageFromSource($file, $file);
+        $dump($file);
+    }
+
+    private function createImageFromSource($source, $type){
+        dump($source);
+        // JPG 
+        if (preg_match('/jpg|jpeg/', $type))  $data = imagecreatefromjpeg($source);
+        // PNG
+        if (preg_match('/png/', $type))  $data = imagecreatefrompng($source);
+        // GIF
+        if (preg_match('/gif/', $type))  $data = imagecreatefromgif($source);
+        return $data;
+    }
+    private function resizeImage($original_image_data, $original_width, $original_height, $new_width, $new_height){
+        $dst_img = ImageCreateTrueColor($new_width, $new_height);
+        imagecolortransparent($dst_img, imagecolorallocate($dst_img, 0, 0, 0));
+        imagecopyresampled($dst_img, $original_image_data, 0, 0, 0, 0, $new_width, $new_height, $original_width, $original_height);
+        return $dst_img;
     }
 }

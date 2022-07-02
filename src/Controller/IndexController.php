@@ -50,7 +50,7 @@ class IndexController extends AbstractController
         } else {
             //SUPER_ADMIN to /admin
             if ($this->isGranted('ROLE_SUPER_ADMIN')) {
-                return $this->redirectToRoute('admin');
+                return $this->redirectToRoute('plus');
             }
             $grupo = $user->getGrupo();
             $trayecto = [];

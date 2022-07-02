@@ -25,11 +25,6 @@ class Grupo
     private $caption;
 
     /**
-     * @ORM\OneToMany(targetEntity=Admin::class, mappedBy="grupo", orphanRemoval=true)
-     */
-    private $admin;
-
-    /**
      * @ORM\OneToMany(targetEntity=Driver::class, mappedBy="grupo", orphanRemoval=true)
      */
     private $driver;
@@ -72,36 +67,7 @@ class Grupo
         return $this;
     }
 
-    /**
-     * @return Collection<int, Admin>
-     */
-    public function getAdmin(): Collection
-    {
-        return $this->admin;
-    }
-
-    public function addAdmin(Admin $admin): self
-    {
-        if (!$this->admin->contains($admin)) {
-            $this->admin[] = $admin;
-            $admin->setGrupo($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAdmin(Admin $admin): self
-    {
-        if ($this->admin->removeElement($admin)) {
-            // set the owning side to null (unless already changed)
-            if ($admin->getGrupo() === $this) {
-                $admin->setGrupo(null);
-            }
-        }
-
-        return $this;
-    }
-
+    
     /**
      * @return Collection<int, Driver>
      */

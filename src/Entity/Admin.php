@@ -40,12 +40,7 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $email;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Grupo::class, inversedBy="admin")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $grupo;
-
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -146,15 +141,4 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGrupo(): ?Grupo
-    {
-        return $this->grupo;
-    }
-
-    public function setGrupo(?Grupo $grupo): self
-    {
-        $this->grupo = $grupo;
-
-        return $this;
-    }
 }
