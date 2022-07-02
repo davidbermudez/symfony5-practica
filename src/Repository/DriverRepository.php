@@ -29,7 +29,7 @@ class DriverRepository extends ServiceEntityRepository implements PasswordUpgrad
     {
         $usuario = $this->getUser();
         //dump($usuario);
-        $entity->setRoles(['ROLES_USER']);
+        $entity->setRoles(['ROLE_USER']);
         $entity->setGrupo($usuario->getgrupo());
         $password = md5(now());
         $entity->setPassword($password);

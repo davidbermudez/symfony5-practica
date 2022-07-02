@@ -29,16 +29,18 @@ class GrupoFiltradoCrudController extends GrupoCrudController
         $usuario = $this->getUser()->getId();        
         $result = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $result
-            ->leftJoin('entity.admin', 'admin')
-            ->andWhere('admin.id = :usuario')
+            ->leftJoin('entity.driver', 'driver')
+            ->andWhere('driver.id = :usuario')
             ->setParameter('usuario', $usuario);
         return $result;
     }
 
     public function configureActions(Actions $actions): Actions
     {
+        // Los ROLE_ADMIN no pueden crear, ni eliminar ningún grupo
         return $actions
             ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->remove(Crud::PAGE_INDEX, Action::DELETE)
         ;
     }
 

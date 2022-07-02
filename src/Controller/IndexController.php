@@ -48,8 +48,8 @@ class IndexController extends AbstractController
         if ($user == null){
             return $this->redirectToRoute('app_login');
         } else {
-            // ADMIN to /admin            
-            if ($this->isGranted('ROLE_ADMIN')) {
+            //SUPER_ADMIN to /admin
+            if ($this->isGranted('ROLE_SUPER_ADMIN')) {
                 return $this->redirectToRoute('admin');
             }
             $grupo = $user->getGrupo();
