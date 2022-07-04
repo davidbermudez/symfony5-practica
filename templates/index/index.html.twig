@@ -40,7 +40,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            {#{ dump(trayectos) }#}
+                            
                             {% for trayecto in trayectos %}
                                 <tr>
                                     <th scope="row">                                        
@@ -85,9 +85,9 @@
                     <p class="title">Trayectos Próximos</p>
                     <p class="subtitle">Existen {{ disponibles|length }} trayectos</p>
                     <div class="container">
-                        {#{ dump(disponibles) }#}
+                        
                         {% for trayectos in disponibles %}
-                            {#{ dump(trayectos) }#}
+                            
                                 <nav class="level has-background-warning px-3 py-2">
                                     <div class="level-left">
 

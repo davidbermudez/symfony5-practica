@@ -64,7 +64,7 @@ class IndexController extends AbstractController
                 'date_trayecto' => date('Y-m-d'),                            
                 'grupo' => $grupo,
             ]);
-            dump($disponibles);
+            //dump($disponibles);
             /*
             foreach($disponibles as $key => $value){
                 foreach($value as $kkey => $vvalue)                    
@@ -74,7 +74,7 @@ class IndexController extends AbstractController
                         }
                     }
             }
-            dump($disponibles);
+            //dump($disponibles);
             */
             return $this->render('index/index.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
@@ -196,7 +196,7 @@ class IndexController extends AbstractController
             $otros = $trayectoRepository->findBy([
                 'fecha' => $trayecto->getFecha(),
             ]);
-            dump($otros);
+            //dump($otros);
             $estoy = false;
             $incluido_este_user = $trayectoRepository->findBy([
                 'fecha' => $trayecto->getFecha(),
@@ -213,7 +213,7 @@ class IndexController extends AbstractController
                 array_push($drivers, $driverRepository->find($clave->getDriver()));
                 $i++;
             }
-            dump($drivers);
+            //dump($drivers);
             // init array
             $res = [];
             foreach($drivers as $usuario1){
@@ -499,7 +499,7 @@ class IndexController extends AbstractController
             $i++;
         }
         $res = [];
-        dump($drivers);
+        //dump($drivers);
         // init array
         $res = [];
         foreach($drivers as $usuario1){

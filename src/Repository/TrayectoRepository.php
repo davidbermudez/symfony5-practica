@@ -166,7 +166,7 @@ class TrayectoRepository extends ServiceEntityRepository
         //$query = $em->getQuery();
         //dump($em->getQuery()->getSQL());
         $query = $em->getQuery()->getResult();
-        dump($query);
+        //dump($query);
         //return $query;
         
         //return new Trayecto($query->getQuery());
@@ -179,7 +179,7 @@ class TrayectoRepository extends ServiceEntityRepository
             $r = 0;
             foreach($return as $bucle){
                 if($bucle["fecha"] == $fecha){
-                    dump("Repetido");
+                    //dump("Repetido");
                     $localizado = true;                        
                 }
                 $r++;
@@ -198,7 +198,7 @@ class TrayectoRepository extends ServiceEntityRepository
             
         }
 
-        dump($return);
+        //dump($return);
         //return $query;
         return $return;
         
