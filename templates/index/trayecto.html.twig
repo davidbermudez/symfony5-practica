@@ -61,7 +61,7 @@
                             {% for usuario in grupos %}                                
                                 <div class="avatar">
                                     <img src="/images/avatars/{{ usuario.avatar }}" alt="{{ usuario.email }}">
-                                    <span class="tooltiptext">{{ usuario.email }}</span>
+                                    <span class="tooltiptext">{{ usuario.username }}</span>
                                 </div>                                
                             {% endfor %}
                         </div>
@@ -74,7 +74,7 @@
                         {% if track.driver.avatar %}
                             <div class="avatar">
                                 <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
-                                <span class="tooltiptext">{{ track.driver.email }}</span>
+                                <span class="tooltiptext">{{ track.driver.username }}</span>
                             </div>
                         {% else %}
                             <img src="/images/avatars/default.png" alt="{{ track.driver.email }}">

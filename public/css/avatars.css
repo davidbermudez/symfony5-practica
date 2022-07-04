@@ -2,7 +2,7 @@
   position: absolute;
   top: 15px;
   right: 0;    
-  margin: 50px;
+  margin: 50px 25px;
 }
 
 .avatars {
@@ -31,16 +31,17 @@
   /* Tooltip text */
   .avatars .avatar .tooltiptext {
     visibility: hidden;
-    width: 150px;
+    
     background-color: black;
     color: #fff;
     text-align: center;
-    padding: 5px 0;
+    padding: 5px 5px;
     border-radius: 6px;
-    font-size: 0.6em;
-   
+    font-size: 0.6em;    
+  
     /* Position the tooltip text - see examples below! */
-    position: absolute;
+    position: absolute;    
+    top: 50px;
     z-index: 1;
   }
   
