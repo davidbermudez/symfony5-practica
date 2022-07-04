@@ -17,6 +17,7 @@ use App\Repository\GrupoRepository;
 use App\Repository\TrayectoRepository;
 use App\Repository\DriverRepository;
 use App\Repository\FechaRepository;
+use App\Repository\DefinitivoRepository;
 use App\Entity\Driver;
 use App\Entity\Trayecto;
 use App\Entity\Fecha;
@@ -41,6 +42,7 @@ class IndexController extends AbstractController
         Request $request,
         GrupoRepository $grupoRepository, 
         TrayectoRepository $trayectoRepository,
+        DefinitivoRepository $definitivoRepository,
         DriverRepository $driverRepository,
         FechaRepository $fechaRepository): Response
     {        
@@ -57,7 +59,7 @@ class IndexController extends AbstractController
             $trayecto = $trayectoRepository->findBy(['driver' => $user]);
 
             $offset = max(0, $request->query->getInt('offset', 0));
-            $paginator = $trayectoRepository->getTrayectoPaginator($user, $offset);
+            $paginator = $definitivoRepository->getTrayectoPaginator($user, $offset);
             //dump($paginator);
             $disponibles = $trayectoRepository->findAvailables([
                 //'driver' => $user,
@@ -172,7 +174,8 @@ class IndexController extends AbstractController
         GrupoRepository $grupoRepository,
         TrayectoRepository $trayectoRepository,
         FechaRepository $fechaRepository,
-        DriverRepository $driverRepository
+        DriverRepository $driverRepository,
+        DefinitivoRepository $definitivoRepository
     ){
         // Verificamos que la id existe
         $array = (array) $request->attributes;        
@@ -196,26 +199,28 @@ class IndexController extends AbstractController
             $otros = $trayectoRepository->findBy([
                 'fecha' => $trayecto->getFecha(),
             ]);
-            // Ver si ya existen passenger/driver asignados
-            if($otros[0]->isPassenger()){
-                // SI
-                dump("BLOQUEADO");
+            // Ver si ya existen passenger/o drivers asignados
+            foreach($otros as $track){
+
+            }
+            $estoy = false;
+            $incluido_este_user = $trayectoRepository->findBy([
+                'fecha' => $trayecto->getFecha(),
+                'driver' => $user,
+            ]);
+            if($incluido_este_user){
+                $estoy = true;
+            }
+            if(!is_null($otros[0]->isPassenger())){
                 return $this->render('index/trayecto_end.html.twig', [
                     'grupo' => $grupo,
                     'otros' => $otros,
-                    'estoy' => true,
+                    'estoy' => $estoy,
                     //'mayoria' => $array,
                 ]);
             } else {
                 //dump($otros);
-                $estoy = false;
-                $incluido_este_user = $trayectoRepository->findBy([
-                    'fecha' => $trayecto->getFecha(),
-                    'driver' => $user,
-                ]);
-                if($incluido_este_user){
-                    $estoy = true;
-                }
+                
                 // ******************* //
                 // ****Comparativa**** //            
                 $drivers = [];
@@ -238,8 +243,8 @@ class IndexController extends AbstractController
                             // realizamos comparativa de dos en dos usuarios
                             //$texto1 = $usuario1->getId() ."->". $usuario2->getId();
                             //dump($texto1);
-                            $resultado1 = $trayectoRepository->compara($usuario1, $usuario2);
-                            $resultado2 = $trayectoRepository->compara($usuario2, $usuario1);
+                            $resultado1 = $definitivoRepository->compara($usuario1, $usuario2);
+                            $resultado2 = $definitivoRepository->compara($usuario2, $usuario1);
                             //$texto1 = $resultado1 ." a ". $resultado2;
                             //dump($texto1);
                             if($resultado1 > $resultado2){
@@ -371,7 +376,7 @@ class IndexController extends AbstractController
             return $this->redirectToRoute('app_login');
         } else {
             $grupo = $user->getGrupo();
-            // Verificamos que el usuario no tiene grabado un trayecto en la misma Fecha que $id        
+            // Verificamos que el usuario no tiene grabado un trayecto en la misma Fecha que $id
             $pasajero = $trayectoRepository->findBy([
                 'driver' => $user,
                 'fecha' => $trayecto->getFecha(),
@@ -381,9 +386,17 @@ class IndexController extends AbstractController
                 // Grabamos un nuevo trayecto para este usuario
                 $myTrayecto = new Trayecto();
                 $myTrayecto->setDriver($user);
-                $myTrayecto->setFecha($trayecto->getFecha());
+                $myTrayecto->setFecha($trayecto->getFecha());                
                 $this->entityManager->persist($myTrayecto);
                 $this->entityManager->flush();
+                // Poner a null el campo passenger del resto de usuarios
+                $resto = $trayectoRepository->findBy([                    
+                    'fecha' => $trayecto->getFecha(),
+                ]);
+                foreach($resto as $pass){
+                    $pass->setPassenger(null);                    
+                }
+                $this->entityManager->flush($resto);
                 $this->addFlash(
                     'success',
                     'Se te ha añadido al trayecto con éxito'
@@ -448,13 +461,21 @@ class IndexController extends AbstractController
             ]);
             if ($pasajero){
                 // Correcto
-                // Eliminamos este trayecto al usuario
+                // Eliminamos al usuario de este trayecto
                 $this->entityManager->remove($pasajero);                
                 $this->entityManager->flush();
                 $this->addFlash(
                     'success',
                     'Se te ha eliminado de este trayecto'
                 );
+                // Ahora ponemos al resto de usuarios a null
+                $resto = $trayectoRepository->findBy([                    
+                    'fecha' => $trayecto->getFecha(),                    
+                ]);
+                foreach($resto as $pass){
+                    $pass->setPassenger(null);             
+                }
+                $this->entityManager->flush($resto);
             } else {
                 $this->addFlash(
                     'danger',
@@ -531,7 +552,8 @@ class IndexController extends AbstractController
                     'success',
                     'Se te ha marcado como Conductor y se ha bloqueado este trayecto'
                 );
-            } else {                
+            } else {           
+                $this->entityManager->rollback();
                 $this->addFlash(
                     'danger',
                     'ERROR: No te hemos encontrado en este trayecto'
@@ -587,8 +609,8 @@ class IndexController extends AbstractController
                     // realizamos comparativa entre dos usuarios
                     //$texto1 = $usuario1->getId() ."->". $usuario2->getId();
                     //dump($texto1);
-                    $resultado1 = $trayectoRepository->compara($usuario1, $usuario2);
-                    $resultado2 = $trayectoRepository->compara($usuario2, $usuario1);
+                    $resultado1 = $definitivoRepository->compara($usuario1, $usuario2);
+                    $resultado2 = $definitivoRepository->compara($usuario2, $usuario1);
                     //$texto1 = $resultado1 ." a ". $resultado2;
                     //dump($texto1);
                     if($resultado1 > $resultado2){

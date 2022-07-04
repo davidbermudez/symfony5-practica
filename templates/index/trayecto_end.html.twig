@@ -21,8 +21,22 @@
         <p class="subtitle">Elija alguna de las opciones disponibles</p>
         <div class="content">            
             <div class="buttons">
-                <button class="button is-danger" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Me borro!!</button>
-                <button class="button is-link" onclick="location.href='{{ path('app_pongocoche', {id: otros[0].id}) }}'">Yo conduzco</button>
+                
+                {% set existe = false  %}
+                {% for track in otros %}                                        
+                    {#{dump(track.driver.id)}#}
+                    {% if app.user.id == track.driver.id and track.passenger == false %}
+                        {% set existe = true  %}
+                    {% endif %}
+                {% endfor %}
+                {% if estoy %}
+                    <button class="button is-danger" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Me borro!!</button>
+                    {% if existe %}
+                        <button class="button is-warning" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Confirmar</button>
+                    {% endif %}                    
+                {% else %}
+                    <button class="button is-link" onclick="location.href='{{ path('app_addTrayecto', {id: otros[0].id}) }}'">Me apunto!!</button
+                {% endif %}
             </div>
         </div>
     </article>
@@ -48,22 +62,24 @@
                 
                 <div class="level-item">                    
                     <div class="avatars">
-                    {% for track in otros %}                        
+                    {% for track in otros %}
                         {% if track.driver.avatar %}
-                            <div class="level-item" style="float:left">                            
                             {% if track.passenger %}
-                                <span class="tag is-link">PASAJERO</span>
+                                <span class="icon has-text-success rounded passenger">
+                                    <i class="fas fa-user"></i>
+                                </span>
                             {% else %}
-                                <span class="tag is-link">CONDUCTOR</span>
-                            {% endif %}   
-                            </div>
+                                <span class="icon has-text-warning rounded car">
+                                    <i class="fas fa-car"></i>
+                                </span>
+                            {% endif %}
                             <div class="avatar">
                                 <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
                                 <span class="tooltiptext">{{ track.driver.username }}</span>
                             </div>
                         {% else %}
                             <img src="/images/avatars/default.png" alt="{{ track.driver.email }}">
-                        {% endif %}                        
+                        {% endif %}
                     {% endfor %}
                     </div>
                 </div>            

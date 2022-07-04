@@ -189,6 +189,7 @@ class TrayectoRepository extends ServiceEntityRepository
             if(!$localizado){
                 $return[$i]["trayecto_id"] = $element->getId();
                 $return[$i]["fecha"] = $element->getFecha();
+                $return[$i]["passenger"] = $element->isPassenger();
                 $return[$i]["driver"] = [];
                 array_push($return[$i]["driver"], $element->getDriver());
                 $j = $i;

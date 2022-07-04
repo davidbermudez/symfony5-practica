@@ -58,3 +58,18 @@
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   }
   
+  .rounded {
+    padding: 2px;
+    border-radius: 100%;
+    z-index: 2;    
+  }
+
+  .car {
+    color: white;
+    background-color: red;
+  }
+
+  .passenger {
+    color: black;
+    background-color: yellow;
+  }
