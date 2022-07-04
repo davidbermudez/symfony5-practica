@@ -121,4 +121,16 @@ class Fecha
 
         return $this;
     }
+
+    public function getGrupo(): ?Grupo
+    {
+        return $this->grupo;
+    }
+
+    public function setGrupo(?Grupo $grupo): self
+    {
+        $this->grupo = $grupo;
+
+        return $this;
+    }
 }
