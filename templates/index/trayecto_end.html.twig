@@ -10,7 +10,7 @@
             Trayecto
         </h1>
         <p class="subtitle">
-            Viaje disponible
+            Viaje Cerrado
         </p>
     </div>
 </section>
@@ -19,23 +19,17 @@
     <article class="tile is-child notification is-success">
         <p class="title">Opciones</p>
         <p class="subtitle">Elija alguna de las opciones disponibles</p>
-        <div class="content">
-            {% if estoy %}
-                <div class="buttons">
-                    <button class="button is-danger" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Me borro!!</button>
-                    <button class="button is-link" onclick="location.href='{{ path('app_pongocoche', {id: otros[0].id}) }}'">Yo conduzco</button>
-                </div>
-            {% else %}
-                <div class="buttons">
-                    <button class="button is-link" onclick="location.href='{{ path('app_addTrayecto', {id: otros[0].id}) }}'">Me apunto!!</button>
-                </div>
-            {% endif %}
+        <div class="content">            
+            <div class="buttons">
+                <button class="button is-danger" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Me borro!!</button>
+                <button class="button is-link" onclick="location.href='{{ path('app_pongocoche', {id: otros[0].id}) }}'">Yo conduzco</button>
+            </div>
         </div>
     </article>
 </div>
 
 <div class="container is-fluid mt-2">
-    <article class="tile is-child notification is-warning">
+    <article class="tile is-child notification is-danger">
         <nav class="level px-3 py-2">
             <div class="level-left">
                 <div class="level-item">
@@ -43,35 +37,26 @@
                     <span class="tag is-large is-link">
                         {{ otros[0].fecha.dateTrayecto | format_datetime('short', 'none', locale='fr') }}                
                     </span>
-                    <span class="tag is-danger">
+                    <span class="tag is-warning">
                         {{ otros[0].fecha.timeAt | format_time(pattern='HH:mm') }}
                     </span>
-                    <span class="tag is-danger">
+                    <span class="tag is-warning">
                         {{ otros[0].fecha.timeTo | format_time(pattern='HH:mm') }}
                     </span>
                     </div>
                 </div>
-                {% if estoy %}                    
-                    {% for key, grupos in mayoria %}
-                        <div class="level-item" style="float:left">
-                            <span class="tag is-link">Con {{ key }} Puntos:</span>
-                        </div>
-                        <div class="level-item">
-                            <div class="avatars">
-                            {% for usuario in grupos %}                                
-                                <div class="avatar">
-                                    <img src="/images/avatars/{{ usuario.avatar }}" alt="{{ usuario.username }}">
-                                    <span class="tooltiptext">{{ usuario.username }}</span>
-                                </div>                                
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endfor %}                                 
-            {% else %}
+                
                 <div class="level-item">                    
                     <div class="avatars">
-                    {% for track in otros %}                            
+                    {% for track in otros %}                        
                         {% if track.driver.avatar %}
+                            <div class="level-item" style="float:left">                            
+                            {% if track.passenger %}
+                                <span class="tag is-link">PASAJERO</span>
+                            {% else %}
+                                <span class="tag is-link">CONDUCTOR</span>
+                            {% endif %}   
+                            </div>
                             <div class="avatar">
                                 <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
                                 <span class="tooltiptext">{{ track.driver.username }}</span>
@@ -81,8 +66,7 @@
                         {% endif %}                        
                     {% endfor %}
                     </div>
-                </div>
-            {% endif %}
+                </div>            
             
         </nav>
     </article>

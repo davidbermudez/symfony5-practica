@@ -60,7 +60,7 @@ class IndexController extends AbstractController
             $paginator = $trayectoRepository->getTrayectoPaginator($user, $offset);
             //dump($paginator);
             $disponibles = $trayectoRepository->findAvailables([
-                'driver' => $user,
+                //'driver' => $user,
                 'date_trayecto' => date('Y-m-d'),                            
                 'grupo' => $grupo,
             ]);
@@ -196,70 +196,82 @@ class IndexController extends AbstractController
             $otros = $trayectoRepository->findBy([
                 'fecha' => $trayecto->getFecha(),
             ]);
-            //dump($otros);
-            $estoy = false;
-            $incluido_este_user = $trayectoRepository->findBy([
-                'fecha' => $trayecto->getFecha(),
-                'driver' => $user,
-            ]);
-            if($incluido_este_user){
-                $estoy = true;
-            }
-            // ******************* //
-            // ****Comparativa**** //            
-            $drivers = [];
-            $i = 0;
-            foreach($otros as $clave){
-                array_push($drivers, $driverRepository->find($clave->getDriver()));
-                $i++;
-            }
-            //dump($drivers);
-            // init array
-            $res = [];
-            foreach($drivers as $usuario1){
-                $res[$usuario1->getId()] = 0;
-            }
-            $drivers2 = $drivers;
-            $i = 0;
-            foreach($drivers as $usuario1){                
-                foreach($drivers2 as $usuario2){
-                    if($usuario1 != $usuario2){
-                        // realizamos comparativa de dos en dos usuarios
-                        //$texto1 = $usuario1->getId() ."->". $usuario2->getId();
-                        //dump($texto1);
-                        $resultado1 = $trayectoRepository->compara($usuario1, $usuario2);
-                        $resultado2 = $trayectoRepository->compara($usuario2, $usuario1);
-                        //$texto1 = $resultado1 ." a ". $resultado2;
-                        //dump($texto1);
-                        if($resultado1 > $resultado2){
-                            $res[$usuario1->getId()]++;
-                        } elseif($resultado1 < $resultado2){
-                            $res[$usuario2->getId()]++;
+            // Ver si ya existen passenger/driver asignados
+            if($otros[0]->isPassenger()){
+                // SI
+                dump("BLOQUEADO");
+                return $this->render('index/trayecto_end.html.twig', [
+                    'grupo' => $grupo,
+                    'otros' => $otros,
+                    'estoy' => true,
+                    //'mayoria' => $array,
+                ]);
+            } else {
+                //dump($otros);
+                $estoy = false;
+                $incluido_este_user = $trayectoRepository->findBy([
+                    'fecha' => $trayecto->getFecha(),
+                    'driver' => $user,
+                ]);
+                if($incluido_este_user){
+                    $estoy = true;
+                }
+                // ******************* //
+                // ****Comparativa**** //            
+                $drivers = [];
+                $i = 0;
+                foreach($otros as $clave){
+                    array_push($drivers, $driverRepository->find($clave->getDriver()));
+                    $i++;
+                }
+                //dump($drivers);
+                // init array
+                $res = [];
+                foreach($drivers as $usuario1){
+                    $res[$usuario1->getId()] = 0;
+                }
+                $drivers2 = $drivers;
+                $i = 0;
+                foreach($drivers as $usuario1){                
+                    foreach($drivers2 as $usuario2){
+                        if($usuario1 != $usuario2){
+                            // realizamos comparativa de dos en dos usuarios
+                            //$texto1 = $usuario1->getId() ."->". $usuario2->getId();
+                            //dump($texto1);
+                            $resultado1 = $trayectoRepository->compara($usuario1, $usuario2);
+                            $resultado2 = $trayectoRepository->compara($usuario2, $usuario1);
+                            //$texto1 = $resultado1 ." a ". $resultado2;
+                            //dump($texto1);
+                            if($resultado1 > $resultado2){
+                                $res[$usuario1->getId()]++;
+                            } elseif($resultado1 < $resultado2){
+                                $res[$usuario2->getId()]++;
+                            }
                         }
                     }
-                }
-                // Sacamos de drivers2 al usuario que hemos tratado (con indice $i)
-                unset($drivers2[$i]);
-                $i++;
-            }        
-            asort($res);
-            //dump($res);
-            $array = [];
-            $i = 0;
-            foreach($res as $key => $value){
-                $pasajero = new Driver;
-                $pasajero = $driverRepository->findOneBy(['id' => $key]);
-                $array[$value][$i] = $pasajero;         
-                $i++;
-            } 
-            // ******************* //
+                    // Sacamos de drivers2 al usuario que hemos tratado (con indice $i)
+                    unset($drivers2[$i]);
+                    $i++;
+                }        
+                asort($res);
+                //dump($res);
+                $array = [];
+                $i = 0;
+                foreach($res as $key => $value){
+                    $pasajero = new Driver;
+                    $pasajero = $driverRepository->findOneBy(['id' => $key]);
+                    $array[$value][$i] = $pasajero;         
+                    $i++;
+                } 
+                // ******************* //
 
-            return $this->render('index/trayecto.html.twig', [
-                'grupo' => $grupo,
-                'otros' => $otros,
-                'estoy' => $estoy,
-                'mayoria' => $array,
-            ]);
+                return $this->render('index/trayecto.html.twig', [
+                    'grupo' => $grupo,
+                    'otros' => $otros,
+                    'estoy' => $estoy,
+                    'mayoria' => $array,
+                ]);
+            }
         }
     }
 
@@ -460,7 +472,7 @@ class IndexController extends AbstractController
             if($incluido_este_user){
                 $estoy = true;
             }
-            return $this->redirectToRoute('app_trayecto', array('id' => $id));
+            return $this->redirectToRoute('homepage');
             /*return $this->render('index/trayecto.html.twig', [
                 'grupo' => $grupo,
                 'otros' => $otros,
@@ -469,6 +481,70 @@ class IndexController extends AbstractController
         }        
     }
 
+
+    /**
+     * @Route("/mydriver/{id}", name="app_pongocoche")
+     */
+    public function pongo_coche(
+        Request $request,
+        GrupoRepository $grupoRepository,
+        TrayectoRepository $trayectoRepository,
+        DriverRepository $driverRepository
+    ): Response
+    {        
+        $array = (array) $request->attributes;
+        // Verificamos que la id existe
+        $id = $array["\x00*\x00parameters"]["id"];
+        $trayecto = new Trayecto;
+        $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
+        if ($trayecto == null){
+            throw new Exception('001: No existe el trayecto indicado en su grupo');
+        }
+        // Verificamos el user
+        $user = $this->getUser();
+        if ($user == null){
+            return $this->redirectToRoute('app_login');
+        } else {
+            $grupo = $user->getGrupo();
+            // Verificamos que el usuario tiene grabado un trayecto en la misma Fecha que $id
+            //$pasajero = $trayectoRepository->findOneBy([
+            $pasajero = $trayectoRepository->findBy([
+                //'driver' => $user,
+                'fecha' => $trayecto->getFecha(),
+            ]);
+            $estoy = false;
+            //dump($pasajero);
+            foreach($pasajero as $usuario){
+                //dump($usuario->getDriver());
+                if ($user == $usuario->getDriver()) {
+                    $estoy = true;
+                    $usuario->setPassenger(false);
+                } else {
+                    $usuario->setPassenger(true);
+                }
+            }
+            if ($estoy){
+                // Correcto                
+                //Actualizamos el estado de los miembros de este trayecto tal y como han quedado en el bucle anterior
+                $this->entityManager->flush();
+                $this->addFlash(
+                    'success',
+                    'Se te ha marcado como Conductor y se ha bloqueado este trayecto'
+                );
+            } else {                
+                $this->addFlash(
+                    'danger',
+                    'ERROR: No te hemos encontrado en este trayecto'
+                );
+            }            
+            return $this->redirectToRoute('app_trayecto', ['id' => $id]);
+            /*return $this->render('index/trayecto.html.twig', [
+                'grupo' => $grupo,
+                'otros' => $otros,
+                'estoy' => $estoy,
+            ]);*/
+        }        
+    }
 
     /**
      * @Route("/comparativa/{id}", name="comparativa")

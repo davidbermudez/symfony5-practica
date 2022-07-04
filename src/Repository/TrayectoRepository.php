@@ -145,19 +145,20 @@ class TrayectoRepository extends ServiceEntityRepository
     
     public function findAvailables($value): array
     {
-        // Return: Trayecto(s) and email driver for date_trayecto >= now, same grupo, distinct driver
+        // Return: Trayecto(s) for date_trayecto >= now, same grupo
         $em = $this->createQueryBuilder('t')
             //->select('t', 'd.id')
             ->join(Fecha::class, 'f', Join::WITH, 't.fecha = f.id')
             ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
-            ->where('t.driver != :val0')
-            ->andwhere('f.date_trayecto >= :val1')
+            //->where('t.driver != :val0')
+            ->where('f.date_trayecto >= :val1')            
             ->andwhere('d.grupo = :val2')
             ->orderBy('f.date_trayecto', 'ASC')
-            ->orderBy('f.time_at', 'ASC')
+            ->setMaxResults(10)
+            //->orderBy('f.time_at', 'ASC')
             //->groupBy('t.fecha')
             ->setParameters([
-                'val0' => $value['driver'],
+                //'val0' => $value['driver'],
                 'val1' => $value['date_trayecto'],                
                 'val2' => $value['grupo'],
             ]);
@@ -166,7 +167,7 @@ class TrayectoRepository extends ServiceEntityRepository
         //$query = $em->getQuery();
         //dump($em->getQuery()->getSQL());
         $query = $em->getQuery()->getResult();
-        //dump($query);
+        dump($query);
         //return $query;
         
         //return new Trayecto($query->getQuery());
@@ -188,7 +189,7 @@ class TrayectoRepository extends ServiceEntityRepository
             if(!$localizado){
                 $return[$i]["trayecto_id"] = $element->getId();
                 $return[$i]["fecha"] = $element->getFecha();
-                $return[$i]["driver"] = [];//$element->getDriver();                
+                $return[$i]["driver"] = [];
                 array_push($return[$i]["driver"], $element->getDriver());
                 $j = $i;
                 $i++;
@@ -203,8 +204,6 @@ class TrayectoRepository extends ServiceEntityRepository
         return $return;
         
     }
-
-
 
     public function compara(Driver $driver1, Driver $driver2): int
     {

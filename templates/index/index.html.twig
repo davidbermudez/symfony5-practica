@@ -15,7 +15,7 @@
             <section class="avatars">
                 <div class="avatar">
                     <img src="/images/avatars/{{ app.user.avatar }}" alt="{{ app.user.userIdentifier }}">
-                    <span class="tooltiptext">{{ app.user.userIdentifier }}</span>
+                    <span class="tooltiptext">{{ app.user.username }}</span>
                 </div>
             </section>
         </div>
@@ -23,78 +23,31 @@
 </section>
 <div class="container is-fluid mt-4">
     <div class="tile is-ancestor">
-        <div class="tile">
-        <div class="tile is-8 is-vertical">
-            <div class="tile is-parent is-vertical">
-                <article class="tile is-child notification is-danger">
-                    <p class="title">Tus Viajes</p>
-                    <p class="subtitle">Existen {{ trayectos|length }} trayectos</p>
-                    <div class="content">
-                        <table class="table is-success is-striped">
-                            <thead>
-                                <tr>
-                                <th scope="col">Fecha</th>
-                                <th scope="col">Inicio</th>
-                                <th scope="col">Fin</th>
-                                <th scope="col">F</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            
-                            {% for trayecto in trayectos %}
-                                <tr>
-                                    <th scope="row">                                        
-                                        {{ trayecto.fecha.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
-                                    </th>
-                                    <td>
-                                        {{ trayecto.fecha.timeAt | format_time(pattern='HH:mm') }}
-                                    </td>
-                                    <td>
-                                        {{ trayecto.fecha.timeTo | format_time(pattern='HH:mm') }}
-                                    </td>
-                                    <td>                                        
-                                        {% if trayecto.passenger is null %}
-                                            <i class="fa fa-question is-danger"></i>
-                                        {% elseif trayecto.passenger == false %}
-                                            <i class="fa fa-car is-primary"></i>
-                                        {% else %}
-                                            <i class="fa fa-user is-success"></i>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                        <nav class="pagination" role="navigation" aria-label="pagination">
-                            {% if previous >= 0 %}
-                                <a class="pagination-previous" href="{{ path('homepage', { offset:previous }) }}">Previous</a>
-                            {% else %}
-                                <a class="pagination-previous" disabled href="#">Previous</a>
-                            {% endif %}
-                            {% if next < trayectos|length %}
-                                <a class="pagination-next" href="{{ path('homepage', { offset: next}) }}">Next page</a>
-                            {% else %}
-                                <a class="pagination-next" href="#" disabled>Next page</a>
-                            {% endif %}
-                        </nav>
-                    </div>
-                </article>
-            </div>
-            <div class="tile is-parent is-vertical">
-                <article class="tile is-child notification is-primary">
-                    <p class="title">Trayectos Próximos</p>
-                    <p class="subtitle">Existen {{ disponibles|length }} trayectos</p>
-                    <div class="container">
-                        
-                        {% for trayectos in disponibles %}
-                            
+        
+        <div class="tile is-parent">
+
+            <div class="tile is-vertical">
+        
+                <div class="tile is-child notification is-info">
+                    <article class="tile is-child">
+                        <p class="title">Tus Trayectos</p>
+                        <p class="subtitle">Top tile</p>
+                        <div class="container">                            
+                            {% for trayectos in disponibles %}
+                                {% set existe = false  %}
+                                {% for users in trayectos.driver %}
+                                    {% if app.user.id == users.id %}
+                                        {% set existe = true  %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if existe %}
                                 <nav class="level has-background-warning px-3 py-2">
                                     <div class="level-left">
 
                                         <div class="level-item">
-                                            <div class="control">
+                                            <div class="">
                                                 <button id="submitButton" onclick='location.href = "{{ path('app_trayecto', {id: trayectos["trayecto_id"]}) }}"' class="button is-link">
-                                                    {{ trayectos.fecha.dateTrayecto | format_datetime('short', 'none', locale='fr') }}
+                                                    {{ trayectos.fecha.dateTrayecto | format_datetime(pattern="d/MM/yy") }}
                                                 </button>
                                                 <span class="tag is-danger">
                                                     {{ trayectos.fecha.timeAt | format_time(pattern='HH:mm') }}
@@ -106,43 +59,163 @@
                                         </div>
 
                                         <div class="level-item">
-                                            <span class="avatars">                                            
-                                            {% for users in trayectos.driver %}                                            
+                                            <div class="avatars">
+                                            {% for users in trayectos.driver %}
                                                 <div class="avatar">
-                                                {% if users.avatar %}                                                
-                                                    <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.email }}">
-                                                    <span class="tooltiptext">{{ users.email }}</span>                                                
+                                                {% if users.avatar %}
+                                                    <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}">
+                                                    <span class="tooltiptext">{{ users.username }}</span>                                                
                                                 {% else %}
-                                                    <img class="avatar" src="/images/avatars/default.png" alt="{{ users.email }}">
+                                                    <img class="avatar" src="/images/avatars/default.png" alt="{{ users.username }}">
                                                 {% endif %}
                                                 </div>
                                             {% endfor %}
-                                            </span>
+                                            </div>
                                         </div>
 
                                     </div>
                                     <div class="level-right">
                                         <!-- -->
                                     </div>
-                                </nav>                            
-                        {% endfor %}
-                    </div>
-                </article>
+                                </nav>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </article>
+                </div>
+        
+                <div class="tile is-child notification is-success">
+                    <article class="tile is-child">
+                        <p class="title">Disponibles</p>
+                        <p class="subtitle">Próximos trayectos</p>
+                        <div class="container">                            
+                            {% for trayectos in disponibles %}
+                                {% set existe = false  %}
+                                {% for users in trayectos.driver %}
+                                    {% if app.user.id == users.id %}
+                                        {% set existe = true  %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if existe == false %}
+                                    <nav class="level has-background-warning px-3 py-2">
+                                        <div class="level-left">
+
+                                            <div class="level-item">
+                                                <div class="">
+                                                    <button id="submitButton" onclick='location.href = "{{ path('app_trayecto', {id: trayectos["trayecto_id"]}) }}"' class="button is-link">
+                                                        {{ trayectos.fecha.dateTrayecto | format_datetime(pattern="d/MM/yy") }}
+                                                    </button>
+                                                    <span class="tag is-danger">
+                                                        {{ trayectos.fecha.timeAt | format_time(pattern='HH:mm') }}
+                                                    </span>
+                                                    <span class="tag is-danger">
+                                                        {{ trayectos.fecha.timeTo | format_time(pattern='HH:mm') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="level-item">
+                                                <span class="avatars">                                            
+                                                {% for users in trayectos.driver %}                                            
+                                                    <div class="avatar">
+                                                    {% if users.avatar %}                                                
+                                                        <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}">
+                                                        <span class="tooltiptext">{{ users.username }}</span>                                                
+                                                    {% else %}
+                                                        <img class="avatar" src="/images/avatars/default.png" alt="{{ users.username }}">
+                                                    {% endif %}
+                                                    </div>
+                                                {% endfor %}
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="level-right">
+                                            <!-- -->
+                                        </div>
+                                    </nav>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </article>
+                </div>
             </div>
-        </div>
-        <div class="tile">
-            <div class="tile is-parent">
-                <article class="tile is-child notification is-warning">
-                    <p class="title">Acciones</p>
-                    <p class="subtitle">Seleccione alguna opción</p>
-                    <div class="content">
-                        <div class="buttons">
-                            <button class="button is-link" onclick="location.href='{{ path('app_newTime') }}'">Nuevo Horario</button>
-                        </div>                        
-                    </div>
-                </article>
+        </div>        
+        <div class="tile is-parent">
+
+            <div class="tile is-vertical">            
+                
+                <div class="tile is-child notification is-warning">
+                    <article class="tile is-child">
+                        <p class="title">Acciones</p>
+                        <p class="subtitle">Seleccione alguna opción</p>
+                        <div class="content">
+                            <div class="buttons">
+                                <button class="button is-link" onclick="location.href='{{ path('app_newTime') }}'">Nuevo Horario</button>
+                            </div>                        
+                        </div>
+                    </article>
+                </div>
+
+                <div class="tile is-child notification is-danger">
+                    <article class="tile is-child">                        
+                        <p class="title">Historial</p>
+                        <p class="subtitle">Existen {{ trayectos|length }} trayectos</p>
+                        <div class="content">
+                            <table class="table is-success is-striped is-small">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Inicio</th>
+                                    <th scope="col">Fin</th>
+                                    <th scope="col">F</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                
+                                {% for trayecto in trayectos %}
+                                    <tr class="is-size-6 is-family-monospace">
+                                        <th scope="row">
+                                            {#{ trayecto.fecha.dateTrayecto | format_datetime('short', 'none', locale='fr') }#}
+                                            {{ trayecto.fecha.dateTrayecto | format_datetime(pattern="d/MM/yy") }}
+                                        </th>
+                                        <td>
+                                            {{ trayecto.fecha.timeAt | format_time(pattern='HH:mm') }}
+                                        </td>
+                                        <td>
+                                            {{ trayecto.fecha.timeTo | format_time(pattern='HH:mm') }}
+                                        </td>
+                                        <td>                                        
+                                            {% if trayecto.passenger is null %}
+                                                <i class="fa fa-question is-danger"></i>
+                                            {% elseif trayecto.passenger == false %}
+                                                <i class="fa fa-car is-primary"></i>
+                                            {% else %}
+                                                <i class="fa fa-user is-success"></i>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <nav class="pagination" role="navigation" aria-label="pagination">
+                                {% if previous >= 0 %}
+                                    <a class="pagination-previous" href="{{ path('homepage', { offset:previous }) }}">Previous</a>
+                                {% else %}
+                                    <a class="pagination-previous" disabled href="#">Previous</a>
+                                {% endif %}
+                                {% if next < trayectos|length %}
+                                    <a class="pagination-next" href="{{ path('homepage', { offset: next}) }}">Next page</a>
+                                {% else %}
+                                    <a class="pagination-next" href="#" disabled>Next page</a>
+                                {% endif %}
+                            </nav>
+                        </div>
+                    </article>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
