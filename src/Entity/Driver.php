@@ -56,6 +56,11 @@ class Driver implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $username;
 
+    /**
+     * @ORM\Column(type="string", length=15, nullable=true)
+     */
+    private $phonenumber;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -173,6 +178,18 @@ class Driver implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(?string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getPhonenumber(): ?string
+    {
+        return $this->phonenumber;
+    }
+
+    public function setPhonenumber(?string $phonenumber): self
+    {
+        $this->phonenumber = $phonenumber;
 
         return $this;
     }

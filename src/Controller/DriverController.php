@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\DriverFormType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
+use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\NotifierInterface;
+use Symfony\Component\Notifier\Recipient\Recipient;
+
 class DriverController extends AbstractController
 {
     private $entityManager;    
@@ -26,7 +30,8 @@ class DriverController extends AbstractController
     public function index(
         Request $request,
         string $photoDir,
-        string $photoTmp
+        string $photoTmp,
+        NotifierInterface $notifier
     ): Response
     {
         $user = $this->getUser();
@@ -70,6 +75,14 @@ class DriverController extends AbstractController
                     'Los datos introducidos no son válidos'
                 );
             }
+            $notification = (new Notification('New Invoice', ['email', 'chat/telegram']))
+                ->content('You got a new invoice for 15 EUR.')
+                ->importance(Notification::IMPORTANCE_MEDIUM);
+                $recipient = new Recipient(
+                    $user->getEmail(),
+                    $user->getPhonenumber()
+                );
+            $notifier->send($notification, $recipient);
             return $this->render('driver/index.html.twig', [
                 'driver' => $user,
                 'grupo' => $grupo,
