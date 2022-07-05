@@ -14,8 +14,7 @@
         <div class="hero-avatar">
             <section class="avatars">
                 <div class="avatar">
-                    <img src="/images/avatars/{{ app.user.avatar }}" alt="{{ app.user.userIdentifier }}">
-                    <span class="tooltiptext">{{ app.user.username }}</span>
+                    <img src="/images/avatars/{{ app.user.avatar }}" alt="{{ app.user.userIdentifier }}">                    
                 </div>
             </section>
         </div>
@@ -30,8 +29,8 @@
         
                 <div class="tile is-child notification is-info">
                     <article class="tile is-child">
-                        <p class="title">Tus Trayectos</p>
-                        <p class="subtitle">Top tile</p>
+                        <p class="title">Viajes Previstos</p>
+                        <p class="subtitle">Trayectos seleccionados</p>
                         <div class="container">                            
                             {% for trayectos in disponibles %}
                                 {% set existe = false  %}

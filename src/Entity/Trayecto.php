@@ -34,6 +34,11 @@ class Trayecto
      */
     private $fecha;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $confirm;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,6 +76,18 @@ class Trayecto
     public function setFecha(?Fecha $fecha): self
     {
         $this->fecha = $fecha;
+
+        return $this;
+    }
+
+    public function isConfirm(): ?bool
+    {
+        return $this->confirm;
+    }
+
+    public function setConfirm(?bool $confirm): self
+    {
+        $this->confirm = $confirm;
 
         return $this;
     }

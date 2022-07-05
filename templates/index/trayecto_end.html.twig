@@ -32,7 +32,7 @@
                 {% if estoy %}
                     <button class="button is-danger" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Me borro!!</button>
                     {% if existe %}
-                        <button class="button is-warning" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Confirmar</button>
+                        <button class="button is-warning" onclick="location.href='{{ path('app_confirm_trayecto', {id: otros[0].id}) }}'">Confirmar</button>
                     {% endif %}                    
                 {% else %}
                     <button class="button is-link" onclick="location.href='{{ path('app_addTrayecto', {id: otros[0].id}) }}'">Me apunto!!</button
@@ -63,23 +63,24 @@
                 <div class="level-item">                    
                     <div class="avatars">
                     {% for track in otros %}
-                        {% if track.driver.avatar %}
-                            {% if track.passenger %}
-                                <span class="icon has-text-success rounded passenger">
-                                    <i class="fas fa-user"></i>
-                                </span>
-                            {% else %}
-                                <span class="icon has-text-warning rounded car">
-                                    <i class="fas fa-car"></i>
-                                </span>
-                            {% endif %}
-                            <div class="avatar">
-                                <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
-                                <span class="tooltiptext">{{ track.driver.username }}</span>
-                            </div>
+                        
+                        {% if track.passenger %}
+                            <span class="icon has-text-success rounded passenger">
+                                <i class="fas fa-user"></i>
+                            </span>
                         {% else %}
-                            <img src="/images/avatars/default.png" alt="{{ track.driver.email }}">
+                            <span class="icon has-text-warning rounded car">
+                                <i class="fas fa-car"></i>
+                            </span>
                         {% endif %}
+                        <div class="avatar">
+                            {% if track.driver.avatar %}                            
+                                <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">                            
+                            {% else %}
+                                <img src="/images/avatars/default.png" alt="{{ track.driver.email }}">
+                            {% endif %}
+                            <span class="tooltiptext">{{ track.driver.username }}</span>
+                        </div>
                     {% endfor %}
                     </div>
                 </div>            

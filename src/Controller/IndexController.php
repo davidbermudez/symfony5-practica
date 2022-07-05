@@ -17,7 +17,6 @@ use App\Repository\GrupoRepository;
 use App\Repository\TrayectoRepository;
 use App\Repository\DriverRepository;
 use App\Repository\FechaRepository;
-use App\Repository\DefinitivoRepository;
 use App\Entity\Driver;
 use App\Entity\Trayecto;
 use App\Entity\Fecha;
@@ -42,7 +41,6 @@ class IndexController extends AbstractController
         Request $request,
         GrupoRepository $grupoRepository, 
         TrayectoRepository $trayectoRepository,
-        DefinitivoRepository $definitivoRepository,
         DriverRepository $driverRepository,
         FechaRepository $fechaRepository): Response
     {        
@@ -59,7 +57,7 @@ class IndexController extends AbstractController
             $trayecto = $trayectoRepository->findBy(['driver' => $user]);
 
             $offset = max(0, $request->query->getInt('offset', 0));
-            $paginator = $definitivoRepository->getTrayectoPaginator($user, $offset);
+            $paginator = $trayectoRepository->getTrayectoPaginator($user, $offset);
             //dump($paginator);
             $disponibles = $trayectoRepository->findAvailables([
                 //'driver' => $user,
@@ -69,7 +67,7 @@ class IndexController extends AbstractController
             //dump($disponibles);
             /*
             foreach($disponibles as $key => $value){
-                foreach($value as $kkey => $vvalue)                    
+                foreach($value as $kkey => $vvalue)
                     if($kkey == "drivers"){
                         foreach($vvalue as $kkkey => $vvvalue){
                             $disponibles[$key][$kkey][$kkkey] = $driverRepository->findOneBy(["id" => $vvvalue]);
@@ -174,8 +172,7 @@ class IndexController extends AbstractController
         GrupoRepository $grupoRepository,
         TrayectoRepository $trayectoRepository,
         FechaRepository $fechaRepository,
-        DriverRepository $driverRepository,
-        DefinitivoRepository $definitivoRepository
+        DriverRepository $driverRepository
     ){
         // Verificamos que la id existe
         $array = (array) $request->attributes;        
@@ -243,8 +240,8 @@ class IndexController extends AbstractController
                             // realizamos comparativa de dos en dos usuarios
                             //$texto1 = $usuario1->getId() ."->". $usuario2->getId();
                             //dump($texto1);
-                            $resultado1 = $definitivoRepository->compara($usuario1, $usuario2);
-                            $resultado2 = $definitivoRepository->compara($usuario2, $usuario1);
+                            $resultado1 = $trayectoRepository->compara($usuario1, $usuario2);
+                            $resultado2 = $trayectoRepository->compara($usuario2, $usuario1);
                             //$texto1 = $resultado1 ." a ". $resultado2;
                             //dump($texto1);
                             if($resultado1 > $resultado2){
@@ -574,8 +571,7 @@ class IndexController extends AbstractController
     public function comparativa(
         Request $request,
         GrupoRepository $grupoRepository,
-        TrayectoRepository $trayectoRepository,
-        DriverRepository $driverRepository
+        TrayectoRepository $trayectoRepository        
     ): Response
     {
         $array = (array) $request->attributes;
@@ -609,8 +605,8 @@ class IndexController extends AbstractController
                     // realizamos comparativa entre dos usuarios
                     //$texto1 = $usuario1->getId() ."->". $usuario2->getId();
                     //dump($texto1);
-                    $resultado1 = $definitivoRepository->compara($usuario1, $usuario2);
-                    $resultado2 = $definitivoRepository->compara($usuario2, $usuario1);
+                    $resultado1 = $trayectoRepository->compara($usuario1, $usuario2);
+                    $resultado2 = $trayectoRepository->compara($usuario2, $usuario1);
                     //$texto1 = $resultado1 ." a ". $resultado2;
                     //dump($texto1);
                     if($resultado1 > $resultado2){
@@ -635,4 +631,54 @@ class IndexController extends AbstractController
         ]);
     }
 
+    /**
+    * @Route("/viewlog", name ="app_log")
+    */
+    public function viewlog(Request $request){
+        return $this->render('index/viewlog.html.twig', [
+            
+        ]);
+    }
+
+    /**
+     * @Route("confirm/{id}", name="app_confirm_trayecto")
+     */
+    public function confirm(
+        Request $request,
+        TrayectoRepository $trayectoRepository
+        ): Response
+    {
+        $array = (array) $request->attributes;
+        // Verificamos que la id existe
+        $id = $array["\x00*\x00parameters"]["id"];
+        $trayecto = new Trayecto;
+        $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
+        if ($trayecto == null){
+            return $this->render('index/comparativa_null.html.twig', []);
+        }
+        // Cargamos todos los trayectos con la misma fecha y grupo
+        $trayectos = $trayectoRepository->findBy([
+            'fecha' => $trayecto->getFecha(),
+        ]);
+        // verificamos que el campo passenger no es null
+        $error = false;
+        foreach($trayectos as $track){
+            if(is_null($track->isPassenger())){
+                $error = true;
+            }
+        }
+        // ponemos el campo confirm a true
+        if($error==false){
+            foreach($trayectos as $track){
+                $track->setConfirm(true);
+            }
+        }
+        $this->entityManager->flush();
+        $this->addFlash(
+            'success',
+            'Los datos del trayecto se han actualizado'
+        );
+
+        return $this->redirectToRoute('homepage');
+    }
 }

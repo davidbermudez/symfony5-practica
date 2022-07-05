@@ -53,37 +53,37 @@
                 </div>
                 {% if estoy %}                    
                     {% for key, grupos in mayoria %}
-                        <div class="level-item" style="float:left">
+                        <div class="level-item">
                             <span class="tag is-link">Con {{ key }} Puntos:</span>
                         </div>
                         <div class="level-item">
                             <div class="avatars">
-                            {% for usuario in grupos %}                                
+                            {% for usuario in grupos %}
                                 <div class="avatar">
                                     <img src="/images/avatars/{{ usuario.avatar }}" alt="{{ usuario.username }}">
                                     <span class="tooltiptext">{{ usuario.username }}</span>
                                 </div>                                
                             {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}                                 
+                {% else %}
+                    <div class="level-item">                    
+                        <div class="avatars">
+                        {% for track in otros %}                            
+                            {% if track.driver.avatar %}
+                                <div class="avatar">
+                                    <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
+                                    <span class="tooltiptext">{{ track.driver.username }}</span>
+                                </div>
+                            {% else %}
+                                <img src="/images/avatars/default.png" alt="{{ track.driver.email }}">
+                            {% endif %}                        
+                        {% endfor %}
                         </div>
                     </div>
-                    {% endfor %}                                 
-            {% else %}
-                <div class="level-item">                    
-                    <div class="avatars">
-                    {% for track in otros %}                            
-                        {% if track.driver.avatar %}
-                            <div class="avatar">
-                                <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
-                                <span class="tooltiptext">{{ track.driver.username }}</span>
-                            </div>
-                        {% else %}
-                            <img src="/images/avatars/default.png" alt="{{ track.driver.email }}">
-                        {% endif %}                        
-                    {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-            
+                {% endif %}
+            </div>
         </nav>
     </article>
 </div>

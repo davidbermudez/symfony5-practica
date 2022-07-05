@@ -45,11 +45,6 @@ class Fecha
      */
     private $trayectos;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Definitivo::class, mappedBy="fecha", orphanRemoval=true)
-     */
-    private $definitivos;
-
 
     public function __construct()
     {

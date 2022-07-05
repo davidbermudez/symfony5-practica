@@ -39,6 +39,16 @@ class Grupo
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $chatid;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $chatlink;
+
     public function __construct()
     {
         $this->admin = new ArrayCollection();
@@ -106,6 +116,30 @@ class Grupo
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getChatid(): ?string
+    {
+        return $this->chatid;
+    }
+
+    public function setChatid(?string $chatid): self
+    {
+        $this->chatid = $chatid;
+
+        return $this;
+    }
+
+    public function getChatlink(): ?string
+    {
+        return $this->chatlink;
+    }
+
+    public function setChatlink(?string $chatlink): self
+    {
+        $this->chatlink = $chatlink;
 
         return $this;
     }

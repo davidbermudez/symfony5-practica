@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ComparteCoche :: Usuario {% endblock %}
+
+{% block body %}
+
+<section class="hero">
+    <div class="hero-body">
+        <h1 class="title">
+            Página de Usuario
+        </h1>
+        <p class="subtitle">
+            Historial de viajes entre {{ driver.username }} y tú.
+        </p>
+        <div class="hero-avatar">
+            <section class="avatars">
+                <div class="avatar">
+                    <img  src="/images/avatars/{{ app.user.avatar }}" alt="{{ app.user.username }}">
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+
+<div class="container is-fluid">
+
+    <div class="tile is-ancestor">
+        
+        <div class="tile is-vertical is-parent">
+
+            <div class="tile is-child">
+                <article class="tile notification is-danger">
+                    <div class="level">
+                        <div class="level-left">
+                            <div class="level-item">                            
+                                <div class="avatars">
+                                    <span class="icon has-text-success rounded passenger">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <div class="avatar">
+                                        <img src="/images/avatars/{{ driver.avatar }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="level-item">
+                                <p class="subtitle">{{ driver.username }} ha sido tu pasajero en estas fechas:</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tile">
+                        <table class="table is-success is-striped is-small">
+                            <thead>
+                                <tr>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Inicio</th>
+                                <th scope="col">Fin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            
+                            {% for trayecto in pasajero %}
+                                <tr class="is-size-6 is-family-monospace">
+                                    <th scope="row">
+                                        {#{ trayecto.fecha.dateTrayecto | format_datetime('short', 'none', locale='fr') }#}
+                                        {{ trayecto.fecha.dateTrayecto | format_datetime(pattern="d/MM/yy") }}
+                                    </th>
+                                    <td>
+                                        {{ trayecto.fecha.timeAt | format_time(pattern='HH:mm') }}
+                                    </td>
+                                    <td>
+                                        {{ trayecto.fecha.timeTo | format_time(pattern='HH:mm') }}
+                                    </td>                                    
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>            
+                    </div>
+                </article>
+            </div>
+            <div class="tile is-child">
+                <article class="tile notification is-success">
+                    <div class="level">
+                        <div class="level-left">
+                            <div class="level-item">                            
+                                <div class="avatars">
+                                    <span class="icon has-text-warning rounded car">
+                                        <i class="fas fa-car"></i>
+                                    </span>
+                                    <div class="avatar">
+                                        <img src="/images/avatars/{{ driver.avatar }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="level-item">
+                                <p class="subtitle">{{ driver.username }} ha sido tu conductor en:</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="tile">
+                        <table class="table is-success is-striped is-small">
+                            <thead>
+                                <tr>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Inicio</th>
+                                <th scope="col">Fin</th>                                
+                                </tr>
+                            </thead>
+                            <tbody>
+                            
+                            {% for trayecto in conductor %}
+                                <tr class="is-size-6 is-family-monospace">
+                                    <th scope="row">
+                                        {#{ trayecto.fecha.dateTrayecto | format_datetime('short', 'none', locale='fr') }#}
+                                        {{ trayecto.fecha.dateTrayecto | format_datetime(pattern="d/MM/yy") }}
+                                    </th>
+                                    <td>
+                                        {{ trayecto.fecha.timeAt | format_time(pattern='HH:mm') }}
+                                    </td>
+                                    <td>
+                                        {{ trayecto.fecha.timeTo | format_time(pattern='HH:mm') }}
+                                    </td>                                    
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>            
+                    </div>
+                </article>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+              
+{% endblock %}

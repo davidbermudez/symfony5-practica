@@ -36,6 +36,7 @@
 
                     {% if app.user %}
                         <a class="navbar-item" href="{{ path('app_driver') }}" title="Perfil">Perfil</a></li>
+                        <!-- <a class="navbar-item" href="{{ path('app_log') }}" title="Log">Log</a></li> -->
                         <a class="navbar-item" href="{{ path('app_logout') }}" title="Logout">Logout</a></li>
                         {% if 'ROLE_ADMIN' in app.user.getroles()  %}
                             <a class="navbar-item" href="{{ path('admin') }}" title="Admin">Admin</a></li>

@@ -15,7 +15,7 @@ const MINCHARNAMEFIELD = 3
 // EVENT LISTENERS
 document.addEventListener('change', event => {
     if (event.target.matches('.inputUsername')) {
-        validateEmail(event.target.value, 'inputEmail')
+        validateEmail(event.target.value, 'inputUsername')
     } else if (event.target.matches('.reset_password_request_form_email')) {
         validateEmail(event.target.value, 'reset_password_request_form_email')
     } else if (event.target.matches('.contact_form_email')) {

@@ -57,6 +57,7 @@ class TrayectoRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('t')            
             ->join(Fecha::class, 'f', Join::WITH, 't.fecha = f.id')
             ->andWhere('t.driver = :driver')
+            ->andWhere('t.confirm = true')
             ->setParameter('driver', $driver)
             ->orderBy('f.date_trayecto', 'DESC')
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
@@ -151,9 +152,12 @@ class TrayectoRepository extends ServiceEntityRepository
             ->join(Fecha::class, 'f', Join::WITH, 't.fecha = f.id')
             ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
             //->where('t.driver != :val0')
-            ->where('f.date_trayecto >= :val1')            
+            ->andwhere('f.date_trayecto >= :val1')
+            ->andwhere('t.confirm is null')
             ->andwhere('d.grupo = :val2')
             ->orderBy('f.date_trayecto', 'ASC')
+            ->addOrderBy('f.time_at', 'ASC')
+            ->addOrderBy('t.driver', 'ASC')
             ->setMaxResults(10)
             //->orderBy('f.time_at', 'ASC')
             //->groupBy('t.fecha')
@@ -167,7 +171,7 @@ class TrayectoRepository extends ServiceEntityRepository
         //$query = $em->getQuery();
         //dump($em->getQuery()->getSQL());
         $query = $em->getQuery()->getResult();
-        dump($query);
+        //dump($query);
         //return $query;
         
         //return new Trayecto($query->getQuery());
@@ -175,13 +179,13 @@ class TrayectoRepository extends ServiceEntityRepository
         $i = 0;        
         foreach($query as $element){
             $localizado = false;
-            $fecha = $element->getFecha();                
+            $fecha = $element->getFecha();
             
             $r = 0;
             foreach($return as $bucle){
                 if($bucle["fecha"] == $fecha){
                     //dump("Repetido");
-                    $localizado = true;                        
+                    $localizado = true;
                 }
                 $r++;
             }
@@ -195,7 +199,7 @@ class TrayectoRepository extends ServiceEntityRepository
                 $j = $i;
                 $i++;
             } else {                
-                array_push($return[$j]["driver"], $element->getDriver());                
+                array_push($return[$j]["driver"], $element->getDriver());
             }
             
         }
@@ -208,13 +212,14 @@ class TrayectoRepository extends ServiceEntityRepository
 
     public function compara(Driver $driver1, Driver $driver2): int
     {
-        // Return: Count Trayectos driver1 i driver an Driver2 as passanger
+        // Return: Count Trayectos driver1 i driver an Driver2 as passanger        
         //$personal_query = "SELECT Count(t.id) as Total FROM trayecto t WHERE t.driver_id = :driver1 AND t.passenger = TRUE AND t.fecha_id IN "
         //"(SELECT k.fecha_id FROM trayecto k INNER JOIN driver d ON k.driver_id = d.id INNER JOIN fecha f ON k.fecha_id = f.id WHERE k.driver_id = :driver2 AND k.passenger = FALSE )";        
         $fields = array('t.fecha');
         $em2 = $this->createQueryBuilder('t')
             ->select('IDENTITY(t.fecha)')
             ->where('t.driver = :val1')
+            ->andwhere('t.confirm = true')
             ->andwhere('t.passenger = true')
             ->setparameters([
                 'val1' => $driver2,
@@ -236,8 +241,40 @@ class TrayectoRepository extends ServiceEntityRepository
         $query = $em->getQuery()->getResult();
         //dump($query);
         
-        return $query[0]["Total"];
+        return $query[0]["Total"];   
+    }
+
+
+    public function pasajero_de(Driver $driver1, Driver $driver2): array
+    {
+        $fields = array('t.fecha');
+        $em2 = $this->createQueryBuilder('t')
+            ->select('IDENTITY(t.fecha)')
+            ->where('t.driver = :val1')
+            ->andwhere('t.confirm = true')
+            ->andwhere('t.passenger = true')
+            ->setparameters([
+                'val1' => $driver1,
+            ]);
+        $query2 = $em2->getQuery()->getResult();
+        //dump($query2);
+
+        $em = $this->createQueryBuilder('t')
+            //->select('COUNT(t.id) as Total')
+            ->select('t')
+            ->where('t.driver = :val0')
+            ->andwhere('t.passenger = false')
+            ->andwhere('t.fecha IN (:val1)')
+            //->groupBy('t.fecha')
+            ->setParameters([
+                'val0' => $driver2,
+                'val1' => $em2->getQuery()->getArrayResult(),
+            ]);            
         
+        $query = $em->getQuery()->getResult();
+        //dump($query);
+        
+        return $query;
     }
 
 }

@@ -51,13 +51,14 @@
     visibility: visible;    
   }
 
+  /*
   .avatars .avatar:hover {
     height: 64px !important;
     border-radius: 100%;
     border: 2px solid yellow;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   }
-  
+  */
   .rounded {
     padding: 2px;
     border-radius: 100%;
@@ -72,4 +73,14 @@
   .passenger {
     color: black;
     background-color: yellow;
+  }
+
+  .telegram-icon {
+    opacity: 0;
+    z-index: 0;
+    content: "";
+    position: absolute;
+    border: 1px solid rgb(17, 85, 178);
+    inset: -2px;
+    border-radius: 500px;
   }
