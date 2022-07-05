@@ -23,6 +23,13 @@ use App\Entity\Fecha;
 use App\Form\TrayectoFormType;
 use App\Form\FechaFormType;
 
+#Telegram
+use Symfony\Component\Notifier\ChatterInterface;
+use Symfony\Component\Notifier\Bridge\Telegram\Reply\Markup\Button\InlineKeyboardButton;
+use Symfony\Component\Notifier\Bridge\Telegram\Reply\Markup\InlineKeyboardMarkup;
+use Symfony\Component\Notifier\Bridge\Telegram\TelegramOptions;
+use Symfony\Component\Notifier\Message\ChatMessage;
+
 class IndexController extends AbstractController
 {
 
@@ -93,7 +100,8 @@ class IndexController extends AbstractController
         Request $request, 
         GrupoRepository $grupoRepository,
         FechaRepository $fechaRepository,
-        TrayectoRepository $trayectoRepository): Response
+        TrayectoRepository $trayectoRepository,
+        ChatterInterface $chatter): Response
     {
         $user = $this->getUser();
         if ($user == null){
@@ -132,9 +140,12 @@ class IndexController extends AbstractController
                 // Verificar si ya existe un registro trayecto para este id de Fecha y Usuario
                 $trayecto = new Trayecto();
                 $existe2 = $trayectoRepository->findBy([
-                    'fecha' => $fecha,
-                    'driver' => $user,
+                    'fecha' => $id_fecha,
+                    'driver' => $user->getId(),
                 ]);
+                dump($existe2);
+                dump($fecha);
+                dump($user);
                 if($existe2){
                     $this->addFlash(
                         'danger',
@@ -147,8 +158,34 @@ class IndexController extends AbstractController
                     $trayecto->setPassenger(null);
                     $this->entityManager->persist($trayecto);
                     $this->entityManager->flush();
+                    $this->addFlash(
+                        'success',
+                        'Se ha grabado un nuevo horario'
+                    );
+                    // Telegram
+                    //dump($grupo->getChatid());
+                    $fecha_prevista = date_format($date_trayecto, "d/M/yy");
+                    $mens = $user->getUsername() .' ha añadido un nuevo horario: ' .$fecha_prevista. " de ". date_format($time_at,"H:i") . " a " . date_format($time_to,"H:i");
+                    $chatMessage = new ChatMessage($mens);
+                    // Create Telegram options
+                    $telegramOptions = (new TelegramOptions())
+                        ->chatId($grupo->getChatid())
+                        ->parseMode('MarkdownV2')
+                        ->disableWebPagePreview(true)
+                        ->disableNotification(true)
+                        ->replyMarkup((new InlineKeyboardMarkup())
+                            ->inlineKeyboard([
+                                (new InlineKeyboardButton('Ir a la app'))
+                                    //->url($url),
+                                    ->url("https://google.com/"),
+                            ])
+                        );
+                    // Add the custom options to the chat message and send the message
+                    $chatMessage->options($telegramOptions);
+                    $chatter->send($chatMessage);
                     // regresar homepage
-                    return $this->redirectToRoute('homepage');
+                    return 1;
+                    //return $this->redirectToRoute('homepage');
                 }
             } elseif ($form->isSubmitted() && !$form->isValid()) {
                 $this->addFlash(
