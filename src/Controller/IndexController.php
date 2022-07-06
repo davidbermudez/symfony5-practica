@@ -143,9 +143,9 @@ class IndexController extends AbstractController
                     'fecha' => $id_fecha,
                     'driver' => $user->getId(),
                 ]);
-                dump($existe2);
-                dump($fecha);
-                dump($user);
+                //dump($existe2);
+                //dump($fecha);
+                //dump($user);
                 if($existe2){
                     $this->addFlash(
                         'danger',
