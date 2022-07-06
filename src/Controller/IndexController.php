@@ -583,7 +583,7 @@ class IndexController extends AbstractController
             if ($estoy && $otros){
                 // Correcto
                 //Actualizamos el estado de los miembros de este trayecto tal y como han quedado en el bucle anterior
-                //$this->entityManager->flush();
+                $this->entityManager->flush();
                 $this->addFlash(
                     'success',
                     'Se te ha marcado como Conductor y se ha bloqueado este trayecto'
