@@ -13,8 +13,28 @@
 </section>
 <div class="container is-fluid">
     {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}        
-        <button class="btn btn-primary">Resetear password</button>
+        <div class="field">
+            <label class="label">Introduzca una contraseña válida</label>
+            <div class="control has-icons-left">
+            {{ form_widget(resetForm.plainPassword.first, {'attr': {'class': 'input is-success'} }) }}
+            <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+            </span>
+        </div>
+        <div class="field">
+            <label class="label">Repita la contraseña</label>
+            <div class="control has-icons-left">
+            {{ form_widget(resetForm.plainPassword.second, {'attr': {'class': 'input is-success'} }) }}
+            <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+            </span>
+        </div>
+        <!--Submit button-->
+        <div class="field is-grouped">
+            <div class="control">
+                <button id="submitButton" class="button is-link">Enviar</button>
+            </div>
+        </div>
     {{ form_end(resetForm) }}
 </div>
 {% endblock %}

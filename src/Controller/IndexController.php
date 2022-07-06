@@ -568,6 +568,7 @@ class IndexController extends AbstractController
                 'fecha' => $trayecto->getFecha(),
             ]);
             $estoy = false;
+            $otros = false;
             //dump($pasajero);
             foreach($pasajero as $usuario){
                 //dump($usuario->getDriver());
@@ -575,24 +576,31 @@ class IndexController extends AbstractController
                     $estoy = true;
                     $usuario->setPassenger(false);
                 } else {
+                    $otros = true;
                     $usuario->setPassenger(true);
                 }
             }
-            if ($estoy){
-                // Correcto                
+            if ($estoy && $otros){
+                // Correcto
                 //Actualizamos el estado de los miembros de este trayecto tal y como han quedado en el bucle anterior
-                $this->entityManager->flush();
+                //$this->entityManager->flush();
                 $this->addFlash(
                     'success',
                     'Se te ha marcado como Conductor y se ha bloqueado este trayecto'
                 );
-            } else {           
+            } elseif ($estoy &&  $otros==false) {
+                //$this->entityManager->rollback();
+                $this->addFlash(
+                    'danger',
+                    'ERROR: No puedes marcarte como conductor cuando no existe nadie más en este trayecto'
+                );
+            } else {
                 $this->entityManager->rollback();
                 $this->addFlash(
                     'danger',
                     'ERROR: No te hemos encontrado en este trayecto'
                 );
-            }            
+            }
             return $this->redirectToRoute('app_trayecto', ['id' => $id]);
             /*return $this->render('index/trayecto.html.twig', [
                 'grupo' => $grupo,

@@ -23,7 +23,9 @@
             {% if estoy %}
                 <div class="buttons">
                     <button class="button is-danger" onclick="location.href='{{ path('app_delTrayecto', {id: otros[0].id}) }}'">Me borro!!</button>
-                    <button class="button is-link" onclick="location.href='{{ path('app_pongocoche', {id: otros[0].id}) }}'">Yo conduzco</button>
+                    {% if otros|length > 1 %}
+                        <button class="button is-link" onclick="location.href='{{ path('app_pongocoche', {id: otros[0].id}) }}'">Yo conduzco</button>
+                    {% endif %}
                 </div>
             {% else %}
                 <div class="buttons">
@@ -60,7 +62,7 @@
                             <div class="avatars">
                             {% for usuario in grupos %}
                                 <div class="avatar">
-                                    <img src="/images/avatars/{{ usuario.avatar }}" alt="{{ usuario.username }}">
+                                    <img src="/images/avatars/{{ usuario.avatar }}" alt="{{ usuario.username }}" onclick='location.href = "{{ path('app_user', {id: usuario.id}) }}"'>
                                     <span class="tooltiptext">{{ usuario.username }}</span>
                                 </div>                                
                             {% endfor %}
@@ -73,7 +75,7 @@
                         {% for track in otros %}                            
                             {% if track.driver.avatar %}
                                 <div class="avatar">
-                                    <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">
+                                    <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}" onclick='location.href = "{{ path('app_user', {id: track.driver.id}) }}"'>
                                     <span class="tooltiptext">{{ track.driver.username }}</span>
                                 </div>
                             {% else %}
