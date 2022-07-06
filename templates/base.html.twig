@@ -2,6 +2,8 @@
 <html class="no-js" lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="stylesheet" href="/css/bulma.min.css">
@@ -190,6 +192,17 @@
                 }
             });
             });
+            // Full Screen
+            var body = document.documentElement;
+            if (body.requestFullscreen) {
+                body.requestFullscreen();
+            } else if (body.webkitrequestFullscreen) {
+                body.webkitrequestFullscreen();
+            } else if (body.mozrequestFullscreen) {
+                body.mozrequestFullscreen();
+            } else if (body.msrequestFullscreen) {
+                body.msrequestFullscreen();
+            }
         </script>
         {% block javascripts %}{% endblock %}        
     </body>
