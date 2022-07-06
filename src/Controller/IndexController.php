@@ -184,8 +184,8 @@ class IndexController extends AbstractController
                     $chatMessage->options($telegramOptions);
                     $chatter->send($chatMessage);
                     // regresar homepage
-                    return 1;
-                    //return $this->redirectToRoute('homepage');
+                    //return 1;
+                    return $this->redirectToRoute('homepage');
                 }
             } elseif ($form->isSubmitted() && !$form->isValid()) {
                 $this->addFlash(
