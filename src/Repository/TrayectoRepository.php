@@ -176,11 +176,10 @@ class TrayectoRepository extends ServiceEntityRepository
         
         //return new Trayecto($query->getQuery());
         $return = [];
-        $i = 0;        
+        $i = 0;
         foreach($query as $element){
             $localizado = false;
             $fecha = $element->getFecha();
-            
             $r = 0;
             foreach($return as $bucle){
                 if($bucle["fecha"] == $fecha){
@@ -189,20 +188,21 @@ class TrayectoRepository extends ServiceEntityRepository
                 }
                 $r++;
             }
-            
             if(!$localizado){
                 $return[$i]["trayecto_id"] = $element->getId();
                 $return[$i]["fecha"] = $element->getFecha();
-                $return[$i]["passenger"] = $element->isPassenger();
+
+                $return[$i]["passenger"] = [];
                 $return[$i]["driver"] = [];
+                array_push($return[$i]["passenger"], $element->isPassenger());                
                 array_push($return[$i]["driver"], $element->getDriver());
                 $j = $i;
                 $i++;
-            } else {                
+            } else {
+                array_push($return[$j]["passenger"], $element->isPassenger());
                 array_push($return[$j]["driver"], $element->getDriver());
             }
-            
-        }
+        }        
 
         //dump($return);
         //return $query;

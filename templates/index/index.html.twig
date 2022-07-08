@@ -31,6 +31,7 @@
                     <article class="tile is-child">                        
                         <p class="title">Tus trayectos</p>
                         <div class="container">
+                        {#{ dump(disponibles) }#}
                             {% for trayectos in disponibles %}
                                 {% set existe = false  %}
                                 {% for users in trayectos.driver %}
@@ -60,7 +61,7 @@
                                             </div>
                                         </div>
                                         <div class="trayecto-icon">
-                                            {% if trayectos.passenger is not null %}
+                                            {% if trayectos.passenger[0] is not null %}
                                                 <i class="fa fa-lock is-right"></i>
                                             {% endif %}
                                         </div>
@@ -70,11 +71,22 @@
 
                                     <div class="">
                                         <span class="avatars">                                            
-                                        {% for users in trayectos.driver %}                                            
+                                        {% for users in trayectos.driver %}
+                                            {% set value = trayectos.passenger[(loop.index)-1] %}
+                                            {% if value is null %}
+                                            {% elseif value == false %}
+                                                <span class="icon has-text-success rounded passenger">
+                                                    <i class="fas fa-user"></i>
+                                                </span>
+                                            {% else %}
+                                                <span class="icon has-text-warning rounded car">
+                                                    <i class="fas fa-car"></i>
+                                                </span>
+                                            {% endif %}
                                             <div class="avatar">
-                                            {% if users.avatar %}                                                
+                                            {% if users.avatar %}
                                                 <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}">
-                                                <span class="tooltiptext">{{ users.username }}</span>                                                
+                                                <span class="tooltiptext">{{ users.username }}</span>
                                             {% else %}
                                                 <img class="avatar" src="/images/avatars/default.png" alt="{{ users.username }}">
                                             {% endif %}
@@ -123,15 +135,26 @@
                                                 </div>
                                             </div>
                                             <div class="trayecto-icon">
-                                                {% if trayectos.passenger is not null %}
-                                                    <i class="fa fa-lock has-text-dark"></i>
+                                                {% if trayectos.passenger[0] is not null %}
+                                                    <i class="fa fa-lock is-right"></i>
                                                 {% endif %}
                                             </div>
                                         </div>
 
                                         <div class="">
                                             <span class="avatars">                                            
-                                            {% for users in trayectos.driver %}                                            
+                                            {% for users in trayectos.driver %}
+                                                {% set value = trayectos.passenger[(loop.index)-1] %}
+                                                {% if value is null %}
+                                                {% elseif value == false %}
+                                                    <span class="icon has-text-success rounded passenger">
+                                                        <i class="fas fa-user"></i>
+                                                    </span>
+                                                {% else %}
+                                                    <span class="icon has-text-warning rounded car">
+                                                        <i class="fas fa-car"></i>
+                                                    </span>
+                                                {% endif %}
                                                 <div class="avatar">
                                                 {% if users.avatar %}                                                
                                                     <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}">

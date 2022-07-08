@@ -17,7 +17,7 @@
 
             <div class="navbar-brand">
                 <a class="navbar-item" href="{{ path('homepage') }}">
-                    <img src="/images/compartecoche.png" height="64">
+                    <img src="/images/compartecoche.png">
                 </a>
                 <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarDesplegable">
                     <span aria-hidden="true"></span>
@@ -90,9 +90,9 @@
         </header>
         <!-- end Bulma-nav -->                
 
-        <!-- message_flash -->        
+        <!-- message_flash -->
         {% for label, messages in app.flashes %}
-            <div class="container-fluid">
+            <div class="container is-widescreen">
             {% for message in messages %}
                 <div class="modal is-active " id="modal1">
                     <div class="modal-background"></div>
