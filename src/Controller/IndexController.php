@@ -71,7 +71,7 @@ class IndexController extends AbstractController
                 'date_trayecto' => date('Y-m-d'),                            
                 'grupo' => $grupo,
             ]);
-            //dump($disponibles);
+            dump($disponibles);
             /*
             foreach($disponibles as $key => $value){
                 foreach($value as $kkey => $vvalue)
@@ -536,15 +536,12 @@ class IndexController extends AbstractController
         }        
     }
 
-
     /**
      * @Route("/mydriver/{id}", name="app_pongocoche")
      */
     public function pongo_coche(
-        Request $request,
-        GrupoRepository $grupoRepository,
-        TrayectoRepository $trayectoRepository,
-        DriverRepository $driverRepository
+        Request $request,        
+        TrayectoRepository $trayectoRepository        
     ): Response
     {        
         $array = (array) $request->attributes;
@@ -602,11 +599,6 @@ class IndexController extends AbstractController
                 );
             }
             return $this->redirectToRoute('app_trayecto', ['id' => $id]);
-            /*return $this->render('index/trayecto.html.twig', [
-                'grupo' => $grupo,
-                'otros' => $otros,
-                'estoy' => $estoy,
-            ]);*/
         }        
     }
 

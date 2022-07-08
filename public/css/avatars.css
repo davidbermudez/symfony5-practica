@@ -84,3 +84,44 @@
     inset: -2px;
     border-radius: 500px;
   }
+
+  .trayecto {
+    padding: 10px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr 1fr;
+    grid-template-rows: 50px;
+    grid-template-areas: "fecha time space icon";
+  }
+
+  .trayecto-fecha{
+    display: table-cell;
+    grid-area: fecha;
+  }
+
+  .trayecto-button{
+    height: 100%;    
+  }
+
+  .trayecto-time{
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "at" "to";
+    grid-area: time;
+  
+  }
+
+  .trayecto-at{
+    margin-left: 2px;    
+    grid-area: at;
+  }
+
+  .trayecto-to{
+    margin-left: 2px;
+    grid-area: to;    
+  }
+
+  .trayecto-icon {
+    grid-area: icon;
+    text-align: right;
+  }
