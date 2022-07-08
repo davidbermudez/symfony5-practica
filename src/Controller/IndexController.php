@@ -71,7 +71,7 @@ class IndexController extends AbstractController
                 'date_trayecto' => date('Y-m-d'),                            
                 'grupo' => $grupo,
             ]);
-            dump($disponibles);
+            //dump($disponibles);
             /*
             foreach($disponibles as $key => $value){
                 foreach($value as $kkey => $vvalue)
