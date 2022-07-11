@@ -42,7 +42,7 @@ class GrupoCrudController extends AbstractCrudController
 
             // set this option if you prefer the sidebar (which contains the main menu)
             // to be displayed as a narrow column instead of the default expanded design
-            ->renderSidebarMinimized()
+            //->renderSidebarMinimized()
             
         ;
     }

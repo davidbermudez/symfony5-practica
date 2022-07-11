@@ -26,7 +26,7 @@ class DashboardPlusController extends AbstractDashboardController
     {
         //return parent::index();
         $routeBuilder = $this->get(AdminUrlGenerator::class);        
-        return $this->redirect($routeBuilder->setController(DriverCrudController::class)->generateUrl());
+        return $this->redirect($routeBuilder->setController(DriverPlusCrudController::class)->generateUrl());
     }
 
     public function configureDashboard(): Dashboard

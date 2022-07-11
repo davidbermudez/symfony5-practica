@@ -34,14 +34,21 @@ class GrupoPlusCrudController extends GrupoCrudController
         //    ->setParameter('usuario', $usuario);
         return $result;
     }
-    /*
+    
     public function configureActions(Actions $actions): Actions
-    {
-        // Los ROLE_ADMIN no pueden crear, ni eliminar ningún grupo
-        //return $actions
-        //    ->remove(Crud::PAGE_INDEX, Action::NEW)
-        //    ->remove(Crud::PAGE_INDEX, Action::DELETE)
-        //;
+    {    
+        return $actions
+            ->update(Crud::PAGE_INDEX, Action::NEW, function(Action $action) {
+                return $action->setLabel("Añadir Grupo");
+            })
+            ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function(Action $action){
+                return $action->setLabel("Crear Grupo");            
+            })
+            ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function(Action $action){
+                return $action->setLabel("Crear Nuevo y Añadir Otro");            
+            })
+            //->remove(Crud::PAGE_DETAIL, Action::DELETE)
+        ;        
     }
-    */
+    
 }

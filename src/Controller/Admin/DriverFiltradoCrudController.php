@@ -51,20 +51,22 @@ class DriverFiltradoCrudController extends DriverCrudController
             //IdField::new('id'),
             EmailField::new('email'),
             HiddenField::new('password'),
-            AssociationField::new('grupo')->setFormTypeOption('disabled','disabled'),
-            TextField::new('username', 'Nombre de Usuario'),
+            //AssociationField::new('grupo')->setFormTypeOption('disabled','disabled'),
+            //TextField::new('username', 'Nombre de Usuario'),
             //TextEditorField::new('description'),
         ];
     }
    
-/*
+
     public function configureActions(Actions $actions): Actions
     {
         
         return $actions
-            ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->update(Crud::PAGE_INDEX, Action::NEW, function(Action $action) {
+                return $action->setLabel("Añadir Usuario");
+            })
         ;
         
     }
-*/
+
 }
