@@ -75,17 +75,17 @@
                                             {% set value = trayectos.passenger[(loop.index)-1] %}
                                             {% if value is null %}
                                             {% elseif value == false %}
-                                                <span class="icon has-text-success rounded passenger">
+                                                <span class="icon rounded car">
                                                     <i class="fas fa-car"></i>
                                                 </span>
                                             {% else %}
-                                                <span class="icon has-text-warning rounded car">
+                                                <span class="icon rounded passenger">
                                                     <i class="fas fa-user"></i>
                                                 </span>
                                             {% endif %}
                                             <div class="avatar">
                                             {% if users.avatar %}
-                                                <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}">
+                                                <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}" onclick='location.href = "{{ path('app_user', {id: users.id}) }}"'>
                                                 {% if users.username != '' %}
                                                     <span class="tooltiptext">{{ users.username }}</span>
                                                 {% else %}
@@ -161,7 +161,7 @@
                                                 {% endif %}
                                                 <div class="avatar">
                                                 {% if users.avatar %}                                                
-                                                    <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}">
+                                                    <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}" onclick='location.href = "{{ path('app_user', {id: users.id}) }}"'>
                                                     {% if users.username != '' %}
                                                         <span class="tooltiptext">{{ users.username }}</span>
                                                     {% else %}

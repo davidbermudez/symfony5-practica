@@ -31,6 +31,7 @@
                         <p class="title">Usuarios</p>
                         <p class="subtitle"></p>
                         <div class="content">
+                            {#{ dump(usuarios) }#}
                             {% for user in usuarios %}                                
                                 <nav class="level has-background-warning px-3 py-2">
                                     <div class="level-left">
@@ -42,16 +43,20 @@
                                                 {% else %}
                                                     <img class="avatar" src="/images/avatars/default.png" alt="{{ user.username }}">                                                    
                                                 {% endif %}
+                                                {% if user.username != '' %}
                                                     <span class="tooltiptext">{{ user.username }}</span>
+                                                {% else %}
+                                                    <span class="tooltiptext">{{ user.email }}</span>
+                                                {% endif %}                                                     
                                                 </div>
                                             </span>
                                         </div>
                                         <div class="level-item">
                                             <p class="subtitle is-5">
-                                                {% if user.username %}
+                                                {% if user.username != '' %}
                                                     <strong>{{ user.username }}</strong>
                                                 {% else %}
-                                                    <strong>Sin nombre</strong>
+                                                    <strong>{{ user.email }}</strong>
                                                 {% endif %}
                                             </p>
                                         </div>

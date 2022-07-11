@@ -75,11 +75,15 @@
                         {% endif %}
                         <div class="avatar">
                             {% if track.driver.avatar %}                            
-                                <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}">                            
+                                <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}" onclick='location.href = "{{ path('app_user', {id: track.driver.id}) }}"'>
                             {% else %}
                                 <img src="/images/avatars/default.png" alt="{{ track.driver.email }}">
                             {% endif %}
-                            <span class="tooltiptext">{{ track.driver.username }}</span>
+                            {% if track.driver.username != '' %}
+                                <span class="tooltiptext">{{ track.driver.username }}</span>                                        
+                            {% else %}
+                                <span class="tooltiptext">{{ track.driver.email }}</span>
+                            {% endif %}                            
                         </div>
                     {% endfor %}
                     </div>

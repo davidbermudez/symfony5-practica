@@ -63,7 +63,12 @@
                             {% for usuario in grupos %}
                                 <div class="avatar">
                                     <img src="/images/avatars/{{ usuario.avatar }}" alt="{{ usuario.username }}" onclick='location.href = "{{ path('app_user', {id: usuario.id}) }}"'>
-                                    <span class="tooltiptext">{{ usuario.username }}</span>
+                                    {% if usuario.username != '' %}
+                                        <span class="tooltiptext">{{ usuario.username }}</span>                                        
+                                    {% else %}
+                                        <span class="tooltiptext">{{ usuario.email }}</span>
+                                    {% endif %}
+                                    
                                 </div>                                
                             {% endfor %}
                             </div>
@@ -76,10 +81,19 @@
                             {% if track.driver.avatar %}
                                 <div class="avatar">
                                     <img src="/images/avatars/{{ track.driver.avatar }}" alt="{{ track.driver.email }}" onclick='location.href = "{{ path('app_user', {id: track.driver.id}) }}"'>
-                                    <span class="tooltiptext">{{ track.driver.username }}</span>
+                                    {% if track.driver.username != '' %}
+                                        <span class="tooltiptext">{{ track.driver.username }}</span>                                        
+                                    {% else %}
+                                        <span class="tooltiptext">{{ track.driver.email }}</span>
+                                    {% endif %}
                                 </div>
                             {% else %}
                                 <img src="/images/avatars/default.png" alt="{{ track.driver.email }}">
+                                {% if track.driver.username != '' %}
+                                    <span class="tooltiptext">{{ track.driver.username }}</span>                                        
+                                {% else %}
+                                    <span class="tooltiptext">{{ track.driver.email }}</span>
+                                {% endif %}
                             {% endif %}                        
                         {% endfor %}
                         </div>

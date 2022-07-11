@@ -60,7 +60,7 @@ class DriverController extends AbstractController
         } else {
 
             $nombreAntiguo = $user->getUsername();
-            if(is_null($nombreAntiguo)) $nombreAntiguo = $user->getEmail();
+            if($nombreAntiguo == '') $nombreAntiguo = $user->getEmail();
             $avatarAntiguo = $user->getAvatar();
             if(is_null($avatarAntiguo)) $avatarAntiguo = 'default.png';
             $grupo = $user->getGrupo();

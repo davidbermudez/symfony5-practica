@@ -6,11 +6,16 @@
 
 <section class="hero">
     <div class="hero-body">
+        {% if driver.username != '' %}
+            {% set name = driver.username %}
+        {% else %}
+            {% set name = driver.email %}
+        {% endif %}
         <h1 class="title">
             Página de Usuario
         </h1>
         <p class="subtitle">
-            Historial de viajes entre {{ driver.username }} y tú.
+            Historial de viajes entre <span class="has-text-weight-bold">{{ name }}</span> y tú.
         </p>
         <div class="hero-avatar">
             <section class="avatars">
@@ -43,7 +48,7 @@
                                 </div>
                             </div>
                             <div class="level-item">
-                                <p class="subtitle">{{ driver.username }} ha sido tu pasajero en estas fechas:</p>
+                                <p class="subtitle">{{ name }} ha sido tu pasajero en estas fechas:</p>
                             </div>
                         </div>
                     </div>
@@ -93,13 +98,10 @@
                                 </div>
                             </div>
                             <div class="level-item">
-                                <p class="subtitle">{{ driver.username }} ha sido tu conductor en:</p>
+                                <p class="subtitle">{{ name }} ha sido tu conductor en:</p>
                             </div>
                         </div>
                     </div>
-
-                    
-                    
                     <div class="tile">
                         <table class="table is-success is-striped is-small">
                             <thead>

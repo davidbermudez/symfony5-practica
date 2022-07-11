@@ -51,18 +51,15 @@
     visibility: visible;    
   }
 
-  /*
-  .avatars .avatar:hover {
-    height: 64px !important;
-    border-radius: 100%;
-    border: 2px solid yellow;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  }
-  */
-  .rounded {
+  .avatars .rounded {
     padding: 2px;
     border-radius: 100%;
-    z-index: 2;    
+    border: 1px solid blue;
+    z-index: 2;
+    position: relative;    
+    top: 0px;
+    left: 0;
+    margin: 0 0 0 -1rem;
   }
 
   .car {
@@ -71,7 +68,7 @@
   }
 
   .passenger {
-    color: black;
+    color: red;
     background-color: yellow;
   }
 
