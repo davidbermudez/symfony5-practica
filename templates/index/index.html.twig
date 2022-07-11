@@ -86,7 +86,11 @@
                                             <div class="avatar">
                                             {% if users.avatar %}
                                                 <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}">
-                                                <span class="tooltiptext">{{ users.username }}</span>
+                                                {% if users.username != '' %}
+                                                    <span class="tooltiptext">{{ users.username }}</span>
+                                                {% else %}
+                                                    <span class="tooltiptext">{{ users.email }}</span>
+                                                {% endif %}
                                             {% else %}
                                                 <img class="avatar" src="/images/avatars/default.png" alt="{{ users.username }}">
                                             {% endif %}
@@ -158,7 +162,11 @@
                                                 <div class="avatar">
                                                 {% if users.avatar %}                                                
                                                     <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}">
-                                                    <span class="tooltiptext">{{ users.username }}</span>                                                
+                                                    {% if users.username != '' %}
+                                                        <span class="tooltiptext">{{ users.username }}</span>
+                                                    {% else %}
+                                                        <span class="tooltiptext">{{ users.email }}</span>
+                                                    {% endif %}                                                    
                                                 {% else %}
                                                     <img class="avatar" src="/images/avatars/default.png" alt="{{ users.username }}">
                                                 {% endif %}
