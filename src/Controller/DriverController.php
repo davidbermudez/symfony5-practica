@@ -76,26 +76,34 @@ class DriverController extends AbstractController
             //dump($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-
+                $error = false;
                 //dump("correcto");
                 $username = $form['username']->getData();
                 // ver que no esté escogido para este grupo
-                $repetidos = $driverRepository->findBy([
+                $repetidos = new Driver();
+                $repetidos = $driverRepository->findOneBy([
                     'username' => $username,
                     'grupo' => $grupo,
-                    'id' => !$user->getId()
+                    //'id' => $user->getId()
                 ]);
+                //dump($repetidos);
+                
                 if($repetidos){
-                    $this->addFlash(
-                        'danger',
-                        'El nombre no es válido porque ya existe'
-                    );
+                    $id1= $repetidos->getId();
+                    $id2= $user->getId();
+                    if($id1!=$id2){
+                        $this->addFlash(
+                            'danger',
+                            'Ya existe otro usuario con el mismo nombre'
+                        );
+                        $error = true;
+                    }                    
                 } else {
                     $user->setUsername($username);
                 }
-                //dump($repetidos);
-                $error = false;
-                if($avatar = $form['avatar']->getData()){
+                
+                // verificar avatar                
+                if($error == false && $avatar = $form['avatar']->getData()){
                     //foto nueva
                     $filename = bin2hex(random_bytes(6)).'.'.$avatar->guessExtension();
                     try {
@@ -113,12 +121,14 @@ class DriverController extends AbstractController
                             'danger',
                             'Error: '.$e
                         );
-                    }
-                } else {
-                    $error = true;
+                    }                
                 }
+                
                 if($error==false){
-
+                    $user->setPhonenumber($form['phonenumber']->getData());
+                }
+                
+                if($error==false){
                     $this->entityManager->persist($user);
                     $this->entityManager->flush();
                     $this->addFlash(
@@ -132,7 +142,7 @@ class DriverController extends AbstractController
                     if(!is_null($grupo->getChatid())){
                         //dump($grupo->getChatid());
                         $mens = $nombreAntiguo .' ha actualizado su perfil';
-                        $url = $this->get('router')->generate('app_change_avatar', array('avatar1' => $avatarAntiguo, 'avatar2' => $filename));
+                        //$url = $this->get('router')->generate('app_change_avatar', array('avatar1' => $avatarAntiguo, 'avatar2' => $filename));
                         $chatMessage = new ChatMessage($mens);
                         // Create Telegram options
                         $telegramOptions = (new TelegramOptions())

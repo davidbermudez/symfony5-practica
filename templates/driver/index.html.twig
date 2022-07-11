@@ -56,6 +56,15 @@
         </div>
         <p class="help is-info" id="emailActionHint">* Max. 1024kb</p>
     </div>
+    <div class="field">
+        <label class="label">Teléfono</label>
+        <div class="control has-icons-left">
+            {{ form_widget(form.phonenumber, {'attr': {'class': 'input is-success'} }) }}
+            <span class="icon is-small is-left">
+                <i id="usernameCheckIconLeft" class="fas fa-phone"></i>
+            </span>            
+        </div>        
+    </div>
     <!--Submit button-->
     <div class="field is-grouped">
         <div class="control">

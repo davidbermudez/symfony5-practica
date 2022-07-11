@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class DriverFormType extends AbstractType
@@ -34,6 +35,7 @@ class DriverFormType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Enviar',
             ])
+            ->add('phonenumber', TelType::class)
         ;
     }
 

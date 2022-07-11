@@ -76,11 +76,11 @@
                                             {% if value is null %}
                                             {% elseif value == false %}
                                                 <span class="icon has-text-success rounded passenger">
-                                                    <i class="fas fa-user"></i>
+                                                    <i class="fas fa-car"></i>
                                                 </span>
                                             {% else %}
                                                 <span class="icon has-text-warning rounded car">
-                                                    <i class="fas fa-car"></i>
+                                                    <i class="fas fa-user"></i>
                                                 </span>
                                             {% endif %}
                                             <div class="avatar">
@@ -184,7 +184,18 @@
                         <p class="subtitle">Seleccione alguna opción</p>
                         <div class="content">
                             <div class="buttons">
-                                <button class="button is-link" onclick="location.href='{{ path('app_newTime') }}'">Nuevo Horario</button>
+                                <button class="button is-link" onclick="location.href='{{ path('app_newTime') }}'">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+                                    <span>Nuevo Horario</span>
+                                </button>
+                                <button class="button is-info" onclick="location.href='{{ path('app_driver') }}'">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <span>Mi Perfil</span>
+                                </button>
                             </div>                        
                         </div>
                     </article>

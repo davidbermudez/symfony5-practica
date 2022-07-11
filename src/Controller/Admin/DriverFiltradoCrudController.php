@@ -52,6 +52,7 @@ class DriverFiltradoCrudController extends DriverCrudController
             EmailField::new('email'),
             HiddenField::new('password'),
             AssociationField::new('grupo')->setFormTypeOption('disabled','disabled'),
+            TextField::new('username', 'Nombre de Usuario'),
             //TextEditorField::new('description'),
         ];
     }

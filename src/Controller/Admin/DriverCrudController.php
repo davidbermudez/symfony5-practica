@@ -52,7 +52,6 @@ class DriverCrudController extends AbstractCrudController
         //$driver->setPassword($this->hashPassDriver($driver, $encoder));
         $driver->setPassword($this->encoder->encodePassword($driver, $passPlain));
         
-
         return $driver;
     }
 
