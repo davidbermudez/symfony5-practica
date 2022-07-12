@@ -48,6 +48,8 @@ class DashboardController extends AbstractDashboardController
             ->setController(GrupoFiltradoCrudController::class);
         yield MenuItem::linkToCrud($this->getUser()->getGrupo()->getCaption(), 'fas fa-users', Driver::class)
             ->setController(DriverFiltradoCrudController::class);
+        yield MenuItem::linkToCrud('Trayectos', 'fas fa-users', Trayecto::class)
+            ->setController(FechaFiltradoCrudController::class);
         yield MenuItem::linkToRoute('Ir a la App', 'fas fa-home', 'homepage');
     }
 
