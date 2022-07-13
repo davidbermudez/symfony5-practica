@@ -17,9 +17,11 @@ use App\Repository\GrupoRepository;
 use App\Repository\TrayectoRepository;
 use App\Repository\DriverRepository;
 use App\Repository\FechaRepository;
+use App\Repository\DriverConsentRepository;
 use App\Entity\Driver;
 use App\Entity\Trayecto;
 use App\Entity\Fecha;
+use App\Entity\Consent;
 use App\Form\TrayectoFormType;
 use App\Form\FechaFormType;
 
@@ -52,7 +54,7 @@ class IndexController extends AbstractController
         GrupoRepository $grupoRepository, 
         TrayectoRepository $trayectoRepository,
         DriverRepository $driverRepository,
-        FechaRepository $fechaRepository): Response
+        DriverConsentRepository $driverConsentRepository): Response
     {        
         $user = $this->getUser();
         if ($user == null){
@@ -75,6 +77,18 @@ class IndexController extends AbstractController
                 'grupo' => $grupo,
             ]);
             //dump($disponibles);
+            /* ************************* */
+            /*      Consentimientos      */
+            /* ************************* */
+            $consent = new Consent();
+            $consent = $driverConsentRepository->findConsentPending([
+                'driver' => $user,
+            ]);
+            if(count($consent)!= 0){
+                $choice = false;
+            } else {
+                $choice = true;
+            }
             /*
             foreach($disponibles as $key => $value){
                 foreach($value as $kkey => $vvalue)
@@ -92,6 +106,7 @@ class IndexController extends AbstractController
                 'previous' => $offset - TrayectoRepository::PAGINATOR_PER_PAGE,
                 'next' => min(count($paginator), $offset + TrayectoRepository::PAGINATOR_PER_PAGE),
                 'disponibles' => $disponibles,
+                'consent' => $consent
             ]);
         }
     }
@@ -235,8 +250,7 @@ class IndexController extends AbstractController
     public function trayecto(
         Request $request,
         GrupoRepository $grupoRepository,
-        TrayectoRepository $trayectoRepository,
-        FechaRepository $fechaRepository,
+        TrayectoRepository $trayectoRepository,        
         DriverRepository $driverRepository
     ){
         // Verificamos que la id existe

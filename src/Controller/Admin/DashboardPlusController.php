@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Driver;
 use App\Entity\Grupo;
+use App\Entity\Consent;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -42,6 +43,7 @@ class DashboardPlusController extends AbstractDashboardController
             ->setController(GrupoPlusCrudController::class);
         yield MenuItem::linkToCrud('Usuarios', 'fas fa-users', Driver::class)
             ->setController(DriverPlusCrudController::class);
+        yield MenuItem::linkToCrud('Consentimientos', 'fas fa-users', Consent::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }

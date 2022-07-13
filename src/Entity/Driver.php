@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DriverRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -60,6 +62,16 @@ class Driver implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=15, nullable=true)
      */
     private $phonenumber;
+
+    /**
+     * @ORM\OneToMany(targetEntity=DriverConsent::class, mappedBy="driver", orphanRemoval=true)
+     */
+    private $driverConsents;
+
+    public function __construct()
+    {
+        $this->driverConsents = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -190,6 +202,36 @@ class Driver implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhonenumber(?string $phonenumber): self
     {
         $this->phonenumber = $phonenumber;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DriverConsent>
+     */
+    public function getDriverConsents(): Collection
+    {
+        return $this->driverConsents;
+    }
+
+    public function addDriverConsent(DriverConsent $driverConsent): self
+    {
+        if (!$this->driverConsents->contains($driverConsent)) {
+            $this->driverConsents[] = $driverConsent;
+            $driverConsent->setDriver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDriverConsent(DriverConsent $driverConsent): self
+    {
+        if ($this->driverConsents->removeElement($driverConsent)) {
+            // set the owning side to null (unless already changed)
+            if ($driverConsent->getDriver() === $this) {
+                $driverConsent->setDriver(null);
+            }
+        }
 
         return $this;
     }
