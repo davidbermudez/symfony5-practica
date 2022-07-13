@@ -15,6 +15,8 @@ use Doctrine\DBAL\Statement;
 use Doctrine\DBAL\Driver\ResultStatement;
 use App\Entity\Driver;
 use App\Entity\Fecha;
+
+// Paginator
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
@@ -52,6 +54,7 @@ class TrayectoRepository extends ServiceEntityRepository
         }
     }
 
+    
     public function getTrayectoPaginator(Driver $driver, int $offset):Paginator
     {
         $query = $this->createQueryBuilder('t')            
@@ -66,7 +69,7 @@ class TrayectoRepository extends ServiceEntityRepository
         ;
         return new Paginator($query);
     }
-
+    
 
 //    /**
 //     * @return Trayecto[] Returns an array of Trayecto objects
@@ -208,6 +211,21 @@ class TrayectoRepository extends ServiceEntityRepository
         //return $query;
         return $return;
         
+    }
+    public function cuenta($driver, $passenger): int
+    {        
+        return $this->createQueryBuilder('t')
+            ->select('count(t.id) as count')
+            ->where('t.driver = :val1')
+            ->andwhere('t.passenger = :val2')
+            ->andwhere('t.passenger is not null')
+            ->andwhere('t.confirm = true')
+            ->setparameters([
+                'val1' => $driver,
+                'val2' => $passenger,
+            ])
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function compara(Driver $driver1, Driver $driver2): int

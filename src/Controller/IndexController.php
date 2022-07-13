@@ -30,6 +30,9 @@ use Symfony\Component\Notifier\Bridge\Telegram\Reply\Markup\InlineKeyboardMarkup
 use Symfony\Component\Notifier\Bridge\Telegram\TelegramOptions;
 use Symfony\Component\Notifier\Message\ChatMessage;
 
+#Ajax
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 class IndexController extends AbstractController
 {
 
@@ -86,11 +89,36 @@ class IndexController extends AbstractController
             return $this->render('index/index.html.twig', [
                 'grupo' => $grupoRepository->find($grupo),
                 'trayectos' => $paginator,
-                'previous' => $offset - FechaRepository::PAGINATOR_PER_PAGE,
-                'next' => min(count($paginator), $offset + FechaRepository::PAGINATOR_PER_PAGE),
+                'previous' => $offset - TrayectoRepository::PAGINATOR_PER_PAGE,
+                'next' => min(count($paginator), $offset + TrayectoRepository::PAGINATOR_PER_PAGE),
                 'disponibles' => $disponibles,
             ]);
         }
+    }
+
+    /**
+     * @Route("/ajax1", name="app_ajax1")
+     */
+    public function ajax1(
+        Request $request, 
+        DriverRepository $driverRepository,
+        TrayectoRepository $trayectoRepository
+        ): Response
+    {   
+        //Return, user_id, count_passenger=false & count_passenger=true
+        $request = Request::createFromGlobals();
+        $userid = new Driver();
+        $userid = $driverRepository->findOneBy([
+            'id' => $request->request->get('user'),
+        ]);
+        $conductor = $trayectoRepository->cuenta($userid, false);
+        $pasajero = $trayectoRepository->cuenta($userid, true);
+        $response = new JsonResponse([
+            'usuario' => $userid->getId(),
+            'conductor' => $conductor,
+            'pasajero' => $pasajero,
+        ]);
+        return $response;
     }
 
     /**

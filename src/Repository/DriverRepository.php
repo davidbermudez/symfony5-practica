@@ -3,12 +3,18 @@
 namespace App\Repository;
 
 use App\Entity\Driver;
+use App\Entity\Grupo;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+
+// Paginador
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @extends ServiceEntityRepository<Driver>
@@ -20,6 +26,8 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class DriverRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
+    public const PAGINATOR_PER_PAGE = 8;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Driver::class);
@@ -89,4 +97,18 @@ class DriverRepository extends ServiceEntityRepository implements PasswordUpgrad
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function getDriverPaginator(Driver $driver, int $offset):Paginator
+    {
+        $query = $this->createQueryBuilder('d')
+            ->join(Grupo::class, 'g', Join::WITH, 'd.grupo = g.id')
+            ->andWhere('g.id = :driver')            
+            ->setParameter('driver', $driver->getGrupo())
+            ->orderBy('d.id', 'ASC')
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery()
+        ;        
+        return new Paginator($query);
+    }
 }

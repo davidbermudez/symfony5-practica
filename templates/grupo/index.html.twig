@@ -63,10 +63,35 @@
                                     </div>
                                     <div class="level-right">
                                         <!-- AJAX -->
-                                        <div class="level-item" id="user[{{user.id}}]"></div>
+                                        <div class="level-item" id="userid_{{user.id}}" name="userid">
+                                            <div class="">
+                                                <div class="">                                                    
+                                                    <div class="">
+                                                        <span id="conductor[{{ user.id }}]" class="button is-small is-success is-loading">0</span>
+                                                        <i class="fas fa-car has-text-dark"></i>
+                                                    </div>
+                                                    <div class="">
+                                                        <span id="pasajero[{{ user.id }}]" class="button is-small is-info is-loading">0</span>
+                                                        <i class="fas fa-user has-text-dark"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </nav>                            
+                                </nav>
                             {% endfor %}
+                            <nav class="pagination" role="navigation" aria-label="pagination">
+                                {% if previous >= 0 %}
+                                    <a class="pagination-previous" href="{{ path('app_grupo', { offset:previous }) }}#historial">Anterior</a>
+                                {% else %}
+                                    <a class="pagination-previous" disabled href="#">Previous</a>
+                                {% endif %}
+                                {% if next < usuarios|length %}
+                                    <a class="pagination-next" href="{{ path('app_grupo', { offset: next}) }}#historial">Siguiente</a>
+                                {% else %}
+                                    <a class="pagination-next" href="#" disabled>Next page</a>
+                                {% endif %}
+                            </nav>
                         </div>
                     </article>
                 </div>
@@ -100,3 +125,37 @@
     </div>
 </div>
 {% endblock %}
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+   
+    <script language = "javascript">
+        var users = document.getElementsByName("userid");
+        //console.log(users);
+        $(document).ready(function() {
+            for(var i = 0; i < users.length; i++){
+                var id = (users[i].getAttribute('id')).split("userid_");
+                $('#conductor\\[' + i + '\\]').html('');
+                $('#conductor\\[' + i + '\\]').html('');
+                //console.log(id[1]);
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('app_ajax1') }}",
+                    data: { user:  id[1] },
+                    success: function(data) {                        
+                        var cond = data.conductor;
+                        var pass = data.pasajero;
+                        $('#conductor\\[' + data.usuario + '\\]').attr("class", "button is-small is-success");
+                        $('#pasajero\\[' + data.usuario + '\\]').attr("class", "button is-small is-info");
+                        $('#conductor\\[' + data.usuario + '\\]').html(cond);
+                        $('#pasajero\\[' + data.usuario + '\\]').html(pass);
+                    },
+                    error: function () {
+                        console.log("Error: ", error);
+                    }
+                });
+            }
+            return false;
+        })        
+        /* https://www.jose-aguilar.com/blog/efecto-cargando-con-jquery-ajax/ */
+   </script>
+   {% endblock %}

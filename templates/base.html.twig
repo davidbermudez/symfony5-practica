@@ -37,14 +37,14 @@
                     </a>
 
                     {% if app.user %}
-                        <a class="navbar-item" href="{{ path('app_driver') }}" title="Perfil">Perfil</a></li>
+                        <a class="navbar-item" href="{{ path('app_driver') }}" title="Perfil">Perfil</a>
                         <!-- <a class="navbar-item" href="{{ path('app_log') }}" title="Log">Log</a></li> -->
-                        <a class="navbar-item" href="{{ path('app_logout') }}" title="Logout">Logout</a></li>
+                        <a class="navbar-item" href="{{ path('app_logout') }}" title="Logout">Logout</a>
                         {% if 'ROLE_ADMIN' in app.user.getroles()  %}
-                            <a class="navbar-item" href="{{ path('admin') }}" title="Admin">Admin</a></li>
+                            <a class="navbar-item" href="{{ path('admin') }}" title="Admin">Admin</a>
                         {% endif %} 
                     {% else %}
-                        <a class="navbar-item" href="{{ path('app_login') }}" title="Login">Login</a></li>
+                        <a class="navbar-item" href="{{ path('app_login') }}" title="Login">Login</a>
                     {% endif %}
 <!--
                     <div class="navbar-item has-dropdown is-hoverable">
@@ -148,7 +148,7 @@
             });
 
             document.addEventListener('DOMContentLoaded', () => {
-                console.log("Modal");
+                // console.log("Modal");
                 // Functions to open and close a modal
                 function openModal($el) {
                     $el.classList.add('is-active');
@@ -191,18 +191,7 @@
                 closeAllModals();
                 }
             });
-            });
-            // Full Screen
-            var body = document.documentElement;
-            if (body.requestFullscreen) {
-                body.requestFullscreen();
-            } else if (body.webkitrequestFullscreen) {
-                body.webkitrequestFullscreen();
-            } else if (body.mozrequestFullscreen) {
-                body.mozrequestFullscreen();
-            } else if (body.msrequestFullscreen) {
-                body.msrequestFullscreen();
-            }
+            });            
         </script>
         {% block javascripts %}{% endblock %}        
     </body>

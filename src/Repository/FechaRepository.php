@@ -16,8 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Fecha[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class FechaRepository extends ServiceEntityRepository
-{
-    public const PAGINATOR_PER_PAGE = 10;
+{    
 
     public function __construct(ManagerRegistry $registry)
     {
