@@ -22,7 +22,7 @@ class Consent
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $subjetc;
+    private $topic;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -54,14 +54,14 @@ class Consent
         return $this->id;
     }
 
-    public function getSubjetc(): ?string
+    public function getTopic(): ?string
     {
-        return $this->subjetc;
+        return $this->topic;
     }
 
-    public function setSubjetc(string $subjetc): self
+    public function setTopic(string $topic): self
     {
-        $this->subjetc = $subjetc;
+        $this->topic = $topic;
 
         return $this;
     }

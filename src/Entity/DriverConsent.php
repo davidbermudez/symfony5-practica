@@ -35,7 +35,7 @@ class DriverConsent
     private $date_consent;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $choice;
 

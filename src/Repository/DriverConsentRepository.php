@@ -74,17 +74,26 @@ class DriverConsentRepository extends ServiceEntityRepository
         
         //dump($value);
         //dump($value['driver']);
-        $em = $this->createQueryBuilder('d')
-            ->select('d')
-            ->join(Consent::class, 'c', Join::WITH, 'd.consent = c.id')
-            ->where('c.enable = true')
-            ->andwhere('d.driver != :val0')
-            ->andwhere('d.choice is null')
+        $em1 = $this->createQueryBuilder('d')
+            ->select('IDENTITY(d.consent)')
+            ->andwhere('d.driver = :val0')
+            ->andwhere('d.choice is not null')
             ->setParameters([
                 'val0' => $value['driver'],                
-            ]);        
-        $q = $em->getQuery()->getSQL();        
-        $query = $em->getQuery()->getArrayResult();
+            ]);
+        $q = $em1->getQuery()->getResult();
+
+        $em2 = $this->getEntityManager();
+        $query = $em2->getRepository(Consent::class)
+            ->createQueryBuilder('c')            
+            ->where('c.enable = true')            
+            ->andwhere('c.id NOT IN (:val1) OR :val1 IS NULL')
+            ->setParameters([                
+                'val1' => $em1->getQuery()->getArrayResult(),
+            ])
+            ->getQuery()->getResult();        
+        //$q = $em->getQuery()->getSQL();        
+        //$query = $em->getQuery()->getArrayResult();
         dump($query);
         return $query;
     }

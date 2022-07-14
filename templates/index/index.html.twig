@@ -269,22 +269,24 @@
         </div>
     </div>
 </div>
-    {% if consent %}
+    {% for i in consent %}
         <div class="modal is-active">
             <div class="modal-background"></div>
             <div class="modal-card">
                 <header class="modal-card-head">
-                    <p class="modal-card-title">Información Importante</p>
+                    <p class="modal-card-title">{{ i.topic }}</p>
                     <button class="delete" aria-label="close"></button>
                 </header>
                 <section class="modal-card-body">
-                    <!-- Content ... -->
+                    <div class="content">
+                        {{ i.content|markdown_to_html }}                    
+                    </div>
                 </section>
                 <footer class="modal-card-foot">
-                    <button class="button is-success">Aceptar</button>
+                    <button class="button is-success" onclick="location.href = '{{ path('app_accept_consent', {id: i.id}) }}'">Aceptar</button>
                     <button class="button">Cancelar</button>
                 </footer>
             </div>
         </div>
-    {% endif %}
+    {% endfor %}
 {% endblock %}
