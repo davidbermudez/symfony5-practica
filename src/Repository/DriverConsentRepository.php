@@ -94,7 +94,7 @@ class DriverConsentRepository extends ServiceEntityRepository
             ->getQuery()->getResult();        
         //$q = $em->getQuery()->getSQL();        
         //$query = $em->getQuery()->getArrayResult();
-        dump($query);
+        //dump($query);
         return $query;
     }
 }

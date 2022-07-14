@@ -251,11 +251,9 @@ class IndexController extends AbstractController
         Request $request,
         GrupoRepository $grupoRepository,
         TrayectoRepository $trayectoRepository,        
-        DriverRepository $driverRepository
+        DriverRepository $driverRepository,
+        $id
     ){
-        // Verificamos que la id existe
-        $array = (array) $request->attributes;        
-        $id=$array["\x00*\x00parameters"]["id"];
         $trayecto = new Trayecto;
         $trayecto = $trayectoRepository->findOneBy(['id' => $id]);
         if ($trayecto == null){
@@ -363,12 +361,10 @@ class IndexController extends AbstractController
         Request $request,
         GrupoRepository $grupoRepository,
         TrayectoRepository $trayectoRepository,
-        DriverRepository $driverRepository
+        DriverRepository $driverRepository,
+        $id
     ): Response
     {        
-        $array = (array) $request->attributes;
-        // Verificamos que la id existe
-        $id = $array["\x00*\x00parameters"]["id"];        
         $trayecto = new Trayecto;
         $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
         if ($trayecto == null){
@@ -435,12 +431,10 @@ class IndexController extends AbstractController
         Request $request,
         GrupoRepository $grupoRepository,
         TrayectoRepository $trayectoRepository,
-        DriverRepository $driverRepository
+        DriverRepository $driverRepository,
+        $id
     ): Response
-    {        
-        $array = (array) $request->attributes;
-        // Verificamos que la id existe
-        $id = $array["\x00*\x00parameters"]["id"];
+    {
         $trayecto = new Trayecto;
         $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
         if ($trayecto == null){
@@ -513,12 +507,10 @@ class IndexController extends AbstractController
         Request $request,
         GrupoRepository $grupoRepository,
         TrayectoRepository $trayectoRepository,
-        DriverRepository $driverRepository
+        DriverRepository $driverRepository,
+        $id
     ): Response
-    {        
-        $array = (array) $request->attributes;
-        // Verificamos que la id existe
-        $id = $array["\x00*\x00parameters"]["id"];
+    {
         $trayecto = new Trayecto;
         $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
         if ($trayecto == null){
@@ -583,12 +575,10 @@ class IndexController extends AbstractController
      */
     public function pongo_coche(
         Request $request,        
-        TrayectoRepository $trayectoRepository        
+        TrayectoRepository $trayectoRepository,
+        $id
     ): Response
-    {        
-        $array = (array) $request->attributes;
-        // Verificamos que la id existe
-        $id = $array["\x00*\x00parameters"]["id"];
+    {
         $trayecto = new Trayecto;
         $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
         if ($trayecto == null){
@@ -650,12 +640,10 @@ class IndexController extends AbstractController
     public function comparativa(
         Request $request,
         GrupoRepository $grupoRepository,
-        TrayectoRepository $trayectoRepository        
+        TrayectoRepository $trayectoRepository,
+        $id
     ): Response
     {
-        $array = (array) $request->attributes;
-        // Verificamos que la id existe
-        $id = $array["\x00*\x00parameters"]["id"];
         $trayecto = new Trayecto;
         $trayecto = $trayectoRepository->findOneBy(['id' => $id]);        
         if ($trayecto == null){
