@@ -71,9 +71,11 @@ class IndexController extends AbstractController
             $offset = max(0, $request->query->getInt('offset', 0));
             $paginator = $trayectoRepository->getTrayectoPaginator($user, $offset);
             //dump($paginator);
+            $current_date = date('Y-m-d');
+            $five_days = date('Y-m-d', strtotime('-5 day', strtotime($current_date)));
             $disponibles = $trayectoRepository->findAvailables([
                 //'driver' => $user,
-                'date_trayecto' => date('Y-m-d'),                            
+                'date_trayecto' => $five_days,
                 'grupo' => $grupo,
             ]);
             //dump($disponibles);

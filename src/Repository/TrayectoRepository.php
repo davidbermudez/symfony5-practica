@@ -154,9 +154,9 @@ class TrayectoRepository extends ServiceEntityRepository
             //->select('t', 'd.id')
             ->join(Fecha::class, 'f', Join::WITH, 't.fecha = f.id')
             ->join(Driver::class, 'd', Join::WITH, 't.driver = d.id')
-            //->where('t.driver != :val0')
-            //->andwhere('f.date_trayecto >= :val1')
+            //->where('t.driver != :val0')            
             ->where('t.confirm is null')
+            ->andwhere('f.date_trayecto >= :val1')
             ->andwhere('d.grupo = :val2')
             ->orderBy('f.date_trayecto', 'ASC')
             ->addOrderBy('f.time_at', 'ASC')
@@ -166,7 +166,7 @@ class TrayectoRepository extends ServiceEntityRepository
             //->groupBy('t.fecha')
             ->setParameters([
                 //'val0' => $value['driver'],
-                //'val1' => $value['date_trayecto'],                
+                'val1' => $value['date_trayecto'],                
                 'val2' => $value['grupo'],
             ]);
         //$query = $em->getQuery()->getArrayResult();

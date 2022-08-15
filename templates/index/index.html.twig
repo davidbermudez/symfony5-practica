@@ -33,6 +33,9 @@
                         <div class="container">
                         {#{ dump(disponibles) }#}
                             {% for trayectos in disponibles %}
+                            {% set now = ("now"|date("Y-m-d")) %}
+                            {% set tra = (trayectos.fecha.dateTrayecto|date("Y-m-d")) %}
+                            {% if tra >= now %}
                                 {% set existe = false  %}
                                 {% for users in trayectos.driver %}
                                     {% if app.user.id == users.id %}
@@ -101,6 +104,7 @@
 
                                 </div>
                                 {% endif %}
+                            {% endif %}
                             {% endfor %}
                         </div>
                     </article>
@@ -111,6 +115,9 @@
                         <p class="title">Trayectos disponibles</p>
                         <div class="container">                            
                             {% for trayectos in disponibles %}
+                            {% set now = ("now"|date("Y-m-d")) %}
+                            {% set tra = (trayectos.fecha.dateTrayecto|date("Y-m-d")) %}
+                            {% if tra >= now %}
                                 {% set existe = false  %}
                                 {% for users in trayectos.driver %}
                                     {% if app.user.id == users.id %}
@@ -146,7 +153,7 @@
                                         </div>
 
                                         <div class="">
-                                            <span class="avatars">                                            
+                                            <span class="avatars">
                                             {% for users in trayectos.driver %}
                                                 {% set value = trayectos.passenger[(loop.index)-1] %}
                                                 {% if value is null %}
@@ -160,31 +167,113 @@
                                                     </span>
                                                 {% endif %}
                                                 <div class="avatar">
-                                                {% if users.avatar %}                                                
+                                                {% if users.avatar %}
                                                     <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}" onclick='location.href = "{{ path('app_user', {id: users.id}) }}"'>
                                                     {% if users.username != '' %}
                                                         <span class="tooltiptext">{{ users.username }}</span>
                                                     {% else %}
                                                         <span class="tooltiptext">{{ users.email }}</span>
-                                                    {% endif %}                                                    
+                                                    {% endif %}
                                                 {% else %}
                                                     <img class="avatar" src="/images/avatars/default.png" alt="{{ users.username }}">
                                                 {% endif %}
                                                 </div>
                                             {% endfor %}
                                             </span>
-                                        </div>                                        
+                                        </div>
                                     </div>
                                 {% endif %}
+                            {% endif %}
                             {% endfor %}
                         </div>
                     </article>
                 </div>
+                <!-- -->
+                <div class="tile is-child notification is-danger">
+                    <article class="tile is-child">                        
+                        <p class="title">Trayectos pasados</p>
+                        <div class="container">                            
+                            {% for trayectos in disponibles %}
+                            {% set now = ("now"|date("Y-m-d")) %}
+                            {% set tra = (trayectos.fecha.dateTrayecto|date("Y-m-d")) %}
+                            {% if tra < now %}
+                                {#% set existe = false  %}
+                                {% for users in trayectos.driver %}
+                                    {% if app.user.id == users.id %}
+                                        {% set existe = true  %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if existe == false %#}
+                                    <div class="container has-background-warning p-3 mt-3">                                                                                
+                                        <div class="trayecto notification has-background-link-dark">
+                                            
+                                            <div class="trayecto-fecha">
+                                                <button id="submitButton" onclick='location.href = "{{ path('app_trayecto', {id: trayectos["trayecto_id"]}) }}"' class="button is-danger-lighter trayecto-button">
+                                                    {{ trayectos.fecha.dateTrayecto | format_datetime(pattern="d/MM/yy") }}
+                                                </button>
+                                            </div>
+                                            <div class="trayecto-time">
+                                                <div class="trayecto-at">
+                                                    <span class="tag is-danger is-normal">
+                                                        {{ trayectos.fecha.timeAt | format_time(pattern='HH:mm') }}
+                                                    </span>
+                                                </div>
+                                                <div class="trayecto-to">
+                                                    <span class="tag is-danger is-normal">
+                                                        {{ trayectos.fecha.timeTo | format_time(pattern='HH:mm') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="trayecto-icon">
+                                                {% if trayectos.passenger[0] is not null %}
+                                                    <i class="fa fa-lock is-right"></i>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="">
+                                            <span class="avatars">
+                                            {% for users in trayectos.driver %}
+                                                {% set value = trayectos.passenger[(loop.index)-1] %}
+                                                {% if value is null %}
+                                                {% elseif value == false %}
+                                                    <span class="icon has-text-success rounded passenger">
+                                                        <i class="fas fa-car"></i>
+                                                    </span>
+                                                {% else %}
+                                                    <span class="icon has-text-warning rounded car">
+                                                        <i class="fas fa-user"></i>
+                                                    </span>
+                                                {% endif %}
+                                                <div class="avatar">
+                                                {% if users.avatar %}
+                                                    <img src="/images/avatars/{{ users.avatar }}" alt="{{ users.username }}" onclick='location.href = "{{ path('app_user', {id: users.id}) }}"'>
+                                                    {% if users.username != '' %}
+                                                        <span class="tooltiptext">{{ users.username }}</span>
+                                                    {% else %}
+                                                        <span class="tooltiptext">{{ users.email }}</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <img class="avatar" src="/images/avatars/default.png" alt="{{ users.username }}">
+                                                {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                {#% endif %#}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </article>
+                    Estos trayectos se eliminarán transcurridos 5 días
+                </div>
+                <!-- -->
             </div>
-        </div>        
+        </div>
         <div class="tile is-parent">
 
-            <div class="tile is-vertical">            
+            <div class="tile is-vertical">
                 
                 <div class="tile is-child notification is-warning">
                     <article class="tile is-child">
