@@ -207,6 +207,7 @@ class IndexController extends AbstractController
                         'success',
                         'Se ha grabado un nuevo horario'
                     );
+                    $id_trayecto = $trayecto->getId();
                     // Telegram
                     //dump($grupo->getChatid());
                     $fecha_prevista = date_format($date_trayecto, "d/M/yy");
@@ -222,7 +223,7 @@ class IndexController extends AbstractController
                             ->inlineKeyboard([
                                 (new InlineKeyboardButton('Ir a la app'))
                                     //->url($url),
-                                    ->url("https://google.com/"),
+                                    ->url("https://compartecoche.davidbermudez.es/trayecto/" . $id_trayecto),
                             ])
                         );
                     // Add the custom options to the chat message and send the message
